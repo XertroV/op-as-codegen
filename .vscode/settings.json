@@ -1,0 +1,13 @@
+{
+    "purescript.addSpagoSources": true,
+    "purescript.autocompleteAddImport": true,
+    "purescript.autocompleteAllModules": true,
+    "purescript.sourcePath": "src",
+    "purescript.addPscPackageSources": true,
+    "purescript.addNpmPath": true,
+    "[purescript]": {
+        "editor.formatOnSave": true,
+        "editor.tabSize": 2,
+        "editor.detectIndentation": true
+    }
+}

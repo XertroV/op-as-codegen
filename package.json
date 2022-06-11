@@ -1,0 +1,29 @@
+{
+  "name": "op-as-codegen",
+  "version": "0.1.0",
+  "description": "Code generator for Openplanet AngelScript written in Purscript",
+  "main": "index.js",
+  "scripts": {
+    "test": "spago test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/XertroV/op-as-codegen.git"
+  },
+  "keywords": [
+    "openplanet",
+    "codegen",
+    "angelscript"
+  ],
+  "author": "Max Kaye (XertroV)",
+  "license": "Unlicense",
+  "bugs": {
+    "url": "https://github.com/XertroV/op-as-codegen/issues"
+  },
+  "homepage": "https://github.com/XertroV/op-as-codegen#readme",
+  "dependencies": {
+    "purescript": "^0.15.2",
+    "purty": "^7.0.0",
+    "spago": "^0.20.9"
+  }
+}
