@@ -103,3 +103,22 @@ let upstream =
         sha256:348212b7c79da7d343bed71b48ed164d426f1977f92196babac49bd560b32e75
 
 in  upstream
+  with node-fs = { repo = "https://github.com/purescript-node/purescript-node-fs.git", version = "v8.1.0", dependencies = [
+    "datetime",
+    "effect",
+    "either",
+    "enums",
+    "exceptions",
+    "functions",
+    "integers",
+    "js-date",
+    "maybe",
+    "node-buffer",
+    "node-path",
+    "node-streams",
+    "nullable",
+    "partial",
+    "prelude",
+    "strings",
+    "unsafe-coerce",
+  ]}

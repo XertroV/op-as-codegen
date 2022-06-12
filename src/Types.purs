@@ -8,8 +8,24 @@ import Prelude
 data JsonObj
   = JsonObj String (Array JField)
 
+derive instance eqJsonObj :: Eq JsonObj
+
 data JField
   = JField String JType
+
+derive instance eqJField :: Eq JField
+
+type JFields
+  = Array JField
+
+type Strings
+  = Array String
+
+type Lines
+  = Array String
+
+type CodeBlocks
+  = Array Lines
 
 data JType
   = JInt
@@ -19,6 +35,17 @@ data JType
   | JNumber
   | JArray JType
   | JObject JsonObj
+
+derive instance eqJType :: Eq JType
+
+isJArray ∷ JType → Boolean
+isJArray j = case j of
+  (JArray _) -> true
+  _ -> false
+
+isJObject j = case j of
+  (JObject _) -> true
+  _ -> false
 
 object ∷ String → JsonObj
 object name = JsonObj name []

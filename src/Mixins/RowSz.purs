@@ -1,32 +1,75 @@
 module Mixins.RowSz
   ( mxRowSz
+  , trs_arrayDefn
   ) where
 
 import Prelude
-import CodeLines (indent, ln, toPropFields)
-import Data.Array (intersperse, intercalate)
+import AsTypes (jTyToAsTy, jTyToFuncArg)
+import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapIf, wrapNamespace, wrapTryCatch, wrapWhileLoop)
+import Data.Array (intercalate, intersperse)
+import Data.Array as A
 import Data.Maybe (Maybe(..))
-import Mixins.Types (Mixin)
-import Types (JField(..), JType(..), JsonObj(..))
+import Data.String (Pattern(..), Replacement(..), joinWith, replace)
+import Mixins.AllMixins (_MX_ROW_SZ_NAME)
+import Mixins.CommonTesting (mxCommonTesting)
+import Mixins.DefaultProps (mxDefaultProps)
+import Mixins.OpEq (mxOpEq)
+import Mixins.Testing.Gen (genTestArgs, genTests)
+import Mixins.Types (Mixin, TestGenerator, TestGenerators)
+import Partial.Unsafe (unsafeCrashWith)
+import SzAsTypes (frs_arrayFnName, isJTypeStrWrapped, jValFromStr, jValToStr, trs_arrayFnName)
+import Types (CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines)
 
+{-|
+  The idea is to serialize (sz) into a value-safe format that omits keys and is suitable for an append only DB.
+
+  other goals:
+  - avoid escaping stuff: PITA and complexifies code
+  - unambiguous, simple, reasonably compact format
+  - quick, performant, simple sz and un-sz
+  - minimal code so it can be in-lined instead of requiring helper functions and things
+
+  idea: length prefixing
+  only some values require it; values like integers, numbers, and booleans won't have commas so don't need a length prefix.
+  strings can be length prefixed then recorded directly.
+  objects and arrays might need them too
+  actually, what if objects and arrays are first stringified (via the same method) and then just treated as strings (i.e., we reuse that code)
+
+  sz of values:
+  - string values:
+    - template: "({str.Length}:{str})" -- parens are just to decrease ambiguety when reading the file manually
+  - Arrays and Objects: call .ToRowString(), then treat as string
+  - other values: just tostring() them, or like `'' + anInt`
+
+  algorithm for length prefixed sz:
+  - for each value:
+    - sz value, append to ret, append ','
+  - take this value and treat as a string
+
+  unstringifying:
+  - take 1 == `(`
+  - [len, remainder] = str.split(',', 2)
+  - [strVal, remainder] = remainder.split(',', 2)
+  - take 2 == `),`
+  repeat
+
+  note: when unstringifying we know what values to expect and their types
+|-}
 mxRowSz :: Mixin
 mxRowSz =
-  { name: "Row Serializaiton"
-  , requires: ["DefaultProps"]
+  { name: _MX_ROW_SZ_NAME
+  , requires: [ mxDefaultProps.name, mxCommonTesting.name, mxOpEq.name ]
+  , comprisingRequires: []
   , properties: Nothing
-  , methods: Just $ \(JsonObj objName fields) -> wrapFunction "const string ToRowString()" (toRowString fields)
-  , namespace: Just $ \(JsonObj objName fields) -> wrapNamespace objName [ wrapFunction (objName <> " FromRowString(const string &in str)") (fromRowString objName fields) ]
+  , methods: Just $ \(JsonObj _objName fields) -> intercalate ln $ [ toRowString fields, trs_wrapStringDefn ] <> allArrayTrsFuncs fields
+  , namespace: Just $ \(JsonObj objName fields) -> wrapNamespace objName $ [ fromRowString objName fields ] <> allArrayFrsFuncs fields
+  , tests: Just $ genTests rowSzTests
   }
 
-wrapNamespace :: String -> Array (Array String) -> Array String
-wrapNamespace nsName lines = [ "namespace " <> nsName <> " {" ] <> (indent 1 $ intercalate ln lines) <> [ "}" ]
-
-wrapFunction :: String -> Array String -> Array String
-wrapFunction funcSig lines = [ funcSig <> " {" ] <> indent 1 lines <> [ "}" ]
-
-toRowString :: Array JField -> Array String
+toRowString :: Array JField -> Lines
 toRowString fields =
-  [ "string ret = \"\";" ]
+  wrapFunction "const string" "ToRowString" []
+    $ [ "string ret = \"\";" ]
     <> intercalate ln [ (_ <> " + \",\";") <$> appendRet <$> propFields ]
     <> [ "return ret;" ]
   where
@@ -35,20 +78,128 @@ toRowString fields =
 appendRet :: JField -> String
 appendRet (JField n t) = "ret += " <> jValToStr t n
 
-jValToStr :: JType -> String -> String
-jValToStr JInt n = "'' + " <> n
+trs_wrapStringDefn :: Lines
+trs_wrapStringDefn =
+  wrapFunction "private const string" "TRS_WrapString" [ "const string &in s" ]
+    $ [ "return '(' + s.Length + ':' + s + ')';" ]
 
-jValToStr JUint n = "'' + " <> n
+trs_arrayDefn :: JType -> Lines
+trs_arrayDefn arrTy =
+  mkFunction
+    $ [ "string ret = '';" ]
+    <> ( wrapForLoop "uint i = 0; i < arr.Length; i++"
+          [ "ret += " <> jValToStr arrTy "arr[i]" <> " + ',';" ]
+      )
+    <> [ "return ret;" ]
+  where
+  mkFunction = wrapFunction "private const string" (trs_arrayFnName arrTy) [ "const array<" <> jTyToFuncArg arrTy <> "> &in arr" ]
 
-jValToStr JNumber n = "'' + " <> n
+allArrayTrsFuncs :: JFields -> Array Lines
+allArrayTrsFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrTrsIfArr
+  where
+  arrTrsIfArr (JField _n (JArray t)) = trs_arrayDefn t
 
-jValToStr JString n = n
+  arrTrsIfArr _ = []
 
-jValToStr (JArray _) _n = "todo sz array"
+fromRowString :: String -> Array JField -> Lines
+fromRowString name fields =
+  wrapFunction name "FromRowString" [ "const string &in str" ]
+    $ [ "string chunk = '', remainder = str;"
+      , "array<string> tmp = array<string>(2);"
+      , "uint chunkLen;"
+      , "trace('FRS input: \"' + str + '\"');"
+      ]
+    <> intercalate [] (getNext <$> fields)
+    <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
+  where
+  getNext (JField n t) =
+    setChunkAndRemainderForTy t
+      <> [ jTyToAsTy t <> " " <> n <> " = " <> jValFromStr t "chunk" <> ";" ]
 
-jValToStr (JObject _) n = "todo sz object -- " <> n <> ".ToRowString()"
+  fieldVarNames = fields <#> \(JField n _t) -> n
 
-jValToStr JNull _n = "null"
+frs_arrayDefn :: JType -> Lines
+frs_arrayDefn arrTy =
+  mkFunction
+    $ [ arrayTypeAs <> " ret = " <> arrayTypeAs <> "(0);"
+      , "string chunk = '', remainder = str;"
+      , "array<string> tmp = array<string>(2);"
+      , "uint chunkLen;"
+      ]
+    <> ( wrapWhileLoop "remainder.Length > 0"
+          -- for simple values
+          
+          $ setChunkAndRemainderForTy arrTy
+          <> [ "ret.InsertLast(" <> jValFromStr arrTy "chunk" <> ");" ]
+      )
+    <> [ "return ret;" ]
+  where
+  arrayTypeAs = "array<" <> jTyToAsTy arrTy <> ">"
 
-fromRowString :: String -> _ -> Array String
-fromRowString name fields = [ "return " <> name <> "(Json::Object());" ]
+  mkFunction = wrapFunction ("const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ "const string &in str" ]
+
+setChunkAndRemainderForTy :: JType -> Lines
+setChunkAndRemainderForTy t = if isJTypeStrWrapped t then setChunkRemUnwrap else setChunkRemSimple
+
+setChunkRemSimple :: Lines
+setChunkRemSimple =
+  [ "tmp = remainder.Split(',', 2);"
+  , "chunk = tmp[0]; remainder = tmp[1];"
+  ]
+
+setChunkRemUnwrap :: Lines
+setChunkRemUnwrap =
+  [ "FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');"
+  , "tmp = remainder.SubStr(1).Split(':', 2);"
+  , "chunkLen = Text::ParseInt(tmp[0]);"
+  , "chunk = tmp[1].SubStr(0, chunkLen);"
+  , "FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');"
+  , "remainder = tmp[1].SubStr(chunkLen + 2);"
+  ]
+
+allArrayFrsFuncs :: JFields -> Array Lines
+allArrayFrsFuncs = (_ <> [ frs_AssertDefn ]) <<< A.filter (\ls -> A.length ls > 0) <<< map arrFrsIfArr
+  where
+  arrFrsIfArr (JField _n (JArray t)) = frs_arrayDefn t
+
+  arrFrsIfArr _ = []
+
+frs_AssertDefn :: Lines
+frs_AssertDefn =
+  wrapFunction "void" "FRS_Assert_String_Eq" [ "const string &in sample", "const string &in expected" ]
+    $ wrapIf "sample != expected" [ "throw('[FRS_Assert_String_Eq] expected sample string to equal: \"' + expected + '\" but it was \"' + sample + '\" instead.');" ]
+
+rowSzTests :: TestGenerators
+rowSzTests = [ test_SzThenUnSz ]
+
+test_SzThenUnSz :: TestGenerator
+test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
+  where
+  fnName = "UnitTest_SzThenUnSz_" <> objName
+
+  checkerFn = "Test_SzThenUnSz_Check"
+
+  checkerDecl =
+    wrapFunction "bool" checkerFn (jfieldToAsArg <$> fields)
+      $ [ objTy <> " tmp = " <> objName <> "(" <> joinWith ", " args <> ");" ]
+      -- <> wrapTryCatch
+      
+      -- [ "throw('SzThenUnSz fail for "]
+      
+      <> [ "assert(tmp == " <> objName <> "::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());" ]
+      <> [ "return true;" ]
+
+  objTy = jTyToAsTy (JObject o)
+
+  args = fields <#> \(JField n _) -> n
+
+  allTestArgs = genTestArgs fields
+
+  mainDecl =
+    wrapFunction "bool" fnName []
+      $ ( (\testArgs -> checkerFn <> "(" <> testArgs <> ");")
+            <$> allTestArgs
+        )
+      <> [ "return true;" ]
+
+  ls = intercalate ln [ checkerDecl, mainDecl ]

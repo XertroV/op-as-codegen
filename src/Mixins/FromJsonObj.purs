@@ -1,18 +1,22 @@
 module Mixins.FromJsonObj where
 
 import Prelude
+
 import AsTypes (jTyToAsTy)
 import CodeLines (comment, indent, toPropFields)
 import Data.Array (foldl, zip)
 import Data.Maybe (Maybe(..))
 import Data.Tuple (Tuple(..))
+import Mixins.AllMixins (_MX_FROM_JSON_OBJ_NAME)
+import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Types (Mixin)
 import Types (JField(..), JType(..), JsonObj(..))
 
 mxFromJsonObj :: Mixin
 mxFromJsonObj =
-  { name: "From JSON Object"
-  , requires: ["DefaultProps"]
+  { name: _MX_FROM_JSON_OBJ_NAME
+  , requires: [ mxDefaultProps.name ]
+  , comprisingRequires: []
   , methods:
       Just
         $ \(JsonObj name fields) ->
@@ -21,6 +25,7 @@ mxFromJsonObj =
               <> [ "}" ]
   , properties: Nothing
   , namespace: Nothing
+  , tests: Nothing
   }
 
 fromJsonBody ∷ Array JField → Array String

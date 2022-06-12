@@ -1,35 +1,44 @@
-module Gen.Class where
+module Gen.Class
+  ( AsClass
+  , jsonObjToClass
+  ) where
 
 import CodeLines
-import Prelude
-import Data.Array (foldl, intercalate)
 import Mixins
+import Prelude
+import Data.Array (all, elem, foldl, intercalate)
+import Data.Foldable (and)
 import Mixins.Types (Mixin)
+import Partial.Unsafe (unsafeCrashWith)
 import Types (JsonObj(..))
 
-jsonObjToClass :: JsonObj -> (Array Mixin) -> String
-jsonObjToClass obj@(JsonObj name fields) mixins = rootStr
+type AsClass
+  = { mainFile :: String, testFile :: String, mixins :: Array Mixin, name :: String }
+
+jsonObjToClass :: JsonObj -> Array AsClass -> (Array Mixin) -> AsClass
+jsonObjToClass obj@(JsonObj name _fields) comprisingClasses mixins = if mixinsCheckComprising name mixins comprisingClasses then { mainFile, testFile, mixins, name } else unsafeCrashWith "mixinCheckComprising error (note: it should crash first)"
   where
-  rootStr = intercalate "\n" $ clsStart name <> clsBody <> clsEnd <> ln <> mixinNamespaces
+  -- todo: check that comprisingClasses satisfy requirements of mixins (e.g., OpEq will require that any comprisingClasses implement OpEq)
+  mainFile = intercalate "\n" $ clsStart name <> clsBody <> clsEnd <> ln <> mixinNamespaces
+
+  testFile = intercalate "\n" mixinTests
 
   clsBody = indent 1 (bodyLines :: Array String)
 
   bodyLines =
-    comment "Properties" <> clsProps <> mixinProps <> ln
-      <> comment "Constructor"
-      <> clsConstructor
-      <> ln
-      <> mixinMethods
+    mixinProps <> ln
+      <> mixinMethods.ls
 
-  -- intercalate ln (foldl (addMixinMethods obj) { out: [], priorMixins: [] } mixins).out
   mixinMethods = runMixinMethods obj mixins
 
   mixinProps = runMixinProperties obj mixins
 
   mixinNamespaces = runMixinNamespaces obj mixins
 
-  propFields = toPropFields fields
+  mixinTests = runMixinTests mixinMethods.mixinsRun obj mixins
 
-  clsProps = mkClsProp <$> propFields
-
-  clsConstructor = mkClsConstructor name fields
+-- | check that comprisingClasses satisfy predicates of mixins
+mixinsCheckComprising :: String -> Array Mixin -> Array AsClass -> Boolean
+mixinsCheckComprising className mixins comprisingClasses = and $ [ checkMixin ] <*> mixins <*> comprisingClasses
+  where
+  checkMixin mixin cc = and $ mixin.comprisingRequires <#> (\req -> if elem req ((_.name) <$> cc.mixins) then true else unsafeCrashWith ("Class " <> className <> " uses mixin " <> mixin.name <> " which requires that comprising classes implement the " <> req <> " mixin, " <> cc.name <> " does not."))

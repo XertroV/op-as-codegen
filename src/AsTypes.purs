@@ -1,7 +1,8 @@
 module AsTypes where
 
 import Prelude
-import Types (JType(..))
+import Partial.Unsafe (unsafeCrashWith)
+import Types (JType(..), JsonObj(..))
 
 -- | Angelscript equiv of json types
 -- todo: add uint support
@@ -14,11 +15,11 @@ jTyToAsTy JString = "string"
 
 jTyToAsTy JNumber = "float"
 
-jTyToAsTy JNull = "NULL BAD"
+jTyToAsTy JNull = unsafeCrashWith "jTyToAsTy NULL BAD"
 
-jTyToAsTy (JArray _) = "ARRAY TODO"
+jTyToAsTy (JArray t) = "array<" <> jTyToAsTy t <> ">"
 
-jTyToAsTy (JObject obj) = "OBJECT TODO"
+jTyToAsTy (JObject (JsonObj n _fs)) = n <> "@"
 
 -- | sometimes we want function arguments to be slightly modified versions of what they'd be otherwise, e.g., const string &in
 jTyToFuncArg :: JType -> String

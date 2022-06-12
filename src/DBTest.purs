@@ -1,17 +1,27 @@
-module DBTest where
+module DBTest
+  ( challengeCls
+  , codecChallenge
+  , codecChallengeDb
+  , codecChallengeDbCls
+  ) where
 
 import AsTypes
 import CodeLines
 import Data.String
 import Data.Tuple
+import Gen.Class
 import Mixins
 import Mixins.Types
 import Prelude
 import Types
+import Mixins.CommonTesting (mxCommonTesting)
+import Mixins.DefaultCons (mxDefaultCons)
+import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.FromJsonObj (mxFromJsonObj)
 import Mixins.Getters (mxGetters)
+import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
-import Gen.Class
+import Mixins.ToJsonObj (mxToJsonObj)
 
 -- codecChallenge =
 --   CA.object "Challenge"
@@ -35,8 +45,8 @@ codecChallenge =
     # field "leaderboardId" JUint
 
 -- safeInt = CA.string
-challengeCls ∷ String
-challengeCls = jsonObjToClass codecChallenge [ mxDefaultProps, mxDefaultCons, mxFromJsonObj, mxGetters, mxRowSz ]
+challengeCls ∷ AsClass
+challengeCls = jsonObjToClass codecChallenge [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxFromJsonObj, mxToJsonObj, mxGetters, mxOpEq, mxRowSz ]
 
 codecChallengeDb :: JsonObj
 codecChallengeDb =
@@ -44,5 +54,5 @@ codecChallengeDb =
     # field "challenges"
         (JArray (JObject codecChallenge))
 
-codecChallengeDbCls :: String
-codecChallengeDbCls = jsonObjToClass codecChallengeDb []
+codecChallengeDbCls :: AsClass
+codecChallengeDbCls = jsonObjToClass codecChallengeDb [ challengeCls ] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxFromJsonObj, mxToJsonObj, mxGetters, mxOpEq, mxRowSz ]
