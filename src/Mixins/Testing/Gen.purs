@@ -28,9 +28,9 @@ nTestsToRun = 20
 
 -- for the moment use a deterministic seed so that we know what inputs we get
 -- initSeed = round $ (unsafePerformEffect $ (unwrap <<< unInstant) <$> now)
-initSeed ∷ Int
-initSeed = 1
-
+-- initSeed ∷ Int
+-- initSeed = 1
+--
 genTests :: TestGenerators -> RunTestGenerators
 genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> testResult
   where
@@ -44,8 +44,10 @@ genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> 
     [ "bool unitTestResults_" <> name <> "_" <> noSpaces ms.currMixin <> " = true" ]
       <> indent 1 ((allTestsNames <#> \fnName -> "&& " <> fnName <> "()") <> [ ";" ])
 
-genTestArgs :: JFields -> Array String
-genTestArgs fields = tailRec (genTestArgLoop nTestsToRun fields) { gs: { newSeed: mkSeed initSeed, size: 10 }, out: [] }
+-- | each mixin calling genTestArgs should choose a different initSeed Int.
+-- | Smash the numpad or use the current unix time if you need a suggestion.
+genTestArgs :: Int -> JFields -> Array String
+genTestArgs initSeed fields = tailRec (genTestArgLoop nTestsToRun fields) { gs: { newSeed: mkSeed initSeed, size: 10 }, out: [] }
 
 type GenTestArgLoopState
   = { gs :: GenState, out :: Array String }

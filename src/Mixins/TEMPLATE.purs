@@ -48,7 +48,7 @@ mxTEMPLATE =
           $ (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
           <$> allTestArgs
 
-      allTestArgs = genTestArgs fields
+      allTestArgs = genTestArgs 1 fields
 
       objTy = jTyToAsTy (JObject o)
 

@@ -193,7 +193,7 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
 
   args = fields <#> \(JField n _) -> n
 
-  allTestArgs = genTestArgs fields
+  allTestArgs = genTestArgs 2 fields
 
   mainDecl =
     wrapMainTest fnName

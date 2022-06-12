@@ -60,7 +60,7 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
       $ (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
       <$> allTestArgs
 
-  allTestArgs = genTestArgs fs
+  allTestArgs = genTestArgs 1 fs
 
   objTy = jTyToAsTy (JObject o)
 
