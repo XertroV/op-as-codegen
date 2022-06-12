@@ -1,7 +1,6 @@
 module Mixins.FromJsonObj where
 
 import Prelude
-
 import AsTypes (jTyToAsTy)
 import CodeLines (comment, indent, toPropFields)
 import Data.Array (foldl, zip)
@@ -20,7 +19,7 @@ mxFromJsonObj =
   , methods:
       Just
         $ \(JsonObj name fields) ->
-            [ name <> "(Json::Value j) {" ]
+            [ name <> "(const Json::Value &in j) {" ]
               <> indent 1 (fromJsonBody fields)
               <> [ "}" ]
   , properties: Nothing
