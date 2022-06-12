@@ -23,17 +23,6 @@ import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToJsonObj (mxToJsonObj)
 
--- codecChallenge =
---   CA.object "Challenge"
---     ( CAR.record
---         { id: CA.int
---         , uid: CA.string
---         , name: CA.string
---         , startDate: CA.int
---         , endDate: CA.int
---         , leaderboardId: CA.int
---         }
---     )
 codecChallenge ∷ JsonObj
 codecChallenge =
   object "Challenge"
@@ -44,7 +33,6 @@ codecChallenge =
     # field "endDate" JUint
     # field "leaderboardId" JUint
 
--- safeInt = CA.string
 challengeCls ∷ AsClass
 challengeCls = jsonObjToClass codecChallenge [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxFromJsonObj, mxToJsonObj, mxGetters, mxOpEq, mxRowSz ]
 
