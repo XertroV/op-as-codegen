@@ -8,7 +8,7 @@ class ChallengeDB {
   }
   
   /* Methods // Mixin: From JSON Object */
-  ChallengeDB(Json::Value j) {
+  ChallengeDB(const Json::Value &in j) {
     Json::Value _tmp_challenges = j["challenges"];
     this._challenges = array<Challenge@>(_tmp_challenges.Length);
     j["challenges"];

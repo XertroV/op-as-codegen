@@ -18,7 +18,7 @@ class Challenge {
   }
   
   /* Methods // Mixin: From JSON Object */
-  Challenge(Json::Value j) {
+  Challenge(const Json::Value &in j) {
     this._id = j["id"];
     this._uid = j["uid"];
     this._name = j["name"];
