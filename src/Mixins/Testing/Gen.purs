@@ -2,6 +2,7 @@ module Mixins.Testing.Gen where
 
 import Prelude
 import CodeLines (indent, ln)
+import Consts (nTestsToRun)
 import Control.Monad.Rec.Class (Step(..), tailRec)
 import Data.Array (foldl, intercalate)
 import Data.Array as A
@@ -21,10 +22,7 @@ import Random.LCG (mkSeed)
 import Test.QuickCheck (arbitrary)
 import Test.QuickCheck.Gen (Gen, GenState, chooseInt, runGen, suchThat, vectorOf)
 import Types (JField(..), JFields, JType(..), JsonObj(..), Lines)
-import Utils (noSpaces)
-
-nTestsToRun :: Int
-nTestsToRun = 20
+import Utils (noSpaces, intToStr, floatToStr)
 
 -- for the moment use a deterministic seed so that we know what inputs we get
 -- initSeed = round $ (unsafePerformEffect $ (unwrap <<< unInstant) <$> now)
@@ -61,12 +59,6 @@ genTestArgLoop nTimes fields { gs, out }
 
 arbitraryFromFields :: JFields -> Gen (String)
 arbitraryFromFields fields = (joinWith ", ") <$> (sequence $ arbitraryFromJType <$> (\(JField _n t) -> t) <$> fields)
-
-intToStr ∷ Int → String
-intToStr = toStringAs decimal
-
-floatToStr ∷ Number → String
-floatToStr = toString
 
 arbitraryFromJType :: JType -> Gen String
 arbitraryFromJType JInt = (arbitrary :: Gen Int) <#> intToStr

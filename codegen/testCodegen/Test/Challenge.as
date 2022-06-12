@@ -52,7 +52,29 @@ namespace Test_Challenge {
     Test_CheckProps_Challenge(773592, "", "蔟Ι龲ꇗ⡔辅⭉", 454352, 78530, 529329);
     Test_CheckProps_Challenge(83328, "쐭ғ㒴퟽ᗦ㴟봨ￊ", "", 518141, 153623, 2628);
     Test_CheckProps_Challenge(772861, "", "ᔻἚ", 833723, 27085, 506361);
-    print('\\$2f6Unit Test Success: UnitTest_Challenge_Getters');
+    Test_CheckProps_Challenge(903157, "༏큝㫓", "ힼ㼓", 808460, 108758, 772472);
+    Test_CheckProps_Challenge(107812, "谥缃ಟ킐⁮ꕕ뉲�工", "۟弜쌘㙛핺﫽㑪㿊", 694416, 783971, 913764);
+    Test_CheckProps_Challenge(883796, "Ҹꃈ䮣ᬬ", "㻗﬽팊�슍郫홟㕤", 497196, 724861, 452001);
+    Test_CheckProps_Challenge(447526, "狥Ü매剟䝛튟뿎ວ", "聹匂仰䭬鹃ȟ薲", 885581, 948170, 333021);
+    Test_CheckProps_Challenge(731067, "⧞픭蚏ࣼ䪞㧯䦴귏", "㈾នﯸ滣轁竁怒ৈ", 623470, 438389, 805260);
+    Test_CheckProps_Challenge(752226, "פ", "�淲ﺆ跏㜤샱镧畉弐", 901310, 771561, 357901);
+    Test_CheckProps_Challenge(952652, "妐檣袿칉谜訷໰胖", "뚪䬹칭烈罽췜歵ȧㄚ", 582898, 482768, 925363);
+    Test_CheckProps_Challenge(355531, "ጢ", "豺댜￰", 407047, 990522, 133511);
+    Test_CheckProps_Challenge(930210, "嵐䓸瀓䳻Ჵ﨑", "", 147555, 303027, 462299);
+    Test_CheckProps_Challenge(965014, "㼘ⵏ骗", "⋵隸꫍痈", 666968, 969195, 468413);
+    Test_CheckProps_Challenge(455407, "ꭢធ沈", "ꏛ", 575293, 650559, 361945);
+    Test_CheckProps_Challenge(900907, "啕ኞ衍蛜", "䃿fྔ㐔ᡄ鷂", 409258, 487252, 847881);
+    Test_CheckProps_Challenge(974829, "揉筢㲸", "穂Hᡶ⛥杭貴溪৥롰꬜", 717791, 449432, 307209);
+    Test_CheckProps_Challenge(349405, "啞婓菨뻟௎餵긽榈", "溊䷡꬈फ़Ը㌲狊⵪诨⥇", 684845, 571451, 914746);
+    Test_CheckProps_Challenge(375598, "밃괦㮜䔐炒悄௶揸ꥒ叵", "贙殺뱆ᩖ彐", 490417, 744440, 498609);
+    Test_CheckProps_Challenge(237947, "", "⿳훿☸꤫睊", 605257, 915086, 489560);
+    Test_CheckProps_Challenge(284881, "㗻壺旻", "ದ鴆䟎他�", 412232, 772864, 760754);
+    Test_CheckProps_Challenge(963563, "�䅴", "阊额禱鍾齪床὏勐", 437881, 957451, 439545);
+    Test_CheckProps_Challenge(819074, "헽⇐춻嶻㐙㷀뵌慔", "⃙㾥괶", 516520, 961253, 905806);
+    Test_CheckProps_Challenge(387647, "쩢姽ἆ奨", "ꌗ枚逳剭ﺏ柙", 282186, 400614, 951189);
+    Test_CheckProps_Challenge(894450, "컏�嚌", "⶯弸", 751600, 82673, 881873);
+    Test_CheckProps_Challenge(44403, "륍虋陱濣灈￨℈⩝ꝶ", "莻ጺ䭉胼ᑝ쨀", 873724, 994918, 343715);
+    print('\\$2f6Unit Test Success: UnitTest_Challenge_Getters (42 tests)');
     return true;
   }
   
@@ -88,7 +110,29 @@ namespace Test_Challenge {
     Test_SzThenUnSz_Check(859526, "᭬퇠至៳", "샩愍꩸㸵刪", 606450, 478495, 271620);
     Test_SzThenUnSz_Check(651952, "疧ꅦ", "", 116699, 616919, 769796);
     Test_SzThenUnSz_Check(544943, "䂁", "ᡊ︆᤾℟仅䃜쪪㌲", 876904, 384560, 271358);
-    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_Challenge');
+    Test_SzThenUnSz_Check(595771, "䶂簜饋᲏඿", "䷗鷪묡拠銢᜼錢", 450685, 913447, 380426);
+    Test_SzThenUnSz_Check(542068, "ꇖⲽ", "", 884816, 252573, 449721);
+    Test_SzThenUnSz_Check(421428, "ຶꔽﾜᵏ䒴", "譥횓ƹ", 360995, 43735, 133754);
+    Test_SzThenUnSz_Check(771161, "琧", "쎆㊆⯟骙䁣", 983651, 768217, 477588);
+    Test_SzThenUnSz_Check(555890, "麃犿", "陣띰摼푔⼧", 487546, 504451, 808646);
+    Test_SzThenUnSz_Check(898762, "ﴋᮝ", "▫윁벼", 233228, 57986, 455286);
+    Test_SzThenUnSz_Check(886316, "댢㌠商ᅾ", "箯浔陳᳚乹ﻺ鮷囫я", 482962, 745915, 315247);
+    Test_SzThenUnSz_Check(912496, "�桮럫憍ᕝ芜쎡韠", "", 577624, 959424, 779544);
+    Test_SzThenUnSz_Check(141403, "", "쒿№妝�並㈛贆", 930027, 532104, 633576);
+    Test_SzThenUnSz_Check(854263, "똣궆暱여군햛", "ﷺ⋏晆뗭", 27512, 645217, 635672);
+    Test_SzThenUnSz_Check(394180, "႙趹攘ꆓ믔ы", "낊㮄瓲", 680346, 153507, 335942);
+    Test_SzThenUnSz_Check(779011, "鱫댫", "鉠", 491930, 695761, 478307);
+    Test_SzThenUnSz_Check(405974, "仚饩�Ꮚ혹霭䞓盅", "鳊鍽扐肑レ", 896003, 238891, 267100);
+    Test_SzThenUnSz_Check(216236, "ﶾ鞞㉪屹팑", "뒧", 416887, 193882, 131058);
+    Test_SzThenUnSz_Check(392530, "�", "䞓㕋", 829491, 742412, 433578);
+    Test_SzThenUnSz_Check(786049, "婌ਠ愤섉韭쟰튤⟫", "췭栴省ᨱ흴뒭㺡࣊", 159725, 498260, 41159);
+    Test_SzThenUnSz_Check(178803, "蛱왓꿨᳁ْଠ墻", "忧ⷾ챲퉗溕㹅灜桩弜", 727940, 382451, 621003);
+    Test_SzThenUnSz_Check(307142, "尷", "놲싵뇵쯷", 581686, 977267, 266241);
+    Test_SzThenUnSz_Check(93150, "ꇑﾷꃦ", "␬", 953518, 283816, 334966);
+    Test_SzThenUnSz_Check(17733, "Ⱄㄺ꛼㻔㴕", "窗䊨㎠๥Ⲣ⪒冁", 896342, 154401, 373048);
+    Test_SzThenUnSz_Check(125776, "ꨟ泒擵䆲罋婬", "ૐ", 363891, 810147, 786060);
+    Test_SzThenUnSz_Check(403152, "옮伴ꁧⓚ紝쾲铃켴돺", "ᚡ窓", 576027, 20949, 788899);
+    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_Challenge (42 tests)');
     return true;
   }
   

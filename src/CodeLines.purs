@@ -7,6 +7,8 @@ import Data.Array (intercalate, replicate, zip)
 import Data.String (joinWith)
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
+import Consts (nTestsToRun)
+import Utils (intToStr)
 
 ln ∷ Lines
 ln = [ "" ]
@@ -66,8 +68,8 @@ toPropFields :: Array JField -> Array JField
 toPropFields fields = fieldPrepend "_" <$> fields
 
 -- | testing helper
-printTestSuccess ∷ String -> String
-printTestSuccess fnName = "print('\\\\$2f6Unit Test Success: " <> fnName <> "');"
+printTestSuccess ∷ String -> Int -> String
+printTestSuccess fnName nTests = "print('\\\\$2f6Unit Test Success: " <> fnName <> " (" <> intToStr nTests <> " tests)');"
 
 {-
 
@@ -89,7 +91,7 @@ wrapFunction :: String -> String -> Lines -> Lines -> Lines
 wrapFunction ret name args = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")")
 
 wrapMainTest ∷ String → Array String → Array String
-wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name, "return true;" ]
+wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return true;" ]
 
 wrapForLoop ∷ String → Lines → Lines
 wrapForLoop p = wrapInitedScope ("for (" <> p <> ")")
