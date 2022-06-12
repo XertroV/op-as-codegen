@@ -6,14 +6,14 @@ import AsTypes
 import Mixins.Types
 import Prelude
 import Types
-import CodeLines (fieldsToAsArgs, indent, jfieldToAsArg, ln, wrapFunction, wrapIf)
+import CodeLines (fieldsToAsArgs, indent, jfieldToAsArg, ln, wrapFunction, wrapIf, wrapMainTest)
 import Data.Array (elem, intercalate)
 import Data.Maybe (Maybe(..))
 import Data.String (joinWith)
 import Mixins.AllMixins (_MX_GETTERS_NAME, _MX_ROW_SZ_NAME)
 import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultProps (mxDefaultProps)
-import Mixins.Testing.Gen (genTestArgs, genTests, printTestSuccess)
+import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (TestGenerators, TestGenerator)
 import SzAsTypes (isJTypeStrWrapped)
 
@@ -47,7 +47,7 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
 
   fnCheckerName = "Test_CheckProps_" <> objName
 
-  fnName = "UnitTest_Main_" <> objName
+  fnName = "UnitTest_" <> objName <> "_" <> ms.currMixin
 
   checkerDecl =
     wrapFunction "bool" fnCheckerName (jfieldToAsArg <$> fs)
@@ -56,11 +56,9 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
       <> [ "return true;" ]
 
   mainTestDecl =
-    wrapFunction "bool" fnName []
-      $ ( (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
-            <$> allTestArgs
-        )
-      <> [ printTestSuccess fnName, "return true;" ]
+    wrapMainTest fnName
+      $ (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
+      <$> allTestArgs
 
   allTestArgs = genTestArgs fs
 

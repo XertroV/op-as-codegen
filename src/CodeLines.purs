@@ -65,6 +65,10 @@ fieldPrepend s (JField n t) = JField (s <> n) t
 toPropFields :: Array JField -> Array JField
 toPropFields fields = fieldPrepend "_" <$> fields
 
+-- | testing helper
+printTestSuccess ∷ String -> String
+printTestSuccess fnName = "print('\\\\$2f6Unit Test Success: " <> fnName <> "');"
+
 {-
 
   WRAPPERS FOR BLOCKS, e.g., namespaces, classes, ifs, while/for loops, etc.
@@ -83,6 +87,9 @@ wrapInitedScope preScopeInit lines = [ preScopeInit <> " {" ] <> indent 1 lines 
 
 wrapFunction :: String -> String -> Lines -> Lines -> Lines
 wrapFunction ret name args = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")")
+
+wrapMainTest ∷ String → Array String → Array String
+wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name, "return true;" ]
 
 wrapForLoop ∷ String → Lines → Lines
 wrapForLoop p = wrapInitedScope ("for (" <> p <> ")")

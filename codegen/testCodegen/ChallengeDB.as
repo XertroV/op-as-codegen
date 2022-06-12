@@ -62,7 +62,6 @@ namespace ChallengeDB {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
-    trace('FRS input: "' + str + '"');
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);

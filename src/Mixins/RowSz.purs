@@ -5,7 +5,7 @@ module Mixins.RowSz
 
 import Prelude
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapIf, wrapNamespace, wrapTryCatch, wrapWhileLoop)
+import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, intersperse)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -107,7 +107,7 @@ fromRowString name fields =
     $ [ "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
       , "uint chunkLen;"
-      , "trace('FRS input: \"' + str + '\"');"
+      -- , "trace('FRS input: \"' + str + '\"');"
       ]
     <> intercalate [] (getNext <$> fields)
     <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
@@ -196,10 +196,8 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
   allTestArgs = genTestArgs fields
 
   mainDecl =
-    wrapFunction "bool" fnName []
-      $ ( (\testArgs -> checkerFn <> "(" <> testArgs <> ");")
-            <$> allTestArgs
-        )
-      <> [ "return true;" ]
+    wrapMainTest fnName
+      $ (\testArgs -> checkerFn <> "(" <> testArgs <> ");")
+      <$> allTestArgs
 
   ls = intercalate ln [ checkerDecl, mainDecl ]

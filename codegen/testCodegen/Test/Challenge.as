@@ -7,6 +7,10 @@ namespace Test_Challenge {
     }
   }
   
+  void debug_trace(const string &in msg) {
+    trace(msg);
+  }
+  
   bool UnitTest_Common_Nop() {
     return true;
   }
@@ -27,7 +31,7 @@ namespace Test_Challenge {
     return true;
   }
   
-  bool UnitTest_Main_Challenge() {
+  bool UnitTest_Challenge_Getters() {
     Test_CheckProps_Challenge(394184, "馩", "躮", 980813, 825164, 378662);
     Test_CheckProps_Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441);
     Test_CheckProps_Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612);
@@ -48,12 +52,12 @@ namespace Test_Challenge {
     Test_CheckProps_Challenge(773592, "", "蔟Ι龲ꇗ⡔辅⭉", 454352, 78530, 529329);
     Test_CheckProps_Challenge(83328, "쐭ғ㒴퟽ᗦ㴟봨ￊ", "", 518141, 153623, 2628);
     Test_CheckProps_Challenge(772861, "", "ᔻἚ", 833723, 27085, 506361);
-    print('\\$2f6Unit Test Success: UnitTest_Main_Challenge');
+    print('\\$2f6Unit Test Success: UnitTest_Challenge_Getters');
     return true;
   }
   
   bool unitTestResults_Challenge_Getters = true
-    && UnitTest_Main_Challenge()
+    && UnitTest_Challenge_Getters()
     ;
   
   /* Test // Mixin: Row Serialization */
@@ -84,6 +88,7 @@ namespace Test_Challenge {
     Test_SzThenUnSz_Check(773592, "", "蔟Ι龲ꇗ⡔辅⭉", 454352, 78530, 529329);
     Test_SzThenUnSz_Check(83328, "쐭ғ㒴퟽ᗦ㴟봨ￊ", "", 518141, 153623, 2628);
     Test_SzThenUnSz_Check(772861, "", "ᔻἚ", 833723, 27085, 506361);
+    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_Challenge');
     return true;
   }
   

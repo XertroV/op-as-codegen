@@ -99,7 +99,6 @@ namespace Challenge {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
-    trace('FRS input: "' + str + '"');
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint id = Text::ParseInt(chunk);

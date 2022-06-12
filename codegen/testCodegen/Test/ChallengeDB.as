@@ -7,6 +7,10 @@ namespace Test_ChallengeDB {
     }
   }
   
+  void debug_trace(const string &in msg) {
+    trace(msg);
+  }
+  
   bool UnitTest_Common_Nop() {
     return true;
   }
@@ -22,7 +26,7 @@ namespace Test_ChallengeDB {
     return true;
   }
   
-  bool UnitTest_Main_ChallengeDB() {
+  bool UnitTest_ChallengeDB_Getters() {
     Test_CheckProps_ChallengeDB({Challenge(425650, "拣䵱䌏�㯂ᓭ", "뽥뤎祰ᇡᒧឝ밇", 999977, 502172, 837902), Challenge(425498, "", "豈", 224303, 788874, 44714), Challenge(49504, "握", "㷗᤾虝䰒ஷ", 149817, 853156, 438676), Challenge(605730, "�⿵枵ⴾ㬪●ꜛ", "彲⏈", 265299, 476140, 324910), Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612), Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441), Challenge(394184, "馩", "躮", 980813, 825164, 378662)});
     Test_CheckProps_ChallengeDB({Challenge(611458, "᥾鼾㮦窘ᤲ쯳枦섍鐷痚", "ୣ筃痒胊의䉶杻�죝", 392980, 565032, 395859), Challenge(966274, "옡뭱過ଚ㩕", "뙱䕂륦홰떌䱇盰쩑", 428390, 96314, 704214), Challenge(37504, "弊䮷⃷쨗蝢ᳳ쁼", "㶑ꔘₜ齬聎雄攩澴", 135571, 428782, 785817), Challenge(945399, "", "珐瀮㍿웦쭜䢝䃙�׭", 585012, 264138, 345680), Challenge(182859, "缲䁏뤥蹪鈤", "ᨴ㪂ꦽ㎀꿈�ᴶ๏㕭", 680656, 509010, 703391), Challenge(457496, "揘䢊儞祹㚏풓", "쿽騍큋", 984066, 544625, 205984)});
     Test_CheckProps_ChallengeDB({Challenge(883796, "Ҹꃈ䮣ᬬ", "㻗﬽팊�슍郫홟㕤", 497196, 724861, 452001), Challenge(107812, "谥缃ಟ킐⁮ꕕ뉲�工", "۟弜쌘㙛핺﫽㑪㿊", 694416, 783971, 913764), Challenge(903157, "༏큝㫓", "ힼ㼓", 808460, 108758, 772472), Challenge(772861, "", "ᔻἚ", 833723, 27085, 506361), Challenge(83328, "쐭ғ㒴퟽ᗦ㴟봨ￊ", "", 518141, 153623, 2628), Challenge(773592, "", "蔟Ι龲ꇗ⡔辅⭉", 454352, 78530, 529329), Challenge(315253, "森ⶍභࢆ⑧", "沕К߄뽇㪢㸿ᓮₙ", 22089, 401867, 691035), Challenge(390076, "℃벷쨭욢", "鶧ㆌ痒㇌⋛䨗ও�", 181358, 266408, 312816), Challenge(330938, "Ꮍ⁭豹", "릈䨕＠߇₹紇秉ⵑ", 982620, 978653, 334968)});
@@ -43,12 +47,12 @@ namespace Test_ChallengeDB {
     Test_CheckProps_ChallengeDB({Challenge(190240, "瓤��", "ᠶ墆㖤᠌", 382032, 776728, 824267), Challenge(677003, "ﺶ솊姿㋿", "옐皈酕", 843069, 12788, 195689), Challenge(331825, "ȃ䞋", "�犏潯汄蹛㪵", 188371, 676238, 250613), Challenge(433054, "", "廑소", 456430, 329261, 877241), Challenge(193077, "ꭉ贁ࡄ", "鵓蛜", 900509, 901532, 995973), Challenge(242199, "엂凛䋶漢訩ஃ௞굾፻", "㠆ꧻ튎", 703747, 346496, 45425)});
     Test_CheckProps_ChallengeDB({Challenge(511498, "蛱弰뀿屑뿏闻✩", "窃牾塳゚", 69358, 118685, 676131), Challenge(29990, "ꢍ彝⊌헥⤒娸", "ꭹꙅ轄绰", 644394, 886014, 412603), Challenge(680097, "稣㴺郘", "ਖ਼䞯ኡ趚謘뛟㰜뤏", 180786, 312131, 175202)});
     Test_CheckProps_ChallengeDB({Challenge(85457, "둷㼚", "耊搯ᡔ伴犎㚌젻ᦳ", 705480, 521770, 322718), Challenge(45946, "�喬羊寓칪ꝏ湠3왧", "ꮄ㱾暍", 986881, 71514, 999909), Challenge(11730, "κ훡楃ꤢ㟽灀῟", "㿕롴䭄睌棫楺龺", 730875, 88552, 968827), Challenge(72350, "�ᵤ薝焷燀川蠪컉", "", 432224, 866985, 933327), Challenge(852132, "鲤닐↕屩芧卥㉥ꛠꅨ", "멚", 406187, 100389, 591878), Challenge(982442, "ꙺሃ蹬≩圽욗坧", "ឯ咇斁榇싰䞵ᖧ", 529675, 878384, 362867), Challenge(104943, "릃⃶㨀幺՜硃Ј㷒", "Ḁ�孕", 163465, 705565, 714278), Challenge(17839, "", "㠸ꒉ넓ꈱ", 244588, 41745, 677737)});
-    print('\\$2f6Unit Test Success: UnitTest_Main_ChallengeDB');
+    print('\\$2f6Unit Test Success: UnitTest_ChallengeDB_Getters');
     return true;
   }
   
   bool unitTestResults_ChallengeDB_Getters = true
-    && UnitTest_Main_ChallengeDB()
+    && UnitTest_ChallengeDB_Getters()
     ;
   
   /* Test // Mixin: Row Serialization */
@@ -79,6 +83,7 @@ namespace Test_ChallengeDB {
     Test_SzThenUnSz_Check({Challenge(190240, "瓤��", "ᠶ墆㖤᠌", 382032, 776728, 824267), Challenge(677003, "ﺶ솊姿㋿", "옐皈酕", 843069, 12788, 195689), Challenge(331825, "ȃ䞋", "�犏潯汄蹛㪵", 188371, 676238, 250613), Challenge(433054, "", "廑소", 456430, 329261, 877241), Challenge(193077, "ꭉ贁ࡄ", "鵓蛜", 900509, 901532, 995973), Challenge(242199, "엂凛䋶漢訩ஃ௞굾፻", "㠆ꧻ튎", 703747, 346496, 45425)});
     Test_SzThenUnSz_Check({Challenge(511498, "蛱弰뀿屑뿏闻✩", "窃牾塳゚", 69358, 118685, 676131), Challenge(29990, "ꢍ彝⊌헥⤒娸", "ꭹꙅ轄绰", 644394, 886014, 412603), Challenge(680097, "稣㴺郘", "ਖ਼䞯ኡ趚謘뛟㰜뤏", 180786, 312131, 175202)});
     Test_SzThenUnSz_Check({Challenge(85457, "둷㼚", "耊搯ᡔ伴犎㚌젻ᦳ", 705480, 521770, 322718), Challenge(45946, "�喬羊寓칪ꝏ湠3왧", "ꮄ㱾暍", 986881, 71514, 999909), Challenge(11730, "κ훡楃ꤢ㟽灀῟", "㿕롴䭄睌棫楺龺", 730875, 88552, 968827), Challenge(72350, "�ᵤ薝焷燀川蠪컉", "", 432224, 866985, 933327), Challenge(852132, "鲤닐↕屩芧卥㉥ꛠꅨ", "멚", 406187, 100389, 591878), Challenge(982442, "ꙺሃ蹬≩圽욗坧", "ឯ咇斁榇싰䞵ᖧ", 529675, 878384, 362867), Challenge(104943, "릃⃶㨀幺՜硃Ј㷒", "Ḁ�孕", 163465, 705565, 714278), Challenge(17839, "", "㠸ꒉ넓ꈱ", 244588, 41745, 677737)});
+    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_ChallengeDB');
     return true;
   }
   

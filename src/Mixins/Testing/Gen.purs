@@ -83,6 +83,3 @@ arbitraryFromJType (JArray t) = (chooseInt 0 10) >>= (\i -> vectorOf i (arbitrar
 arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(" <> fs <> ")")
   where
   gens = arbitraryFromFields fields
-
-printTestSuccess ∷ String -> String
-printTestSuccess fnName = "print('\\\\$2f6Unit Test Success: " <> fnName <> "');"

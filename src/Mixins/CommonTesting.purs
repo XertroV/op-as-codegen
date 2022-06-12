@@ -26,8 +26,13 @@ commonTesting _ _ = { fnName, ls }
   where
   fnName = "UnitTest_Common_Nop"
 
-  ls = intercalate ln [ assertDecl, wrapFunction "bool" fnName [] [ "return true;" ] ]
+  ls = intercalate ln [ assertDecl, debugTraceDecl, wrapFunction "bool" fnName [] [ "return true;" ] ]
 
   assertDecl =
     wrapFunction "void" "assert" [ "const bool condition", "const string &in msg" ]
       $ wrapIf "!condition" [ "throw('Assert failed: ' + msg);" ]
+
+  debugTraceDecl =
+    wrapFunction "void" "debug_trace" [ "const string &in msg" ]
+      -- [] -- do nothing
+      [ "trace(msg);" ] -- print the trace
