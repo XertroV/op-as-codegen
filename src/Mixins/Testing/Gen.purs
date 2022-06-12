@@ -26,8 +26,10 @@ import Utils (noSpaces)
 nTestsToRun :: Int
 nTestsToRun = 20
 
+-- for the moment use a deterministic seed so that we know what inputs we get
+-- initSeed = round $ (unsafePerformEffect $ (unwrap <<< unInstant) <$> now)
 initSeed ∷ Int
-initSeed = round $ (unsafePerformEffect $ (unwrap <<< unInstant) <$> now)
+initSeed = 1
 
 genTests :: TestGenerators -> RunTestGenerators
 genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> testResult
