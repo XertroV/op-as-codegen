@@ -15,6 +15,8 @@ jTyToAsTy JString = "string"
 
 jTyToAsTy JNumber = "float"
 
+jTyToAsTy JBool = "bool"
+
 jTyToAsTy JNull = unsafeCrashWith "jTyToAsTy NULL BAD"
 
 jTyToAsTy (JArray t) = "array<" <> jTyToAsTy t <> ">"

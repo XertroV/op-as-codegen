@@ -3,11 +3,11 @@ module CodeLines where
 import AsTypes
 import Prelude
 import Types
+import Consts (nTestsToRun)
 import Data.Array (intercalate, replicate, zip)
 import Data.String (joinWith)
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
-import Consts (nTestsToRun)
 import Utils (intToStr)
 
 ln ∷ Lines
@@ -87,10 +87,17 @@ wrapNamespace nsName lines = [ "namespace " <> nsName <> " {" ] <> (indent 1 $ i
 wrapInitedScope :: String -> Lines -> Lines
 wrapInitedScope preScopeInit lines = [ preScopeInit <> " {" ] <> indent 1 lines <> [ "}" ]
 
-wrapFunction :: String -> String -> Lines -> Lines -> Lines
-wrapFunction ret name args = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")")
+wrapFunction :: String -> String -> JFields -> Lines -> AsFunction
+wrapFunction ret name args lines = wrapFunction' ret name (jfieldToAsArg <$> args) lines
 
-wrapMainTest ∷ String → Array String → Array String
+wrapFunction' :: String -> String -> Array String -> Lines -> AsFunction
+wrapFunction' ret name args lines = { decl, call }
+  where
+  decl = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")") lines
+
+  call fields = name <> "(" <> joinWith ", " (getFName <$> fields) <> ")"
+
+wrapMainTest ∷ String → Array String → AsFunction
 wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return true;" ]
 
 wrapForLoop ∷ String → Lines → Lines

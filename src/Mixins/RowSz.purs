@@ -1,11 +1,11 @@
 module Mixins.RowSz
   ( mxRowSz
-  , trs_arrayDefn
+  , trs_arrayFn
   ) where
 
 import Prelude
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
+import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, intersperse)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -18,7 +18,7 @@ import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
 import SzAsTypes (frs_arrayFnName, isJTypeStrWrapped, jValFromStr, jValToStr, trs_arrayFnName)
-import Types (CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines)
+import Types (AsFunction, JField(..), JFields, JType(..), JsonObj(..), Lines, CodeBlocks)
 
 {-|
   The idea is to serialize (sz) into a value-safe format that omits keys and is suitable for an append only DB.
@@ -61,12 +61,12 @@ mxRowSz =
   , requires: [ mxDefaultProps.name, mxCommonTesting.name, mxOpEq.name ]
   , comprisingRequires: []
   , properties: Nothing
-  , methods: Just $ \(JsonObj _objName fields) -> intercalate ln $ [ toRowString fields, trs_wrapStringDefn ] <> allArrayTrsFuncs fields
-  , namespace: Just $ \(JsonObj objName fields) -> wrapNamespace objName $ [ fromRowString objName fields ] <> allArrayFrsFuncs fields
+  , methods: Just $ \(JsonObj _objName fields) -> intercalate ln $ [ (toRowString fields).decl, trs_wrapStringFn.decl ] <> allArrayTrsFuncs fields
+  , namespace: Just $ \(JsonObj objName fields) -> wrapNamespace objName $ [ (fromRowString objName fields).decl ] <> allArrayFrsFuncs fields
   , tests: Just $ genTests rowSzTests
   }
 
-toRowString :: Array JField -> Lines
+toRowString :: Array JField -> AsFunction
 toRowString fields =
   wrapFunction "const string" "ToRowString" []
     $ [ "string ret = \"\";" ]
@@ -78,13 +78,13 @@ toRowString fields =
 appendRet :: JField -> String
 appendRet (JField n t) = "ret += " <> jValToStr t n
 
-trs_wrapStringDefn :: Lines
-trs_wrapStringDefn =
-  wrapFunction "private const string" "TRS_WrapString" [ "const string &in s" ]
+trs_wrapStringFn :: AsFunction
+trs_wrapStringFn =
+  wrapFunction "private const string" "TRS_WrapString" [ JField "s" JString ]
     $ [ "return '(' + s.Length + ':' + s + ')';" ]
 
-trs_arrayDefn :: JType -> Lines
-trs_arrayDefn arrTy =
+trs_arrayFn :: JType -> AsFunction
+trs_arrayFn arrTy =
   mkFunction
     $ [ "string ret = '';" ]
     <> ( wrapForLoop "uint i = 0; i < arr.Length; i++"
@@ -92,18 +92,18 @@ trs_arrayDefn arrTy =
       )
     <> [ "return ret;" ]
   where
-  mkFunction = wrapFunction "private const string" (trs_arrayFnName arrTy) [ "const array<" <> jTyToFuncArg arrTy <> "> &in arr" ]
+  mkFunction = wrapFunction' "private const string" (trs_arrayFnName arrTy) [ "const array<" <> jTyToFuncArg arrTy <> "> &in arr" ]
 
 allArrayTrsFuncs :: JFields -> Array Lines
 allArrayTrsFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrTrsIfArr
   where
-  arrTrsIfArr (JField _n (JArray t)) = trs_arrayDefn t
+  arrTrsIfArr (JField _n (JArray t)) = (trs_arrayFn t).decl
 
   arrTrsIfArr _ = []
 
-fromRowString :: String -> Array JField -> Lines
+fromRowString :: String -> Array JField -> AsFunction
 fromRowString name fields =
-  wrapFunction name "FromRowString" [ "const string &in str" ]
+  wrapFunction' name "FromRowString" [ "const string &in str" ]
     $ [ "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
       , "uint chunkLen;"
@@ -118,7 +118,7 @@ fromRowString name fields =
 
   fieldVarNames = fields <#> \(JField n _t) -> n
 
-frs_arrayDefn :: JType -> Lines
+frs_arrayDefn :: JType -> AsFunction
 frs_arrayDefn arrTy =
   mkFunction
     $ [ arrayTypeAs <> " ret = " <> arrayTypeAs <> "(0);"
@@ -136,7 +136,7 @@ frs_arrayDefn arrTy =
   where
   arrayTypeAs = "array<" <> jTyToAsTy arrTy <> ">"
 
-  mkFunction = wrapFunction ("const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ "const string &in str" ]
+  mkFunction = wrapFunction ("const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ JField "str" JString ]
 
 setChunkAndRemainderForTy :: JType -> Lines
 setChunkAndRemainderForTy t = if isJTypeStrWrapped t then setChunkRemUnwrap else setChunkRemSimple
@@ -157,16 +157,16 @@ setChunkRemUnwrap =
   , "remainder = tmp[1].SubStr(chunkLen + 2);"
   ]
 
-allArrayFrsFuncs :: JFields -> Array Lines
-allArrayFrsFuncs = (_ <> [ frs_AssertDefn ]) <<< A.filter (\ls -> A.length ls > 0) <<< map arrFrsIfArr
+allArrayFrsFuncs :: JFields -> CodeBlocks
+allArrayFrsFuncs = (_ <> [ frs_AssertDefn.decl ]) <<< A.filter (\ls -> A.length ls > 0) <<< map arrFrsIfArr
   where
-  arrFrsIfArr (JField _n (JArray t)) = frs_arrayDefn t
+  arrFrsIfArr (JField _n (JArray t)) = (frs_arrayDefn t).decl
 
   arrFrsIfArr _ = []
 
-frs_AssertDefn :: Lines
+frs_AssertDefn :: AsFunction
 frs_AssertDefn =
-  wrapFunction "void" "FRS_Assert_String_Eq" [ "const string &in sample", "const string &in expected" ]
+  wrapFunction' "void" "FRS_Assert_String_Eq" [ "const string &in sample", "const string &in expected" ]
     $ wrapIf "sample != expected" [ "throw('[FRS_Assert_String_Eq] expected sample string to equal: \"' + expected + '\" but it was \"' + sample + '\" instead.');" ]
 
 rowSzTests :: TestGenerators
@@ -177,10 +177,10 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
   where
   fnName = "UnitTest_SzThenUnSz_" <> objName
 
-  checkerFn = "Test_SzThenUnSz_Check"
+  checkerFnName = "Test_SzThenUnSz_Check"
 
-  checkerDecl =
-    wrapFunction "bool" checkerFn (jfieldToAsArg <$> fields)
+  checkerFn =
+    wrapFunction "bool" checkerFnName fields
       $ [ objTy <> " tmp = " <> objName <> "(" <> joinWith ", " args <> ");" ]
       -- <> wrapTryCatch
       
@@ -195,9 +195,9 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
 
   allTestArgs = genTestArgs 2 fields
 
-  mainDecl =
+  mainFn =
     wrapMainTest fnName
-      $ (\testArgs -> checkerFn <> "(" <> testArgs <> ");")
+      $ (\testArgs -> checkerFnName <> "(" <> testArgs <> ");")
       <$> allTestArgs
 
-  ls = intercalate ln [ checkerDecl, mainDecl ]
+  ls = intercalate ln [ checkerFn.decl, mainFn.decl ]

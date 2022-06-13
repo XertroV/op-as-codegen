@@ -1,7 +1,7 @@
 #if UNIT_TEST
 namespace Test_ChallengeDB {
   /* Test // Mixin: Common Testing */
-  void assert(const bool condition, const string &in msg) {
+  void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
     }

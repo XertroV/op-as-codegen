@@ -14,6 +14,8 @@ jValToStr JUint n = "'' + " <> n
 
 jValToStr JNumber n = "'' + " <> n
 
+jValToStr JBool n = "'' + " <> n
+
 jValToStr JString n = "TRS_WrapString(" <> n <> ")"
 
 jValToStr (JArray t) n = "TRS_WrapString(" <> trs_arrayFnName t <> "(" <> n <> "))"
@@ -33,6 +35,8 @@ jValFromStr JInt var = "Text::ParseInt(" <> var <> ")"
 jValFromStr JUint var = "Text::ParseInt(" <> var <> ")"
 
 jValFromStr JNumber var = "Text::ParseFloat(" <> var <> ")"
+
+jValFromStr JBool var = "('true' == " <> var <> ".ToLower())"
 
 jValFromStr JNull var = unsafeCrashWith $ "Cannot parse null from text. Var name: " <> var <> ""
 

@@ -1,6 +1,5 @@
 module Mixins.Types where
 
-import Prelude
 import Data.Maybe (Maybe)
 import Types (JsonObj, Lines)
 

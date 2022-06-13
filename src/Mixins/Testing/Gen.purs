@@ -69,6 +69,8 @@ arbitraryFromJType JNumber = (arbitrary :: Gen Number) <#> floatToStr
 
 arbitraryFromJType JNull = (arbitrary :: Gen Unit) <#> (\_ -> "NULL")
 
+arbitraryFromJType JBool = (arbitrary :: Gen Boolean) <#> (\b -> if b then "true" else "false")
+
 -- helpful to add for debug mb: <#> B64.encode
 arbitraryFromJType JString = (arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
 

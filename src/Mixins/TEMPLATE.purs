@@ -1,6 +1,5 @@
 module Mixins.TEMPLATE where
 
-import Prelude
 import Mixins.Types (Mixin)
 import Data.Maybe (Maybe(..))
 

@@ -5,6 +5,7 @@
     "purescript.sourcePath": "src",
     "purescript.addPscPackageSources": true,
     "purescript.addNpmPath": true,
+    "purescript.exportsCodeLens": false,
     "[purescript]": {
         "editor.formatOnSave": true,
         "editor.tabSize": 2,

@@ -1,7 +1,8 @@
 module Mixins.OpEq where
 
 import Prelude
-import CodeLines (forLoopArray, indent, ln, wrapFunction)
+
+import CodeLines (forLoopArray, indent, ln, wrapFunction, wrapFunction')
 import Data.Array (catMaybes, intercalate)
 import Data.Maybe (Maybe(..))
 import Mixins.AllMixins (_MX_OP_EQ_NAME)
@@ -22,10 +23,10 @@ mxOpEq =
   }
 
 opEqMethods :: JsonObj -> Lines
-opEqMethods (JsonObj name fields) = intercalate ln [ opEqFnDecl ]
+opEqMethods (JsonObj name fields) = intercalate ln [ opEqFn.decl ]
   where
-  opEqFnDecl =
-    wrapFunction "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
+  opEqFn =
+    wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
       $ declAnyArrayEqs
       <> [ "return true" ]
       <> indent 1 ((fieldEqLine <$> fields) <> [ ";" ])

@@ -43,19 +43,19 @@ allTestGenerators = [ test_GettersMatch ]
 test_GettersMatch :: TestGenerator
 test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
   where
-  ls = intercalate ln [ checkerDecl, mainTestDecl ]
+  ls = intercalate ln [ checkerFn.decl, mainTestFn.decl ]
 
   fnCheckerName = "Test_CheckProps_" <> objName
 
   fnName = "UnitTest_" <> objName <> "_" <> ms.currMixin
 
-  checkerDecl =
-    wrapFunction "bool" fnCheckerName (jfieldToAsArg <$> fs)
+  checkerFn =
+    wrapFunction "bool" fnCheckerName fs
       $ [ objTy <> " tmp = " <> objName <> "(" <> joinWith ", " args <> ");" ]
       <> (checkFieldAgainstTmp <$> fs)
       <> [ "return true;" ]
 
-  mainTestDecl =
+  mainTestFn =
     wrapMainTest fnName
       $ (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
       <$> allTestArgs
