@@ -1,7 +1,7 @@
 module Mixins.Types where
 
 import Data.Maybe (Maybe)
-import Types (JsonObj, Lines)
+import Types (JsonObj, Lines, CodeBlocks)
 
 type PriorMixins
   = Array String

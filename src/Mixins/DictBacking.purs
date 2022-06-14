@@ -7,14 +7,19 @@ import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
 import Data.String as S
+import Gen.Class (AsClass, jsonObjToClass)
+import Macros.Arrays (mapArray_For)
 import Mixins.AllMixins (_MX_DICT_BACKING_NAME)
-import Mixins.DefaultCons (mxEmptyCons, mxEmptyConsWDefaults)
+import Mixins.CommonTesting (mxCommonTesting)
+import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
 import Mixins.DefaultProps (mxDefaultProps)
+import Mixins.Getters (mxGetters)
+import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators, RunTestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JField(..), JType(..), JsonObj(..), Lines)
+import Types (JField(..), JType(..), JsonObj(..), Lines, field, object)
 import Utils (intToStr, noSpaces)
 
 type DictOpts
@@ -30,7 +35,7 @@ mxDictBacking opts@{ dictProp, valType } =
   , comprisingRequires
   , methods: Just (genMethods opts)
   , properties: Nothing
-  , namespace: Nothing
+  , namespace
   , tests: tests opts
   }
   where
@@ -44,6 +49,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
       , setFn.decl
       , existsFn.decl
       , getKeysFn.decl
+      , getItemsFn.decl
       , opIndexFn.decl
       , getSizeFn.decl
       , delFn.decl
@@ -90,6 +96,17 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
   delAllFn = proxyFnRet "void" "DeleteAll"
 
   getKeysFn = proxyFnConst "array<string>@" "GetKeys"
+
+  getItemsFn =
+    wrapConstFunction ("array<" <> kvPair <> "@>@") "GetItems" []
+      $ [ "array<" <> kvPair <> "@> ret = array<" <> kvPair <> "@>(GetSize());"
+        , "array<string> keys = GetKeys();"
+        ]
+      <> mapArray_For { arr: "keys", el: keyF, ix: "i" }
+          [ "@ret[i] = " <> kvPair <> "(key, Get(key));" ]
+      <> [ "return ret;" ]
+    where
+    kvPair = n <> "::KvPair"
 
   getSizeFn = proxyFnConst "uint" "GetSize"
 
@@ -177,3 +194,33 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
   nonemptyKey [ k, _v ] = S.length k > 2
 
   nonemptyKey _ = unsafeCrashWith "nonemptyKey expected array of len 2"
+
+namespace :: Maybe (JsonObj -> Lines)
+namespace = Just namespace'
+
+namespace' :: JsonObj -> Lines
+namespace' (JsonObj objName fields) = kvPair.cls.mainFile
+  where
+  kvPairObjName = "KvPair"
+
+  valType = case A.head fields of
+    Just (JField _ (JDict t)) -> t
+    _ -> unsafeCrashWith "first field is not a JDict"
+
+  kvPair :: { cls :: AsClass, obj :: JsonObj }
+  kvPair = { cls, obj }
+    where
+    obj =
+      object kvPairObjName
+        # field "key" JString
+        # field "val" valType
+
+    cls =
+      jsonObjToClass obj []
+        [ mxCommonTesting
+        , mxDefaultProps
+        , mxDefaultCons
+        , mxGetters
+        , mxOpEq
+        , mxRowSz
+        ]

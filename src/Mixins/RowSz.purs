@@ -5,7 +5,7 @@ module Mixins.RowSz
 
 import Prelude
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (fnCall, indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
+import CodeLines (fnCall, indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, intersperse)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -62,7 +62,7 @@ mxRowSz =
   , comprisingRequires: []
   , properties: Nothing
   , methods: Just $ \(JsonObj _objName fields) -> intercalate ln $ [ (toRowString fields).decl, trs_wrapStringFn.decl ] <> allArrayTrsFuncs fields
-  , namespace: Just $ \(JsonObj objName fields) -> wrapNamespace objName $ [ (fromRowString objName fields).decl ] <> allArrayFrsFuncs fields
+  , namespace: Just $ \(JsonObj objName fields) -> intercalate ln $ [ (fromRowString objName fields).decl ] <> allArrayFrsFuncs fields
   , tests: Just $ genTests rowSzTests
   }
 

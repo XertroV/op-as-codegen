@@ -10,20 +10,20 @@ import Data.Array (all, elem, foldl, intercalate)
 import Data.Foldable (and)
 import Mixins.Types (Mixin)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JsonObj(..))
+import Types (JsonObj(..), Lines)
 
 type AsClass
-  = { mainFile :: String, testFile :: String, mixins :: Array Mixin, name :: String }
+  = { mainFile :: Lines, testFile :: Lines, mixins :: Array Mixin, name :: String }
 
 jsonObjToClass :: JsonObj -> Array AsClass -> (Array Mixin) -> AsClass
 jsonObjToClass obj@(JsonObj name _fields) comprisingClasses mixins = if mixinsCheckComprising name mixins comprisingClasses then { mainFile, testFile, mixins, name } else unsafeCrashWith "mixinCheckComprising error (note: it should crash first)"
   where
   -- todo: check that comprisingClasses satisfy requirements of mixins (e.g., OpEq will require that any comprisingClasses implement OpEq)
-  mainFile = intercalate "\n" $ clsStart name <> clsBody <> clsEnd <> ln <> mixinNamespaces
+  mainFile = clsStart name <> clsBody <> clsEnd <> ln <> mixinNamespaces
 
-  testFile = intercalate "\n" mixinTests
+  testFile = mixinTests
 
-  clsBody = indent 1 (bodyLines :: Array String)
+  clsBody = indent 1 bodyLines
 
   bodyLines =
     mixinProps <> ln

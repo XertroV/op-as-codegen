@@ -71,12 +71,16 @@ jTySetAsRef JBool = false
 
 jTySetAsRef JNull = false
 
+jTySetAsRef (JArray _) = false
+
 jTySetAsRef _ = true
 
 -- | When casting might be required, should we?
 -- | (alternative is to wrap like string(x), int(x), etc)
 jTyShouldCast :: JType -> Boolean
-jTyShouldCast = jTySetAsRef
+jTyShouldCast (JArray _) = true
+
+jTyShouldCast t = jTySetAsRef t
 
 -- | returns either cast<T@> or T --
 castOrWrap ∷ JType → String → String

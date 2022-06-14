@@ -3,7 +3,6 @@ module CodeLines where
 import AsTypes
 import Prelude
 import Types
-
 import Consts (nTestsToRun)
 import Control.Alt ((<|>))
 import Data.Array (intercalate, replicate, toUnfoldable, zip)
@@ -41,6 +40,9 @@ mkClsProp (JField n t) = "private " <> jTyToAsTy t <> " " <> n <> ";"
 jfieldToAsArg ∷ JField → String
 jfieldToAsArg (JField n t) = jTyToFuncArg t <> " " <> n
 
+jfieldToAsVar :: JField -> String
+jfieldToAsVar (JField n t) = jTyToAsTy t <> " " <> n
+
 -- | a default value for a JField (mostly relevant for dictionaries, arrays, etc)
 jFDefaultVal :: JField -> String
 jFDefaultVal = getFTy >>> jTyDefaultVal
@@ -65,7 +67,9 @@ mkClsConstructor name fields = [ start ] <> body <> [ end ]
 
   setProps = setProp <$> zip propFields fields
 
-  setProp (Tuple (JField n1 _) (JField n2 _)) = "this." <> n1 <> " = " <> n2 <> ";"
+  setProp (Tuple (JField n1 t) (JField n2 _)) = ref <> "this." <> n1 <> " = " <> n2 <> ";"
+    where
+    ref = if jTySetAsRef t then "@" else ""
 
 -- | indent all lines by some number of rpeated double-spaces (i.e., `  `)
 indent :: Int -> Lines -> Lines

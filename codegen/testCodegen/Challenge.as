@@ -93,8 +93,8 @@ class Challenge {
   }
 }
 
-/* Namespace // Mixin: Row Serialization */
 namespace Challenge {
+  /* Namespace // Mixin: Row Serialization */
   Challenge FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);

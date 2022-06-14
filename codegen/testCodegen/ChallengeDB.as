@@ -56,8 +56,8 @@ class ChallengeDB {
   }
 }
 
-/* Namespace // Mixin: Row Serialization */
 namespace ChallengeDB {
+  /* Namespace // Mixin: Row Serialization */
   ChallengeDB FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);

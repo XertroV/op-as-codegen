@@ -2,6 +2,7 @@ module Main where
 
 import Prelude
 import DBTest (challengeCls, everything)
+import Data.Array (intercalate)
 import Data.String (joinWith)
 import Data.Traversable (sequence)
 import Effect (Effect)
@@ -15,11 +16,11 @@ import Node.FS.Sync as F
 main :: Effect Unit
 main = do
   log "\n\n🚕\n\n"
-  log challengeCls.mainFile
+  log $ intercalate "\n" $ challengeCls.mainFile
   -- log "\n\n🚕\n\n"
   -- log codecChallengeDbCls.mainFile
   log "\n\n🚕\n\n"
-  log challengeCls.testFile
+  log $ intercalate "\n" $ challengeCls.testFile
   let
     pluginName = "testCodegen"
   generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
@@ -48,8 +49,8 @@ generateScaffoldProject { cs, dir, pluginName } = do
       mainPath = dir <> "/" <> cls.name <> ".as"
 
       testPath = dir <> "/Test/" <> cls.name <> ".as"
-    writeTextFile UTF8 mainPath cls.mainFile
-    writeTextFile UTF8 testPath cls.testFile
+    writeTextFile UTF8 mainPath $ intercalate "\n" cls.mainFile
+    writeTextFile UTF8 testPath $ intercalate "\n" cls.testFile
     log $ "Wrote class files w/ main file: " <> mainPath
 
 genInfoToml ∷ String → String → Effect Unit

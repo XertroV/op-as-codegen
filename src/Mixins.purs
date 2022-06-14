@@ -3,6 +3,7 @@ module Mixins where
 import Prelude
 import CodeLines (comment, ln, wrapCompilerIf, wrapNamespace)
 import Data.Array (all, any, catMaybes, elem, foldl, intercalate)
+import Data.Array as A
 import Data.String (joinWith)
 import Mixins.Types (Mixin, MixinState, PriorMixins)
 import Partial.Unsafe (unsafeCrashWith)
@@ -44,7 +45,9 @@ addMixinNamespaces :: JsonObj -> MixinState -> Mixin -> MixinState
 addMixinNamespaces obj (s@{ out }) ({ namespace, name }) = s { out = out <> [ namespace <#> \f -> comment ("Namespace // Mixin: " <> name) <> f obj ] }
 
 runMixinNamespaces :: JsonObj -> Array Mixin -> Array String
-runMixinNamespaces obj mixins = intercalate ln $ catMaybes (foldl (addMixinNamespaces obj) initDefaultMixinState mixins).out
+runMixinNamespaces obj@(JsonObj objName _) mixins = wrapNS $ catMaybes (foldl (addMixinNamespaces obj) initDefaultMixinState mixins).out
+  where
+  wrapNS ls = if A.length ls > 0 then wrapNamespace objName ls else []
 
 addMixinTests :: JsonObj -> MixinState -> Mixin -> MixinState
 addMixinTests obj (s@{ out }) ({ tests, name }) = s { out = out <> [ tests <#> \f -> comment ("Test // Mixin: " <> name) <> f (s { currMixin = name }) obj ] }

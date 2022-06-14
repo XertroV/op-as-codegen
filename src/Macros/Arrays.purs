@@ -1,7 +1,7 @@
 module Macros.Arrays where
 
 import Prelude
-import CodeLines (forLoopArray, jfieldToAsArg, wrapForLoop)
+import CodeLines (forLoopArray, jfieldToAsArg, jfieldToAsVar, wrapForLoop)
 import Types (JField(..), Lines, getFName)
 
 type ArrayMapInfo
@@ -9,6 +9,6 @@ type ArrayMapInfo
 
 mapArray_For :: ArrayMapInfo -> Lines -> Lines
 mapArray_For { ix, el, arr } lines =
-  [ jfieldToAsArg el <> ";" ]
+  [ jfieldToAsVar el <> ";" ]
     <> forLoopArray ix arr -- wrapForLoop ("uint " <> ix <> " = 0; " <> ix <> " < " <> arr <> ".Length; " <> ix <> "++")
         ([ getFName el <> " = " <> arr <> "[" <> ix <> "];" ] <> lines)
