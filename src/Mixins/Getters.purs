@@ -6,6 +6,7 @@ import AsTypes
 import Mixins.Types
 import Prelude
 import Types
+
 import CodeLines (fieldsToAsArgs, indent, jfieldToAsArg, ln, wrapFunction, wrapIf, wrapMainTest)
 import Data.Array (elem, intercalate)
 import Data.Maybe (Maybe(..))
@@ -16,6 +17,7 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (TestGenerators, TestGenerator)
 import SzAsTypes (isJTypeStrWrapped)
+import Utils (noSpaces)
 
 mxGetters :: Mixin
 mxGetters =
@@ -47,7 +49,7 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
 
   fnCheckerName = "Test_CheckProps_" <> objName
 
-  fnName = "UnitTest_" <> objName <> "_" <> ms.currMixin
+  fnName = "UnitTest_" <> objName <> "_" <> noSpaces ms.currMixin
 
   checkerFn =
     wrapFunction "bool" fnCheckerName fs

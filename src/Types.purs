@@ -43,6 +43,7 @@ data JType
   | JNumber
   | JArray JType
   | JObject JsonObj
+  | JDict JType -- | Like a JObject but has unknown keys. All values must have the same type. Keys are always strings.
 
 derive instance eqJType :: Eq JType
 
@@ -54,6 +55,11 @@ isJArray j = case j of
 isJObject ∷ JType → Boolean
 isJObject j = case j of
   (JObject _) -> true
+  _ -> false
+
+isJDict ∷ JType → Boolean
+isJDict j = case j of
+  (JDict _) -> true
   _ -> false
 
 object ∷ String → JsonObj

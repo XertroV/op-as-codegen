@@ -18,6 +18,7 @@ import Data.Tuple (Tuple(..))
 import Effect.Now (now)
 import Effect.Unsafe (unsafePerformEffect)
 import Mixins.Types (RunTestGenerators, TestGenerators)
+import Partial.Unsafe (unsafeCrashWith)
 import Random.LCG (mkSeed)
 import Test.QuickCheck (arbitrary)
 import Test.QuickCheck.Gen (Gen, GenState, chooseInt, runGen, suchThat, vectorOf)
@@ -79,3 +80,5 @@ arbitraryFromJType (JArray t) = (chooseInt 0 10) >>= (\i -> vectorOf i (arbitrar
 arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(" <> joinWith ", " fs <> ")")
   where
   gens = arbitraryFromFields fields
+
+arbitraryFromJType (JDict t) = unsafeCrashWith "un impl" -- (arbitraryFromJType t)

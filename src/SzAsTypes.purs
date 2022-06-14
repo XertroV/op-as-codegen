@@ -24,6 +24,8 @@ jValToStr (JObject _) n = "TRS_WrapString(" <> n <> ".ToRowString())"
 
 jValToStr JNull _n = "null"
 
+jValToStr (JDict _) n = unsafeCrashWith "jValToStr JDict not impl"
+
 isJTypeStrWrapped :: JType -> Boolean
 isJTypeStrWrapped t = not $ A.elem t [ JNull, JNumber, JUint, JInt ]
 
@@ -43,6 +45,8 @@ jValFromStr JNull var = unsafeCrashWith $ "Cannot parse null from text. Var name
 jValFromStr (JObject (JsonObj n _)) var = n <> "::FromRowString(" <> var <> ")"
 
 jValFromStr (JArray t) var = frs_arrayFnName t <> "(" <> var <> ")"
+
+jValFromStr (JDict _) n = unsafeCrashWith "jValFromStr JDict not impl"
 
 frs_arrayFnName :: JType -> String
 frs_arrayFnName arrTy = "FRS_Array_" <> replace (Pattern "@") (Replacement "") (jTyToAsTy arrTy)

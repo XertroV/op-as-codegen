@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import DBTest (challengeCls, codecChallengeDbCls)
+import DBTest (challengeCls, everything)
 import Data.String (joinWith)
 import Data.Traversable (sequence)
 import Effect (Effect)
@@ -22,7 +22,7 @@ main = do
   log challengeCls.testFile
   let
     pluginName = "testCodegen"
-  generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: [ challengeCls, codecChallengeDbCls ] }
+  generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
 
 type ScaffoldProps
   = { cs :: Array AsClass, dir :: String, pluginName :: String }

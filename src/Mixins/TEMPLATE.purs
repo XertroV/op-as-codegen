@@ -34,7 +34,7 @@ mxTEMPLATE =
 
       fnCheckerName = "Test_CheckProps_" <> objName
 
-      fnName = "UnitTest_" <> objName <> "_" <> ms.currMixin
+      fnName = "UnitTest_" <> objName <> "_" <> noSpaces ms.currMixin
 
       checkerDecl =
         wrapFunction "bool" fnCheckerName (jfieldToAsArg <$> fields)

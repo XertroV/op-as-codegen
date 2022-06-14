@@ -5,7 +5,7 @@ module Mixins.RowSz
 
 import Prelude
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
+import CodeLines (fnCall, indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapNamespace, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, intersperse)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -181,12 +181,12 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
 
   checkerFn =
     wrapFunction "bool" checkerFnName fields
-      $ [ objTy <> " tmp = " <> objName <> "(" <> joinWith ", " args <> ");" ]
+      $ [ objTy <> " tmp = " <> fnCall objName args <> ";" ]
       -- <> wrapTryCatch
       
       -- [ "throw('SzThenUnSz fail for "]
       
-      <> [ "assert(tmp == " <> objName <> "::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());" ]
+      <> [ "assert(tmp == " <> fnCall (objName <> "::FromRowString") [ "tmp.ToRowString()" ] <> ", 'SzThenUnSz fail: ' + tmp.ToRowString());" ]
       <> [ "return true;" ]
 
   objTy = jTyToAsTy (JObject o)
