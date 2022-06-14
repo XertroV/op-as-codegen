@@ -4,10 +4,16 @@ import AsTypes
 import Prelude
 import Types
 import Consts (nTestsToRun)
-import Data.Array (intercalate, replicate, zip)
+import Control.Alt ((<|>))
+import Data.Array (intercalate, replicate, toUnfoldable, zip)
+import Data.Array as A
+import Data.List (List(..), (:))
+import Data.List as L
+import Data.Maybe (Maybe(..))
 import Data.String (joinWith)
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
+import Partial.Unsafe (unsafeCrashWith)
 import Utils (intToStr)
 
 ln ∷ Lines
@@ -88,14 +94,38 @@ wrapInitedScope :: String -> Lines -> Lines
 wrapInitedScope preScopeInit lines = [ preScopeInit <> " {" ] <> indent 1 lines <> [ "}" ]
 
 wrapFunction :: String -> String -> JFields -> Lines -> AsFunction
-wrapFunction ret name args lines = wrapFunction' ret name (jfieldToAsArg <$> args) lines
+wrapFunction ret name args lines = wrapFunction'' ret name (Just args) (jfieldToAsArg <$> args) lines
 
 wrapFunction' :: String -> String -> Array String -> Lines -> AsFunction
-wrapFunction' ret name args lines = { decl, call }
+wrapFunction' ret name args lines = wrapFunction'' ret name Nothing args lines
+
+-- where
+-- decl = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")") lines
+-- call fields = name <> "(" <> joinWith ", " (getFName <$> fields) <> ")"
+wrapFunction'' :: String -> String -> Maybe JFields -> Array String -> Lines -> AsFunction
+wrapFunction'' ret name fields args lines = { decl, call, callRaw, fields }
   where
   decl = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")") lines
 
-  call fields = name <> "(" <> joinWith ", " (getFName <$> fields) <> ")"
+  call localFields = case (toUnfoldable <$> fields) >>= mismatchingFields (toUnfoldable localFields) of
+    (Just _fs) -> unsafeCrashWith $ "Calling function " <> name <> " with incorrect types: " <> (intercalate ", " $ jfieldToAsArg <$> _fs)
+    _ -> callRaw (getFName <$> localFields)
+
+  callRaw inlineArgs = name <> "(" <> joinWith ", " inlineArgs <> ")"
+
+  -- | fs2 should be the expected field
+  mismatchingFields :: List JField -> List JField -> Maybe (JFields)
+  mismatchingFields (f1 : fs1) (f2 : fs2) = if (getFTy f1 == getFTy f2) then otherMismatch else appendMismatch f1
+    where
+    otherMismatch = mismatchingFields fs1 fs2
+
+    appendMismatch f = (A.cons f) <$> (otherMismatch <|> Just [])
+
+  mismatchingFields Nil Nil = Nothing
+
+  mismatchingFields Nil fs2 = Just (L.toUnfoldable fs2)
+
+  mismatchingFields fs1 Nil = Just (L.toUnfoldable fs1)
 
 wrapMainTest ∷ String → Array String → AsFunction
 wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return true;" ]

@@ -1,6 +1,7 @@
 module Types where
 
 import Prelude
+import Data.Maybe (Maybe)
 
 -- data JsonSpec
 --     = Object (Array KVPair)
@@ -64,4 +65,6 @@ field n t (JsonObj jn jf) = JsonObj jn $ jf <> [ JField n t ]
 type AsFunction
   = { decl :: Lines
     , call :: JFields -> String
+    , callRaw :: Array String -> String
+    , fields :: Maybe JFields
     }

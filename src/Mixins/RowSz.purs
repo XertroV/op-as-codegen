@@ -197,7 +197,7 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
 
   mainFn =
     wrapMainTest fnName
-      $ (\testArgs -> checkerFnName <> "(" <> testArgs <> ");")
+      $ (\testArgs -> checkerFn.callRaw testArgs <> ";")
       <$> allTestArgs
 
   ls = intercalate ln [ checkerFn.decl, mainFn.decl ]

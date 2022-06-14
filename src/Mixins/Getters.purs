@@ -57,7 +57,7 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
 
   mainTestFn =
     wrapMainTest fnName
-      $ (\testArgs -> fnCheckerName <> "(" <> testArgs <> ");")
+      $ (\testArgs -> checkerFn.callRaw testArgs <> ";")
       <$> allTestArgs
 
   allTestArgs = genTestArgs 1 fs

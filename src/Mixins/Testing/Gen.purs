@@ -44,21 +44,21 @@ genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> 
 
 -- | each mixin calling genTestArgs should choose a different initSeed Int.
 -- | Smash the numpad or use the current unix time if you need a suggestion.
-genTestArgs :: Int -> JFields -> Array String
+genTestArgs :: Int -> JFields -> Array (Array String)
 genTestArgs initSeed fields = tailRec (genTestArgLoop nTestsToRun fields) { gs: { newSeed: mkSeed initSeed, size: 10 }, out: [] }
 
 type GenTestArgLoopState
-  = { gs :: GenState, out :: Array String }
+  = { gs :: GenState, out :: Array (Array String) }
 
-genTestArgLoop :: Int -> JFields -> GenTestArgLoopState -> Step GenTestArgLoopState Lines
+genTestArgLoop :: Int -> JFields -> GenTestArgLoopState -> Step GenTestArgLoopState (Array Lines)
 genTestArgLoop nTimes fields { gs, out }
   | A.length out >= nTimes = Done out
   | otherwise = Loop { gs: gs { newSeed = s.newSeed }, out: out <> [ val ] }
     where
     (Tuple val s) = (flip runGen gs) $ arbitraryFromFields fields
 
-arbitraryFromFields :: JFields -> Gen (String)
-arbitraryFromFields fields = (joinWith ", ") <$> (sequence $ arbitraryFromJType <$> (\(JField _n t) -> t) <$> fields)
+arbitraryFromFields :: JFields -> Gen (Array String)
+arbitraryFromFields fields = sequence $ arbitraryFromJType <$> (\(JField _n t) -> t) <$> fields
 
 arbitraryFromJType :: JType -> Gen String
 arbitraryFromJType JInt = (arbitrary :: Gen Int) <#> intToStr
@@ -76,6 +76,6 @@ arbitraryFromJType JString = (arbitrary :: Gen String) `suchThat` (S.contains (P
 
 arbitraryFromJType (JArray t) = (chooseInt 0 10) >>= (\i -> vectorOf i (arbitraryFromJType t)) <#> (\vs -> "{" <> joinWith ", " vs <> "}")
 
-arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(" <> fs <> ")")
+arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(" <> joinWith ", " fs <> ")")
   where
   gens = arbitraryFromFields fields
