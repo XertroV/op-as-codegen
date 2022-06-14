@@ -22,12 +22,15 @@ namespace Test_DictOfInt {
   /* Test // Mixin: Dict Backing */
   bool Test_ProxyFns_DictOfInt(DictOfInt@ testDict, uint n, const string &in key, int value) {
     testDict.Set(key, value);
+    DictOfInt::KvPair@ tmpKV = DictOfInt::KvPair(key, value);
     string e = ' for test #' + n + ', k: ' + key;
     assert(value == testDict.Get(key), '.Get' + e);
     assert(value == testDict[key], '.opIndex' + e);
     assert(testDict.Exists(key), '.Exists' + e);
+    assert(testDict.GetItem(key) == tmpKV, '.GetItem' + e);
     assert(n == testDict.GetSize(), '.GetSize' + e);
     assert(n == testDict.GetKeys().Length, '.GetKeys.Length' + e);
+    assert(n == testDict.GetItems().Length, '.GetItems.Length' + e);
     assert(0 <= testDict.GetKeys().Find(key), '.GetKeys.Find' + e);
     assert(testDict.Delete(key), '.Delete' + e);
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
@@ -76,6 +79,8 @@ namespace Test_DictOfInt {
     Test_ProxyFns_DictOfInt(testDict, 36, "ᣃ刖ꛥ", 975376);
     Test_ProxyFns_DictOfInt(testDict, 37, "椾", 502637);
     Test_ProxyFns_DictOfInt(testDict, 38, "ﱋ⌎媑", -878784);
+    testDict.DeleteAll();
+    assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfInt (42 tests)');
     return true;
   }

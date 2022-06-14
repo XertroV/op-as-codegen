@@ -2,6 +2,8 @@ class DictOfInt {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
+  /* Properties // Mixin: Dict Backing */
+  
   /* Methods // Mixin: Dict Backing */
   DictOfInt() {
     @_d = dictionary();
@@ -23,13 +25,17 @@ class DictOfInt {
     return _d.GetKeys();
   }
   
+  DictOfInt::KvPair@ GetItem(const string &in key) const {
+    return DictOfInt::KvPair(key, Get(key));
+  }
+  
   array<DictOfInt::KvPair@>@ GetItems() const {
     array<DictOfInt::KvPair@> ret = array<DictOfInt::KvPair@>(GetSize());
     array<string> keys = GetKeys();
     string key;
     for (uint i = 0; i < keys.Length; i++) {
       key = keys[i];
-      @ret[i] = DictOfInt::KvPair(key, Get(key));
+      @ret[i] = GetItem(key);
     }
     return ret;
   }
@@ -79,6 +85,11 @@ namespace DictOfInt {
         && _key == other.key
         && _val == other.val
         ;
+    }
+    
+    /* Methods // Mixin: Op Ord */
+    int opOrd(const KvPair@ &in other) {
+      return key < other.key ? -1 : key == other.key ? 0 : 1;
     }
     
     /* Methods // Mixin: Row Serialization */

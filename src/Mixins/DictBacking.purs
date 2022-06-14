@@ -2,10 +2,11 @@ module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
 import AsTypes (castOrWrap, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
-import CodeLines (jfieldToAsArg, ln, wrapConstFunction, wrapConstructor, wrapFunction, wrapFunction', wrapMainTest)
+import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapFunction, wrapFunction', wrapIf, wrapMainTest)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
+import Data.String (joinWith)
 import Data.String as S
 import Gen.Class (AsClass, jsonObjToClass)
 import Macros.Arrays (mapArray_For)
@@ -15,6 +16,7 @@ import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Getters (mxGetters)
 import Mixins.OpEq (mxOpEq)
+import Mixins.OpOrd (mxOpOrd)
 import Mixins.RowSz (mxRowSz)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators, RunTestGenerators)
@@ -34,12 +36,17 @@ mxDictBacking opts@{ dictProp, valType } =
   , requires: [ mxDefaultProps.name ]
   , comprisingRequires
   , methods: Just (genMethods opts)
-  , properties: Nothing
+  , properties: Just (genProps opts)
   , namespace
   , tests: tests opts
   }
   where
   comprisingRequires = [] <> (if opts.writeLog then [ mxRowSz.name ] else [])
+
+genProps :: DictOpts -> JsonObj -> Lines
+genProps opts@{ writeLog } (JsonObj _n _fs) =
+  []
+    <> (if writeLog then [ "private string _logPath;" ] else [])
 
 genMethods :: DictOpts -> JsonObj -> Lines
 genMethods opts@{ dictProp, valType } (JsonObj n fs) =
@@ -49,19 +56,38 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
       , setFn.decl
       , existsFn.decl
       , getKeysFn.decl
+      , getItemFn.decl
       , getItemsFn.decl
       , opIndexFn.decl
       , getSizeFn.decl
       , delFn.decl
       , delAllFn.decl
       ]
-    <> (if opts.writeLog then [ writeOnSetFn.decl ] else [])
+    <> (if opts.writeLog then [ comment "Dict Optional: Write Log = True" <> initLogFn.decl, writeOnSetFn.decl ] else [])
   where
   d = "_" <> dictProp -- b/c mxDefaultProps
 
-  constructorFn = wrapConstructor n constructorArgs [ "@_" <> dictProp <> " = dictionary();" ]
+  constructorFn =
+    wrapConstructor n constructorArgs
+      $ [ "@_" <> dictProp <> " = dictionary();" ]
+      <> (if opts.writeLog then [ stmt $ initLogFn.call [ logDir, logFile ] ] else [])
 
-  constructorArgs = [] <> (if opts.writeLog then [ JField "logPath" JString ] else [])
+  -- logPath = JField "logPath" JString
+  logDir = JField "logDir" JString
+
+  logFile = JField "logFile" JString
+
+  initLogFn =
+    wrapFunction "private void" "InitLog" [ logDir, logFile ]
+      $ [ "_logPath = logDir + '/' + logFile;"
+        , "trace('" <> n <> " dir: ' + logDir + ' | logFile: ' + logFile);"
+        ]
+      <> wrapIf "logDir.Length == 0"
+          [ "throw('Invalid path: ' + _logPath);" ]
+      <> wrapIf "!IO::FolderExists(logDir)"
+          [ "IO::CreateFolder(logDir, true);" ]
+
+  constructorArgs = [] <> (if opts.writeLog then [ logDir, logFile ] else [])
 
   getFn =
     wrapConstFunction valAsRetType "Get" [ keyF ]
@@ -76,7 +102,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
   -- setFn = proxyFnKeyValRet "void" "Set"
   setFn =
     wrapFunction "void" "Set" [ keyF, valF ]
-      $ [ ref <> d <> "[key]" <> " = value;" ]
+      $ [ setV (JField (d <> "[key]") valType) "value" ]
       <> writeOnSetLines
 
   writeOnSetLines =
@@ -97,16 +123,20 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
 
   getKeysFn = proxyFnConst "array<string>@" "GetKeys"
 
+  getItemFn =
+    wrapConstFunction (kvPair <> "@") "GetItem" [ keyF ]
+      [ "return " <> kvPair <> "(key, Get(key));" ]
+
   getItemsFn =
     wrapConstFunction ("array<" <> kvPair <> "@>@") "GetItems" []
       $ [ "array<" <> kvPair <> "@> ret = array<" <> kvPair <> "@>(GetSize());"
         , "array<string> keys = GetKeys();"
         ]
       <> mapArray_For { arr: "keys", el: keyF, ix: "i" }
-          [ "@ret[i] = " <> kvPair <> "(key, Get(key));" ]
+          [ "@ret[i] = GetItem(key);" ]
       <> [ "return ret;" ]
-    where
-    kvPair = n <> "::KvPair"
+
+  kvPair = n <> "::KvPair"
 
   getSizeFn = proxyFnConst "uint" "GetSize"
 
@@ -146,16 +176,25 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   checkerFnName = "Test_ProxyFns_" <> objName
 
+  kvPair = objName <> "::KvPair"
+
+  kvPairVar = "tmpKV"
+
   checkerFn =
     wrapFunction "bool" checkerFnName [ thisF, JField "n" JUint, keyF, valF ]
       [ "testDict.Set(key, value);"
+      , kvPair <> "@ " <> kvPairVar <> " = " <> kvPair <> "(key, value);"
       , "string e = ' for test #' + n + ', k: ' + key;"
       , "assert(value == testDict.Get(key), '.Get' + e);"
       , "assert(value == testDict[key], '.opIndex' + e);"
       , "assert(testDict.Exists(key), '.Exists' + e);"
+      , "assert(testDict.GetItem(key) == " <> kvPairVar <> ", '.GetItem' + e);"
       , "assert(n == testDict.GetSize(), '.GetSize' + e);"
       , "assert(n == testDict.GetKeys().Length, '.GetKeys.Length' + e);"
+      , "assert(n == testDict.GetItems().Length, '.GetItems.Length' + e);"
+      -- , "assert(testDict.GetItems()[n-1] == " <> kvPairVar <> ", '.GetItems[n-1]' + e);" -- doesn't work, key order nondeterministic
       , "assert(0 <= testDict.GetKeys().Find(key), '.GetKeys.Find' + e);"
+      -- , "assert(0 <= testDict.GetItems().Find(" <> kvPair <> "(key, value)), '.GetItems.Find' + e);" -- weird error `doesn't have a matching opEquals or opCmp method`
       , "assert(testDict.Delete(key), '.Delete' + e);"
       , "assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);"
       , "assert(!testDict.Exists(key), '!.Exists' + e);"
@@ -169,10 +208,16 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
       <> ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
             allTestArgs
         )
+      <> [ "testDict.DeleteAll();"
+        , "assert(0 == testDict.GetSize(), '.DeleteAll');"
+        ]
 
   mainTestObjArgs =
     if opts.writeLog then
-      "IO::FromDataFolder('Storage/codegenTest/test/" <> objName <> ".txt')"
+      joinWith ", "
+        [ "IO::FromDataFolder('Storage/codegenTest/test')"
+        , "'" <> objName <> ".txt'"
+        ]
     else
       ""
 
@@ -222,5 +267,6 @@ namespace' (JsonObj objName fields) = kvPair.cls.mainFile
         , mxDefaultCons
         , mxGetters
         , mxOpEq
+        , mxOpOrd keyF
         , mxRowSz
         ]

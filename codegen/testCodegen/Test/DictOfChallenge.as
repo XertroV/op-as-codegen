@@ -22,12 +22,15 @@ namespace Test_DictOfChallenge {
   /* Test // Mixin: Dict Backing */
   bool Test_ProxyFns_DictOfChallenge(DictOfChallenge@ testDict, uint n, const string &in key, Challenge@ value) {
     testDict.Set(key, value);
+    DictOfChallenge::KvPair@ tmpKV = DictOfChallenge::KvPair(key, value);
     string e = ' for test #' + n + ', k: ' + key;
     assert(value == testDict.Get(key), '.Get' + e);
     assert(value == testDict[key], '.opIndex' + e);
     assert(testDict.Exists(key), '.Exists' + e);
+    assert(testDict.GetItem(key) == tmpKV, '.GetItem' + e);
     assert(n == testDict.GetSize(), '.GetSize' + e);
     assert(n == testDict.GetKeys().Length, '.GetKeys.Length' + e);
+    assert(n == testDict.GetItems().Length, '.GetItems.Length' + e);
     assert(0 <= testDict.GetKeys().Find(key), '.GetKeys.Find' + e);
     assert(testDict.Delete(key), '.Delete' + e);
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
@@ -79,6 +82,8 @@ namespace Test_DictOfChallenge {
     Test_ProxyFns_DictOfChallenge(testDict, 39, "폁趗婆引兘뛮�", Challenge(80948, "Ꜯ謃꛼", "", 124520, 749383, 922529));
     Test_ProxyFns_DictOfChallenge(testDict, 40, "�Ⱦ燷⑅", Challenge(500571, "", "쨙肮⇭�ራ䀄", 982822, 330394, 52025));
     Test_ProxyFns_DictOfChallenge(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
+    testDict.DeleteAll();
+    assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge (42 tests)');
     return true;
   }

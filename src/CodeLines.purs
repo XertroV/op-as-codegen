@@ -20,6 +20,9 @@ import Utils (intToStr)
 ln ∷ Lines
 ln = [ "" ]
 
+stmt :: String -> String
+stmt = flip (<>) ";"
+
 clsStart ∷ String → Lines
 clsStart name = [ "class " <> name <> " {" ]
 
@@ -172,3 +175,9 @@ wrapTryCatch = wrapTwoScopes "try" "catch"
 -- | A nicer for loop api
 forLoopArray :: String -> String -> Lines -> Lines
 forLoopArray ixName arrName = wrapForLoop ("uint " <> ixName <> " = 0; " <> ixName <> " < " <> arrName <> ".Length; " <> ixName <> "++")
+
+-- | set a variable
+setV :: JField -> String -> String
+setV (JField n t) v = ref <> n <> " = " <> v <> ";"
+  where
+  ref = if jTySetAsRef t then "@" else ""

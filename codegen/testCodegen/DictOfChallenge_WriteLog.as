@@ -2,9 +2,13 @@ class DictOfChallenge_WriteLog {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
+  /* Properties // Mixin: Dict Backing */
+  private string _logPath;
+  
   /* Methods // Mixin: Dict Backing */
-  DictOfChallenge_WriteLog(const string &in logPath) {
+  DictOfChallenge_WriteLog(const string &in logDir, const string &in logFile) {
     @_d = dictionary();
+    InitLog(logDir, logFile);
   }
   
   Challenge@ Get(const string &in key) const {
@@ -24,13 +28,17 @@ class DictOfChallenge_WriteLog {
     return _d.GetKeys();
   }
   
+  DictOfChallenge_WriteLog::KvPair@ GetItem(const string &in key) const {
+    return DictOfChallenge_WriteLog::KvPair(key, Get(key));
+  }
+  
   array<DictOfChallenge_WriteLog::KvPair@>@ GetItems() const {
     array<DictOfChallenge_WriteLog::KvPair@> ret = array<DictOfChallenge_WriteLog::KvPair@>(GetSize());
     array<string> keys = GetKeys();
     string key;
     for (uint i = 0; i < keys.Length; i++) {
       key = keys[i];
-      @ret[i] = DictOfChallenge_WriteLog::KvPair(key, Get(key));
+      @ret[i] = GetItem(key);
     }
     return ret;
   }
@@ -49,6 +57,18 @@ class DictOfChallenge_WriteLog {
   
   void DeleteAll() {
     _d.DeleteAll();
+  }
+  
+  /* Dict Optional: Write Log = True */
+  private void InitLog(const string &in logDir, const string &in logFile) {
+    _logPath = logDir + '/' + logFile;
+    trace('DictOfChallenge_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
+    if (logDir.Length == 0) {
+      throw('Invalid path: ' + _logPath);
+    }
+    if (!IO::FolderExists(logDir)) {
+      IO::CreateFolder(logDir, true);
+    }
   }
   
   private void WriteOnSet(const string &in key, Challenge@ value) {
@@ -84,6 +104,11 @@ namespace DictOfChallenge_WriteLog {
         && _key == other.key
         && _val == other.val
         ;
+    }
+    
+    /* Methods // Mixin: Op Ord */
+    int opOrd(const KvPair@ &in other) {
+      return key < other.key ? -1 : key == other.key ? 0 : 1;
     }
     
     /* Methods // Mixin: Row Serialization */

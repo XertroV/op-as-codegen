@@ -22,12 +22,15 @@ namespace Test_DictOfChallenge_WriteLog {
   /* Test // Mixin: Dict Backing */
   bool Test_ProxyFns_DictOfChallenge_WriteLog(DictOfChallenge_WriteLog@ testDict, uint n, const string &in key, Challenge@ value) {
     testDict.Set(key, value);
+    DictOfChallenge_WriteLog::KvPair@ tmpKV = DictOfChallenge_WriteLog::KvPair(key, value);
     string e = ' for test #' + n + ', k: ' + key;
     assert(value == testDict.Get(key), '.Get' + e);
     assert(value == testDict[key], '.opIndex' + e);
     assert(testDict.Exists(key), '.Exists' + e);
+    assert(testDict.GetItem(key) == tmpKV, '.GetItem' + e);
     assert(n == testDict.GetSize(), '.GetSize' + e);
     assert(n == testDict.GetKeys().Length, '.GetKeys.Length' + e);
+    assert(n == testDict.GetItems().Length, '.GetItems.Length' + e);
     assert(0 <= testDict.GetKeys().Find(key), '.GetKeys.Find' + e);
     assert(testDict.Delete(key), '.Delete' + e);
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
@@ -37,7 +40,7 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   bool UnitTest_DictBacking_DictOfChallenge_WriteLog() {
-    DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test/DictOfChallenge_WriteLog.txt'));
+    DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 1, "⃐빌ᗙᕱ꥞䞥᭖䍵", Challenge(806449, "㦁", "폢昳豜䍤", 934426, 495249, 450933));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 2, "㵜ܘ閿", Challenge(444245, "뼙﷞䷨乄", "칍ⷃ筯颔↢", 325502, 225525, 639496));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 3, "氏鰥鎾脔䚃ꑒ鼑혅凐優", Challenge(395324, "䔸僯ʚ땚㰎ॵ覫돬홊", "ꤜ즱妖䜇붧煟", 729753, 183742, 679591));
@@ -79,6 +82,8 @@ namespace Test_DictOfChallenge_WriteLog {
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 39, "폁趗婆引兘뛮�", Challenge(80948, "Ꜯ謃꛼", "", 124520, 749383, 922529));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 40, "�Ⱦ燷⑅", Challenge(500571, "", "쨙肮⇭�ራ䀄", 982822, 330394, 52025));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
+    testDict.DeleteAll();
+    assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge_WriteLog (42 tests)');
     return true;
   }
