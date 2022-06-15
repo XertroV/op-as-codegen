@@ -1,6 +1,11 @@
 #if UNIT_TEST
 namespace Test_Challenge {
   /* Test // Mixin: Common Testing */
+  bool runAsync(CoroutineFunc@ func) {
+    startnew(func);
+    return true;
+  }
+  
   void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
@@ -11,12 +16,20 @@ namespace Test_Challenge {
     trace(msg);
   }
   
-  bool UnitTest_Common_Nop() {
-    return true;
+  int countFileLines(const string &in path) {
+    IO::File f(path, IO::FileMode::Read);
+    string contents = f.ReadToEnd();
+    f.Close();
+    return contents.Split('\n').Length - (contents.EndsWith('\n') ? 1 : 0);
+  }
+  
+  void UnitTest_Common_Nop() {
+    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
+    return;
   }
   
   bool unitTestResults_Challenge_CommonTesting = true
-    && UnitTest_Common_Nop()
+    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
   
   /* Test // Mixin: Getters */
@@ -31,7 +44,7 @@ namespace Test_Challenge {
     return true;
   }
   
-  bool UnitTest_Challenge_Getters() {
+  void UnitTest_Challenge_Getters() {
     Test_CheckProps_Challenge(394184, "馩", "躮", 980813, 825164, 378662);
     Test_CheckProps_Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441);
     Test_CheckProps_Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612);
@@ -75,11 +88,11 @@ namespace Test_Challenge {
     Test_CheckProps_Challenge(894450, "컏�嚌", "⶯弸", 751600, 82673, 881873);
     Test_CheckProps_Challenge(44403, "륍虋陱濣灈￨℈⩝ꝶ", "莻ጺ䭉胼ᑝ쨀", 873724, 994918, 343715);
     print('\\$2f6Unit Test Success: UnitTest_Challenge_Getters (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_Challenge_Getters = true
-    && UnitTest_Challenge_Getters()
+    && runAsync(CoroutineFunc(UnitTest_Challenge_Getters))
     ;
   
   /* Test // Mixin: Row Serialization */
@@ -89,7 +102,7 @@ namespace Test_Challenge {
     return true;
   }
   
-  bool UnitTest_SzThenUnSz_Challenge() {
+  void UnitTest_SzThenUnSz_Challenge() {
     Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", 325863, 922558, 661263);
     Test_SzThenUnSz_Check(436830, "쯣欚", "⿕氎꼻㤚藴킅", 964425, 605220, 262638);
     Test_SzThenUnSz_Check(498192, "", "賄�匼뒱", 826942, 906038, 616400);
@@ -133,11 +146,11 @@ namespace Test_Challenge {
     Test_SzThenUnSz_Check(125776, "ꨟ泒擵䆲罋婬", "ૐ", 363891, 810147, 786060);
     Test_SzThenUnSz_Check(403152, "옮伴ꁧⓚ紝쾲铃켴돺", "ᚡ窓", 576027, 20949, 788899);
     print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_Challenge (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_Challenge_RowSerialization = true
-    && UnitTest_SzThenUnSz_Challenge()
+    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_Challenge))
     ;
 }
 #endif

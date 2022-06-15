@@ -1,6 +1,11 @@
 #if UNIT_TEST
 namespace Test_DictOfInt {
   /* Test // Mixin: Common Testing */
+  bool runAsync(CoroutineFunc@ func) {
+    startnew(func);
+    return true;
+  }
+  
   void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
@@ -11,12 +16,20 @@ namespace Test_DictOfInt {
     trace(msg);
   }
   
-  bool UnitTest_Common_Nop() {
-    return true;
+  int countFileLines(const string &in path) {
+    IO::File f(path, IO::FileMode::Read);
+    string contents = f.ReadToEnd();
+    f.Close();
+    return contents.Split('\n').Length - (contents.EndsWith('\n') ? 1 : 0);
+  }
+  
+  void UnitTest_Common_Nop() {
+    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
+    return;
   }
   
   bool unitTestResults_DictOfInt_CommonTesting = true
-    && UnitTest_Common_Nop()
+    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
   
   /* Test // Mixin: Dict Backing */
@@ -36,11 +49,15 @@ namespace Test_DictOfInt {
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
     assert(!testDict.Exists(key), '!.Exists' + e);
     testDict.Set(key, value);
+    yield();
     return true;
   }
   
-  bool UnitTest_DictBacking_DictOfInt() {
+  void UnitTest_DictBacking_DictOfInt() {
     DictOfInt@ testDict = DictOfInt();
+    if (testDict.GetSize() > 0) {
+      testDict.DeleteAll();
+    }
     Test_ProxyFns_DictOfInt(testDict, 1, "⃐빌ᗙᕱ꥞䞥᭖䍵", -424411);
     Test_ProxyFns_DictOfInt(testDict, 2, "ꍚ", 158112);
     Test_ProxyFns_DictOfInt(testDict, 3, "䁝籤뗷쫷蚙폢昳", 495249);
@@ -82,11 +99,11 @@ namespace Test_DictOfInt {
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfInt (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_DictOfInt_DictBacking = true
-    && UnitTest_DictBacking_DictOfInt()
+    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfInt))
     ;
 }
 #endif

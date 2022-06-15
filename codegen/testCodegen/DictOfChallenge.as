@@ -32,9 +32,8 @@ class DictOfChallenge {
   array<DictOfChallenge::KvPair@>@ GetItems() const {
     array<DictOfChallenge::KvPair@> ret = array<DictOfChallenge::KvPair@>(GetSize());
     array<string> keys = GetKeys();
-    string key;
     for (uint i = 0; i < keys.Length; i++) {
-      key = keys[i];
+      auto key = keys[i];
       @ret[i] = GetItem(key);
     }
     return ret;

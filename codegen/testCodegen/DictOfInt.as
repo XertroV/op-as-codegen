@@ -32,9 +32,8 @@ class DictOfInt {
   array<DictOfInt::KvPair@>@ GetItems() const {
     array<DictOfInt::KvPair@> ret = array<DictOfInt::KvPair@>(GetSize());
     array<string> keys = GetKeys();
-    string key;
     for (uint i = 0; i < keys.Length; i++) {
-      key = keys[i];
+      auto key = keys[i];
       @ret[i] = GetItem(key);
     }
     return ret;

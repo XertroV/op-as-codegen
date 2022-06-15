@@ -35,9 +35,8 @@ class DictOfChallenge_WriteLog {
   array<DictOfChallenge_WriteLog::KvPair@>@ GetItems() const {
     array<DictOfChallenge_WriteLog::KvPair@> ret = array<DictOfChallenge_WriteLog::KvPair@>(GetSize());
     array<string> keys = GetKeys();
-    string key;
     for (uint i = 0; i < keys.Length; i++) {
-      key = keys[i];
+      auto key = keys[i];
       @ret[i] = GetItem(key);
     }
     return ret;
@@ -56,6 +55,7 @@ class DictOfChallenge_WriteLog {
   }
   
   void DeleteAll() {
+    WriteLogOnResetAll();
     _d.DeleteAll();
   }
   
@@ -69,10 +69,36 @@ class DictOfChallenge_WriteLog {
     if (!IO::FolderExists(logDir)) {
       IO::CreateFolder(logDir, true);
     }
+    LoadWriteLogFromDisk();
+  }
+  
+  private void LoadWriteLogFromDisk() {
+    if (IO::FileExists(_logPath)) {
+      string line;
+      IO::File f(_logPath, IO::FileMode::Read);
+      while (!f.EOF()) {
+        line = f.ReadLine();
+        if (line.Length > 0) {
+          auto kv = DictOfChallenge_WriteLog::KvPair::FromRowString(line);
+          @_d[kv.key] = kv.val;
+        }
+      }
+      f.Close();
+      trace('DictOfChallenge_WriteLog loaded ' + GetSize() + ' entries from log file: ' + _logPath);
+    }
   }
   
   private void WriteOnSet(const string &in key, Challenge@ value) {
-    
+    DictOfChallenge_WriteLog::KvPair@ p = DictOfChallenge_WriteLog::KvPair(key, value);
+    IO::File f(_logPath, IO::FileMode::Append);
+    f.WriteLine(p.ToRowString());
+    f.Close();
+  }
+  
+  private void WriteLogOnResetAll() {
+    IO::File f(_logPath, IO::FileMode::Write);
+    f.Write('');
+    f.Close();
   }
 }
 

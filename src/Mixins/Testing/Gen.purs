@@ -41,7 +41,7 @@ genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> 
 
   testResult =
     [ "bool unitTestResults_" <> name <> "_" <> noSpaces ms.currMixin <> " = true" ]
-      <> indent 1 ((allTestsNames <#> \fnName -> "&& " <> fnName <> "()") <> [ ";" ])
+      <> indent 1 ((allTestsNames <#> \fnName -> "&& runAsync(CoroutineFunc(" <> fnName <> "))") <> [ ";" ])
 
 -- | each mixin calling genTestArgs should choose a different initSeed Int.
 -- | Smash the numpad or use the current unix time if you need a suggestion.

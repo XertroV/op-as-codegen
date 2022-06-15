@@ -1,6 +1,11 @@
 #if UNIT_TEST
 namespace Test_DictOfChallenge_WriteLog {
   /* Test // Mixin: Common Testing */
+  bool runAsync(CoroutineFunc@ func) {
+    startnew(func);
+    return true;
+  }
+  
   void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
@@ -11,12 +16,20 @@ namespace Test_DictOfChallenge_WriteLog {
     trace(msg);
   }
   
-  bool UnitTest_Common_Nop() {
-    return true;
+  int countFileLines(const string &in path) {
+    IO::File f(path, IO::FileMode::Read);
+    string contents = f.ReadToEnd();
+    f.Close();
+    return contents.Split('\n').Length - (contents.EndsWith('\n') ? 1 : 0);
+  }
+  
+  void UnitTest_Common_Nop() {
+    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
+    return;
   }
   
   bool unitTestResults_DictOfChallenge_WriteLog_CommonTesting = true
-    && UnitTest_Common_Nop()
+    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
   
   /* Test // Mixin: Dict Backing */
@@ -36,11 +49,15 @@ namespace Test_DictOfChallenge_WriteLog {
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
     assert(!testDict.Exists(key), '!.Exists' + e);
     testDict.Set(key, value);
+    yield();
     return true;
   }
   
-  bool UnitTest_DictBacking_DictOfChallenge_WriteLog() {
+  void UnitTest_DictBacking_DictOfChallenge_WriteLog() {
     DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
+    if (testDict.GetSize() > 0) {
+      testDict.DeleteAll();
+    }
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 1, "⃐빌ᗙᕱ꥞䞥᭖䍵", Challenge(806449, "㦁", "폢昳豜䍤", 934426, 495249, 450933));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 2, "㵜ܘ閿", Challenge(444245, "뼙﷞䷨乄", "칍ⷃ筯颔↢", 325502, 225525, 639496));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 3, "氏鰥鎾脔䚃ꑒ鼑혅凐優", Challenge(395324, "䔸僯ʚ땚㰎ॵ覫돬홊", "ꤜ즱妖䜇붧煟", 729753, 183742, 679591));
@@ -82,14 +99,23 @@ namespace Test_DictOfChallenge_WriteLog {
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 39, "폁趗婆引兘뛮�", Challenge(80948, "Ꜯ謃꛼", "", 124520, 749383, 922529));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 40, "�Ⱦ燷⑅", Challenge(500571, "", "쨙肮⇭�ራ䀄", 982822, 330394, 52025));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
+    assert(41*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfChallenge_WriteLog.txt')), "Should have written exactly 41*2 lines to the log.");
+    // del testDict; // todo: destroy obj but not data.
+    auto kvs = testDict.GetItems();
+    @testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
+    assert(41 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());
+    for (uint i = 0; i < kvs.Length; i++) {
+      auto kv = kvs[i];
+      assert(kv.val == testDict.Get(kv.key), 'Key ' + kv.key + ' did not match expected.');
+    }
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge_WriteLog (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_DictOfChallenge_WriteLog_DictBacking = true
-    && UnitTest_DictBacking_DictOfChallenge_WriteLog()
+    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfChallenge_WriteLog))
     ;
 }
 #endif

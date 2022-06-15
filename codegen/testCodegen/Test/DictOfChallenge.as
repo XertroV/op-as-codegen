@@ -1,6 +1,11 @@
 #if UNIT_TEST
 namespace Test_DictOfChallenge {
   /* Test // Mixin: Common Testing */
+  bool runAsync(CoroutineFunc@ func) {
+    startnew(func);
+    return true;
+  }
+  
   void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
@@ -11,12 +16,20 @@ namespace Test_DictOfChallenge {
     trace(msg);
   }
   
-  bool UnitTest_Common_Nop() {
-    return true;
+  int countFileLines(const string &in path) {
+    IO::File f(path, IO::FileMode::Read);
+    string contents = f.ReadToEnd();
+    f.Close();
+    return contents.Split('\n').Length - (contents.EndsWith('\n') ? 1 : 0);
+  }
+  
+  void UnitTest_Common_Nop() {
+    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
+    return;
   }
   
   bool unitTestResults_DictOfChallenge_CommonTesting = true
-    && UnitTest_Common_Nop()
+    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
   
   /* Test // Mixin: Dict Backing */
@@ -36,11 +49,15 @@ namespace Test_DictOfChallenge {
     assert(n == testDict.GetSize() + 1, '.GetSize+1' + e);
     assert(!testDict.Exists(key), '!.Exists' + e);
     testDict.Set(key, value);
+    yield();
     return true;
   }
   
-  bool UnitTest_DictBacking_DictOfChallenge() {
+  void UnitTest_DictBacking_DictOfChallenge() {
     DictOfChallenge@ testDict = DictOfChallenge();
+    if (testDict.GetSize() > 0) {
+      testDict.DeleteAll();
+    }
     Test_ProxyFns_DictOfChallenge(testDict, 1, "⃐빌ᗙᕱ꥞䞥᭖䍵", Challenge(806449, "㦁", "폢昳豜䍤", 934426, 495249, 450933));
     Test_ProxyFns_DictOfChallenge(testDict, 2, "㵜ܘ閿", Challenge(444245, "뼙﷞䷨乄", "칍ⷃ筯颔↢", 325502, 225525, 639496));
     Test_ProxyFns_DictOfChallenge(testDict, 3, "氏鰥鎾脔䚃ꑒ鼑혅凐優", Challenge(395324, "䔸僯ʚ땚㰎ॵ覫돬홊", "ꤜ즱妖䜇붧煟", 729753, 183742, 679591));
@@ -85,11 +102,11 @@ namespace Test_DictOfChallenge {
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
     print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_DictOfChallenge_DictBacking = true
-    && UnitTest_DictBacking_DictOfChallenge()
+    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfChallenge))
     ;
 }
 #endif

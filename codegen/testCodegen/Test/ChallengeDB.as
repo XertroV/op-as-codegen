@@ -1,6 +1,11 @@
 #if UNIT_TEST
 namespace Test_ChallengeDB {
   /* Test // Mixin: Common Testing */
+  bool runAsync(CoroutineFunc@ func) {
+    startnew(func);
+    return true;
+  }
+  
   void assert(bool condition, const string &in msg) {
     if (!condition) {
       throw('Assert failed: ' + msg);
@@ -11,12 +16,20 @@ namespace Test_ChallengeDB {
     trace(msg);
   }
   
-  bool UnitTest_Common_Nop() {
-    return true;
+  int countFileLines(const string &in path) {
+    IO::File f(path, IO::FileMode::Read);
+    string contents = f.ReadToEnd();
+    f.Close();
+    return contents.Split('\n').Length - (contents.EndsWith('\n') ? 1 : 0);
+  }
+  
+  void UnitTest_Common_Nop() {
+    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
+    return;
   }
   
   bool unitTestResults_ChallengeDB_CommonTesting = true
-    && UnitTest_Common_Nop()
+    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
   
   /* Test // Mixin: Getters */
@@ -26,7 +39,7 @@ namespace Test_ChallengeDB {
     return true;
   }
   
-  bool UnitTest_ChallengeDB_Getters() {
+  void UnitTest_ChallengeDB_Getters() {
     Test_CheckProps_ChallengeDB({Challenge(425650, "拣䵱䌏�㯂ᓭ", "뽥뤎祰ᇡᒧឝ밇", 999977, 502172, 837902), Challenge(425498, "", "豈", 224303, 788874, 44714), Challenge(49504, "握", "㷗᤾虝䰒ஷ", 149817, 853156, 438676), Challenge(605730, "�⿵枵ⴾ㬪●ꜛ", "彲⏈", 265299, 476140, 324910), Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612), Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441), Challenge(394184, "馩", "躮", 980813, 825164, 378662)});
     Test_CheckProps_ChallengeDB({Challenge(611458, "᥾鼾㮦窘ᤲ쯳枦섍鐷痚", "ୣ筃痒胊의䉶杻�죝", 392980, 565032, 395859), Challenge(966274, "옡뭱過ଚ㩕", "뙱䕂륦홰떌䱇盰쩑", 428390, 96314, 704214), Challenge(37504, "弊䮷⃷쨗蝢ᳳ쁼", "㶑ꔘₜ齬聎雄攩澴", 135571, 428782, 785817), Challenge(945399, "", "珐瀮㍿웦쭜䢝䃙�׭", 585012, 264138, 345680), Challenge(182859, "缲䁏뤥蹪鈤", "ᨴ㪂ꦽ㎀꿈�ᴶ๏㕭", 680656, 509010, 703391), Challenge(457496, "揘䢊儞祹㚏풓", "쿽騍큋", 984066, 544625, 205984)});
     Test_CheckProps_ChallengeDB({Challenge(883796, "Ҹꃈ䮣ᬬ", "㻗﬽팊�슍郫홟㕤", 497196, 724861, 452001), Challenge(107812, "谥缃ಟ킐⁮ꕕ뉲�工", "۟弜쌘㙛핺﫽㑪㿊", 694416, 783971, 913764), Challenge(903157, "༏큝㫓", "ힼ㼓", 808460, 108758, 772472), Challenge(772861, "", "ᔻἚ", 833723, 27085, 506361), Challenge(83328, "쐭ғ㒴퟽ᗦ㴟봨ￊ", "", 518141, 153623, 2628), Challenge(773592, "", "蔟Ι龲ꇗ⡔辅⭉", 454352, 78530, 529329), Challenge(315253, "森ⶍභࢆ⑧", "沕К߄뽇㪢㸿ᓮₙ", 22089, 401867, 691035), Challenge(390076, "℃벷쨭욢", "鶧ㆌ痒㇌⋛䨗ও�", 181358, 266408, 312816), Challenge(330938, "Ꮍ⁭豹", "릈䨕＠߇₹紇秉ⵑ", 982620, 978653, 334968)});
@@ -70,11 +83,11 @@ namespace Test_ChallengeDB {
     Test_CheckProps_ChallengeDB({Challenge(766276, "휇ᴧፍ⥵", "혤騽", 293144, 266043, 604299), Challenge(965728, "闤놽홛", "㺊෫㦤孺ඉਔڇ", 158015, 800626, 780416), Challenge(272340, "硯�樛攘婃䥤⚆缴", "ퟫƚᯠ�੷", 718357, 386978, 498960), Challenge(6983, "騍ࠪ뭭솽К뺄䦿", "闧㨫瓗攥", 386687, 482403, 999171), Challenge(348805, "꓍涢碋樞傭輛訬", "켗", 507839, 989415, 197681), Challenge(370831, "媥貘껝欄�薮枞࿛箢", "֞띲쨵舅", 270340, 461856, 519488), Challenge(723891, "큯帟᾵�", "ᧃ�欣에Ꝅ�", 155905, 385183, 793428), Challenge(751713, "㢎嬡ଧ艳粮囃", "羕絃⇵㷟췘狶", 875749, 941854, 12452)});
     Test_CheckProps_ChallengeDB({Challenge(754998, "팍ﭮ⳱", "燆悚傑飂翧╚癠薋鏭ៜ", 284392, 794822, 75757), Challenge(123367, "ᔛ쓿�", "薟裰檎", 747726, 968962, 348669), Challenge(882922, "璸럏⢼谺樌", "滬꼮瓏વ甆璡졺堿", 531569, 815225, 635970), Challenge(163726, "ᄞ斌੼ꆠ尻⏪ꤩ", "⪢穫檣", 158819, 431898, 646251), Challenge(155183, "믄闙淗", "㌒ꨥ迟", 849572, 574471, 606404)});
     print('\\$2f6Unit Test Success: UnitTest_ChallengeDB_Getters (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_ChallengeDB_Getters = true
-    && UnitTest_ChallengeDB_Getters()
+    && runAsync(CoroutineFunc(UnitTest_ChallengeDB_Getters))
     ;
   
   /* Test // Mixin: Row Serialization */
@@ -84,7 +97,7 @@ namespace Test_ChallengeDB {
     return true;
   }
   
-  bool UnitTest_SzThenUnSz_ChallengeDB() {
+  void UnitTest_SzThenUnSz_ChallengeDB() {
     Test_SzThenUnSz_Check({Challenge(498192, "", "賄�匼뒱", 826942, 906038, 616400), Challenge(436830, "쯣欚", "⿕氎꼻㤚藴킅", 964425, 605220, 262638), Challenge(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", 325863, 922558, 661263)});
     Test_SzThenUnSz_Check({Challenge(4946, "︠걿좳樁㠵", "髣蘟먝瞄⧛鉼竲", 392550, 83184, 876484), Challenge(547338, "쬙ꅇ᭧봅≹", "�ౝ", 629002, 832887, 693999), Challenge(263354, "푲෗蔃䓥㻥", "䟃넲䗵蹟牪", 322150, 614406, 417104)});
     Test_SzThenUnSz_Check({Challenge(868449, "�〿Ꝼ샛ᣱ", "ӑ䞖猏鐪﹀ྏ䅳税", 729161, 92, 558576), Challenge(973135, "⻖㋽", "雈皇殤膕躯蓬㥊", 820813, 647490, 647392), Challenge(341399, "淡", "뙸줒女ѽ泡誄狋撧곟", 356559, 161330, 809993), Challenge(129142, "ㅡ螘笣䨯䄸", "璫⃔煡욣", 908297, 233268, 471390), Challenge(759104, "剼᪲ꮚ෌", "ⰳ팑ꇬ䋶慸", 405127, 314974, 151896), Challenge(956732, "퍻䳥最徐㭾멭Პ䑰", "䟥ፕ⎃ﲀᦓ솛格둪", 234787, 700902, 853957), Challenge(615687, "䩸Ὼ", "", 964248, 970574, 467845), Challenge(70271, "㏰鉓켯τ㪔ﻊ爛", "ꈽ洞⤦➦踆⌾", 4920, 122428, 837623)});
@@ -128,11 +141,11 @@ namespace Test_ChallengeDB {
     Test_SzThenUnSz_Check({Challenge(162531, "傳嚜Ᾱ�⫓䷜ᚷ", "꒴", 841238, 692289, 991537), Challenge(952348, "", "卄쨛", 220204, 546044, 531654), Challenge(234677, "퀁ሗ쩠⡷ꀽ᪴뷾㽯䨿", "鄙瘢騬讽", 462559, 156913, 422720), Challenge(658796, "", "਌仐夼ḛ潐卉⪙", 477205, 498771, 904032), Challenge(233205, "귦", "⑛㉮Ѵ펗厫圲獕鎑䖻", 680720, 874709, 675418), Challenge(41548, "鲇ຫ૾弍ﶣ씮", "㍺彞㝏兑작", 914520, 915587, 132949)});
     Test_SzThenUnSz_Check({});
     print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_ChallengeDB (42 tests)');
-    return true;
+    return;
   }
   
   bool unitTestResults_ChallengeDB_RowSerialization = true
-    && UnitTest_SzThenUnSz_ChallengeDB()
+    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_ChallengeDB))
     ;
 }
 #endif

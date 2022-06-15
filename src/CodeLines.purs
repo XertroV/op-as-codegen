@@ -118,9 +118,6 @@ wrapConstFunction ret name args lines = wrapFunction'' ret name (Just args) (jfi
 wrapFunction' :: String -> String -> Array String -> Lines -> AsFunction
 wrapFunction' ret name args lines = wrapFunction'' ret name Nothing args false lines
 
--- where
--- decl = wrapInitedScope (ret <> " " <> name <> "(" <> joinWith ", " args <> ")") lines
--- call fields = name <> "(" <> joinWith ", " (getFName <$> fields) <> ")"
 wrapFunction'' :: String -> String -> Maybe JFields -> Array String -> Boolean -> Lines -> AsFunction
 wrapFunction'' ret name fields args isConst lines = { decl, call, callRaw, fields }
   where
@@ -155,7 +152,7 @@ fnCall :: String -> Array String -> String
 fnCall name args = name <> "(" <> joinWith ", " args <> ")"
 
 wrapMainTest ∷ String → Array String → AsFunction
-wrapMainTest name ls = wrapFunction "bool" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return true;" ]
+wrapMainTest name ls = wrapFunction "void" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return;" ]
 
 wrapForLoop ∷ String → Lines → Lines
 wrapForLoop p = wrapInitedScope ("for (" <> p <> ")")
@@ -171,6 +168,12 @@ wrapTwoScopes pre mid s1 s2 = [ pre <> " {" ] <> indent 1 s1 <> [ "} " <> mid <>
 
 wrapTryCatch :: Lines -> Lines -> Lines
 wrapTryCatch = wrapTwoScopes "try" "catch"
+
+wrapSQuotes :: String -> String
+wrapSQuotes s = "'" <> s <> "'"
+
+wrapDQuotes :: String -> String
+wrapDQuotes s = "\"" <> s <> "\""
 
 -- | A nicer for loop api
 forLoopArray :: String -> String -> Lines -> Lines
