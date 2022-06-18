@@ -29,6 +29,14 @@ class MaybeOfUint {
     return other.IsNothing();
   }
   
+  const string ToString() {
+    string ret = 'MaybeOfUint(';
+    if (IsJust()) {
+      ret += '' + _val;
+    }
+    return ret + ')';
+  }
+  
   const string ToRowString() {
     if (!_hasVal) {
       return 'null,';

@@ -164,6 +164,9 @@ wrapMainTest name ls =
     <> ls
     <> [ printTestSuccess name nTestsToRun, "return;" ]
 
+wrapTestFn ∷ String → Array JField → Array String → AsFunction
+wrapTestFn name = wrapFunction "bool" name
+
 wrapForLoop ∷ String → Lines → Lines
 wrapForLoop p = wrapInitedScope ("for (" <> p <> ")")
 

@@ -63,8 +63,18 @@ class Challenge {
     return this._leaderboardId;
   }
   
+  /* Methods // Mixin: ToString */
+  const string ToString() {
+    return 'Challenge('
+      + string :: Join({'' + id, uid, name, '' + startDate, '' + endDate, '' + leaderboardId}, ', ')
+      + ')';
+  }
+  
   /* Methods // Mixin: Op Eq */
   bool opEquals(const Challenge@ &in other) {
+    if (other is null) {
+      return false; // this obj can never be null.
+    }
     return true
       && _id == other.id
       && _uid == other.uid

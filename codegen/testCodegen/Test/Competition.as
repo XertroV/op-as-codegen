@@ -158,6 +158,70 @@ namespace Test_Competition {
     && runAsync(CoroutineFunc(UnitTest_Competition_Getters))
     ;
   
+  /* Test // Mixin: Op Eq */
+  Competition@ lastChecked = null;
+  
+  bool OpEqSimple_Check(uint id, const string &in liveId, const string &in name, uint startDate, uint endDate, uint matchesGenerationDate, uint nbPlayers, uint leaderboardId) {
+    Competition@ o1 = Competition(id, liveId, name, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId);
+    Competition@ o2 = Competition(id, liveId, name, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId);
+    assert(o1 == o2, 'OpEqSimple_Check fail for obj: ' + o1.ToString());
+    assert(o1 != lastChecked, 'OpEqSimple_Check failed comparing to last obj');
+    @lastChecked = o1;
+    return true;
+  }
+  
+  void UnitTest_OpEqSimple_Competition() {
+    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_Competition (42 tests)');
+    OpEqSimple_Check(393455, "ﷰ눵뭩㵷衟춗䵩", "쭶퍉첯㚥涬", 606964, 746965, 295268, 535487, 148099);
+    OpEqSimple_Check(713558, "釪�麑遬", "਀", 414864, 693970, 221991, 960330, 377064);
+    OpEqSimple_Check(526999, "�叴뢦⇩㵣䎵", "ᦷ氫ᚘ", 591080, 333816, 159512, 123640, 643073);
+    OpEqSimple_Check(272489, "峵כֿ鐄ℛݙᚬ쇳濶", "ᬤ쿊菆︐좙桭", 131073, 236713, 75537, 164045, 184471);
+    OpEqSimple_Check(214810, "Ⓢꖠ⋳䝅攨鑽", "㞫䫆ើ鹆ʊ冿", 392143, 117677, 288195, 531474, 7923);
+    OpEqSimple_Check(471876, "␜῰蹎쟳횱宙홧㉜는", "蚵⧝耏盧", 179642, 145172, 521707, 606939, 812991);
+    OpEqSimple_Check(511553, "汀ᆣ젙娣ʱᯜ鱦", "ਮ虴簪䤀揾噚셑燵", 610006, 627814, 18103, 819364, 465852);
+    OpEqSimple_Check(68708, "픽鳐ꈉ", "⣣뾈噦", 422278, 333641, 830012, 82116, 511281);
+    OpEqSimple_Check(629572, "ꮸ", "鏡螫⃠嚅⒝ࣾ惝�嬅糓", 689395, 114882, 632609, 910388, 303381);
+    OpEqSimple_Check(700928, "껳ሌ", "墐こ", 207068, 397768, 292550, 12795, 298494);
+    OpEqSimple_Check(457344, "ᨣ㤬꾷ټ໿", "汢ꏠ⮶䋧館胄ા즣傪", 997818, 438577, 704848, 780762, 891985);
+    OpEqSimple_Check(853751, "뛰", "秨玹桗喐", 814326, 317042, 332229, 631334, 680607);
+    OpEqSimple_Check(279276, "ⱬ褑ཧ捺슅엎筄䄗灰ᔃ", "", 909926, 457029, 770199, 522160, 104104);
+    OpEqSimple_Check(809489, "", "ꃢ｡뫇묯릕⛲", 304399, 29411, 78939, 636291, 364509);
+    OpEqSimple_Check(925658, "큽咪઼側", "", 601038, 673623, 105608, 713773, 557945);
+    OpEqSimple_Check(937519, "", "�", 255643, 98074, 985987, 656856, 840971);
+    OpEqSimple_Check(158662, "鿑䦚♕共䳶넊ᙓࡀ", "ꂋ", 322382, 381895, 433068, 667191, 144576);
+    OpEqSimple_Check(754367, "篱鬻", "娣ዯ﷤賚�챀曹", 131429, 370081, 554833, 356165, 177350);
+    OpEqSimple_Check(294139, "룎", "螥㗓꒭→", 578377, 759825, 48706, 794688, 783622);
+    OpEqSimple_Check(424914, "㕹બ⚟", "遚㌌⻄", 112824, 776355, 602310, 940369, 3945);
+    OpEqSimple_Check(849219, "撍䈒", "庈", 296593, 97859, 343909, 463281, 327759);
+    OpEqSimple_Check(609845, "텩㚽댯맑", "瞐奺ဂ", 917838, 203988, 773250, 395321, 354108);
+    OpEqSimple_Check(306065, "㝳䵉貟↟ڹ錠쟓", "罚", 978412, 15728, 543714, 31625, 132643);
+    OpEqSimple_Check(515573, "娂ᑠ쟀", "䘚秱ᗱ閯", 421894, 463120, 610831, 834401, 438887);
+    OpEqSimple_Check(728516, "Ú銼", "쉰龊〢ᔖ̉韺輨浉ㆠ", 323966, 493150, 371477, 170942, 386377);
+    OpEqSimple_Check(607334, "ﻯ機", "龕ຽҷ䋰ꭔ䧂脑", 968043, 958667, 223128, 253073, 621920);
+    OpEqSimple_Check(571138, "ꪫ㪛숬", "ꄽ圦긡㴽䷗넱�㙫姦䟧", 1447, 703199, 927171, 714203, 948126);
+    OpEqSimple_Check(761909, "顚辑죹⪱濱놿宦奋", "훱Ⅺ킠�鸋₫일", 128962, 901043, 641360, 925617, 809472);
+    OpEqSimple_Check(668258, "轏씅煍尪", "੿퉛꿪⹳ꈰ뗵丷ө㩣", 801560, 533724, 926220, 696064, 331215);
+    OpEqSimple_Check(897341, "", "ힾ䣇ᚇ梅翂", 806802, 867988, 950426, 250555, 553377);
+    OpEqSimple_Check(946673, "녑", "咂ﱉ皾澐쇞㍐དྷ썦癓簡", 111470, 573616, 37300, 800704, 843540);
+    OpEqSimple_Check(48134, "馺൹貈", "暮㟄䷫킹륦了挧ﳗ", 914453, 361374, 856521, 84333, 651960);
+    OpEqSimple_Check(562413, "繶藩륍韚킉迊ṱ帮—", "倢슭펵", 542692, 549628, 303267, 239582, 15682);
+    OpEqSimple_Check(867098, "禾", "", 262088, 508624, 38712, 95772, 986198);
+    OpEqSimple_Check(598605, "ɯ䃟偶텒綒搅聍", "穯쎙竗硨", 109178, 333940, 20634, 443493, 24041);
+    OpEqSimple_Check(47111, "䫁詵䯻꼊赖뇁", "⏏", 704430, 55892, 967496, 74974, 504468);
+    OpEqSimple_Check(932869, "낤햳釽⛧옩炰၃鉝✜", "ⷀ듅㡐沁祿", 274962, 997288, 354149, 951957, 385338);
+    OpEqSimple_Check(38661, "揆쟶孛﷤枲ꩀ옲죥魍", "姐䊂⤭�Ჺⅶ엱", 806131, 40492, 262430, 839490, 488918);
+    OpEqSimple_Check(72292, "븥ꖙ∴", "綽ケ摓릺칻啗", 189775, 849529, 225780, 941754, 696577);
+    OpEqSimple_Check(837621, "衔ΰ탡뒤엄闼嵞뿭燨ꍶ", "ㅞἄ辰思莽䱪㪪䀷픿", 894972, 765047, 733492, 665455, 765188);
+    OpEqSimple_Check(346449, "૾근邺㣿䟫랴", "俵㧠儂攑짱㥑海Ⴗ", 512875, 164296, 132420, 490476, 525549);
+    OpEqSimple_Check(343457, "ﴗ๋", "攅樘犝ⳡ늵꜀㏔绨", 40693, 65114, 257186, 404813, 103312);
+    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_Competition (42 tests)');
+    return;
+  }
+  
+  bool unitTestResults_Competition_OpEq = true
+    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_Competition))
+    ;
+  
   /* Test // Mixin: Row Serialization */
   bool Test_SzThenUnSz_Check(uint id, const string &in liveId, const string &in name, uint startDate, uint endDate, uint matchesGenerationDate, uint nbPlayers, uint leaderboardId) {
     Competition@ tmp = Competition(id, liveId, name, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId);

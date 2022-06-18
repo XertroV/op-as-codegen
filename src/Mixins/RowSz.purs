@@ -19,7 +19,7 @@ import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
 import SzAsTypes (frs_arrayFnName, isJTypeStrWrapped, jValFromStr, jValToStr, trs_arrayFnName)
-import Types (AsFunction, CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines)
+import Types (AsFunction, CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines, getFName)
 
 {-|
   The idea is to serialize (sz) into a value-safe format that omits keys and is suitable for an append only DB.
@@ -195,7 +195,7 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
 
   objTy = jTyToAsTy (JObject o)
 
-  args = fields <#> \(JField n _) -> n
+  args = fields <#> getFName
 
   allTestArgs = genTestArgs 2 fields
 

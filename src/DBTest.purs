@@ -18,6 +18,9 @@ import Mixins.JMaybes (mxJMaybes)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToFromJsonObj (mxToFromJsonObj)
+import Mixins.ToString (mxToString)
+
+typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz ]
 
 codecChallenge ∷ JsonObj
 codecChallenge =
@@ -30,7 +33,7 @@ codecChallenge =
     # field "leaderboardId" JUint
 
 challengeCls ∷ AsClass
-challengeCls = jsonObjToClass codecChallenge [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+challengeCls = jsonObjToClass codecChallenge [] typicalMixins
 
 dictGen :: DictOpts -> { cls :: AsClass, obj :: JsonObj }
 dictGen opts@{ valType } = { cls, obj }
@@ -67,14 +70,7 @@ codecChallengeDb =
 codecChallengeDbCls :: AsClass
 codecChallengeDbCls =
   jsonObjToClass codecChallengeDb [ challengeCls ]
-    [ mxCommonTesting
-    , mxDefaultProps
-    , mxDefaultCons
-    , mxToFromJsonObj
-    , mxGetters
-    , mxOpEq
-    , mxRowSz
-    ]
+    typicalMixins
 
 challengeDb2 :: { cls :: AsClass, obj :: JsonObj }
 challengeDb2 = { cls, obj }
@@ -94,7 +90,7 @@ type ClsWithObj
 competition :: ClsWithObj
 competition = { cls, obj }
   where
-  cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+  cls = jsonObjToClass obj [] typicalMixins
 
   obj =
     object "Competition"
@@ -110,7 +106,7 @@ competition = { cls, obj }
 matchResult :: ClsWithObj
 matchResult = { cls, obj }
   where
-  cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+  cls = jsonObjToClass obj [] typicalMixins
 
   obj =
     object "MatchResult"
@@ -121,7 +117,7 @@ matchResult = { cls, obj }
 matchResults :: ClsWithObj
 matchResults = { cls, obj }
   where
-  cls = jsonObjToClass obj [ matchResult.cls ] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+  cls = jsonObjToClass obj [ matchResult.cls ] typicalMixins
 
   obj =
     object "MatchResults"

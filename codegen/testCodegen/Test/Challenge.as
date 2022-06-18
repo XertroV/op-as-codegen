@@ -156,6 +156,70 @@ namespace Test_Challenge {
     && runAsync(CoroutineFunc(UnitTest_Challenge_Getters))
     ;
   
+  /* Test // Mixin: Op Eq */
+  Challenge@ lastChecked = null;
+  
+  bool OpEqSimple_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
+    Challenge@ o1 = Challenge(id, uid, name, startDate, endDate, leaderboardId);
+    Challenge@ o2 = Challenge(id, uid, name, startDate, endDate, leaderboardId);
+    assert(o1 == o2, 'OpEqSimple_Check fail for obj: ' + o1.ToString());
+    assert(o1 != lastChecked, 'OpEqSimple_Check failed comparing to last obj');
+    @lastChecked = o1;
+    return true;
+  }
+  
+  void UnitTest_OpEqSimple_Challenge() {
+    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_Challenge (42 tests)');
+    OpEqSimple_Check(393455, "ﷰ눵뭩㵷衟춗䵩", "쭶퍉첯㚥涬", 606964, 746965, 295268);
+    OpEqSimple_Check(535487, "਀ꩣ釪�麑遬徨탏", "壝玃勑뤋펍캒ᨶ", 526999, 962771, 489079);
+    OpEqSimple_Check(509350, "", "", 591080, 333816, 159512);
+    OpEqSimple_Check(123640, "ᚬ쇳濶鵛獔楷", "︐좙桭垛峵כֿ鐄ℛ", 749954, 450775, 480461);
+    OpEqSimple_Check(131073, "䝅攨鑽烆ঙﶇ䚱윲冥㶶", "ʊ冿�Ⓢꖠ", 515156, 280342, 310378);
+    OpEqSimple_Check(392143, "䝕", "鎤쎣", 288195, 531474, 7923);
+    OpEqSimple_Check(471876, "␜῰蹎쟳횱宙홧㉜는", "蚵⧝耏盧", 179642, 145172, 521707);
+    OpEqSimple_Check(606939, "ʱᯜ鱦ࠡ", "噚셑燵㪆汀ᆣ젙", 840953, 20188, 208909);
+    OpEqSimple_Check(610006, "䀐硩", "䀿虿砍", 624373, 718449, 909595);
+    OpEqSimple_Check(422278, "⻰쬟", "�㏊뻹媋痰", 629572, 333348, 4203);
+    OpEqSimple_Check(147695, "嚅⒝ࣾ", "⬲櫇ꟙ栥鏡螫", 700928, 897339, 559404);
+    OpEqSimple_Check(726400, "锲釹ឰ", "耽裮", 298494, 457344, 106515);
+    OpEqSimple_Check(40481, "", "즣傪꼻", 6580, 997818, 438577);
+    OpEqSimple_Check(704848, "", "喐橀뛰�둕껅汆講", 814326, 317042, 332229);
+    OpEqSimple_Check(631334, "ώ", "צ츷⩮", 747775, 333922, 24944);
+    OpEqSimple_Check(263165, "ཧ捺슅", "ᱧᫎ솠轼ⱬ", 457029, 770199, 522160);
+    OpEqSimple_Check(104104, "⛲㕤�", "ꃢ｡뫇묯", 304399, 29411, 78939);
+    OpEqSimple_Check(636291, "墨큽咪઼側똶뙈", "ꛬ苵䎥�쭲鄻콨�", 557945, 937519, 279639);
+    OpEqSimple_Check(759681, "粄⅝挝㠊", "共䳶넊ᙓࡀ컒", 475985, 789265, 36996);
+    OpEqSimple_Check(322382, "芸덍갽郭", "䚨篱鬻피䌱踀", 829588, 992454, 47786);
+    OpEqSimple_Check(141600, "⟹驵盲ⓟ娣ዯ", "賥硬⭷혀ⴿ㓶ࣛﬣ", 294139, 170604, 690603);
+    OpEqSimple_Check(578377, "﨑", "ᚭࣳ", 783622, 424914, 417084);
+    OpEqSimple_Check(877689, "띟璦Ⴗ婑", "䨾㶜☭ෳ", 284057, 296593, 97859);
+    OpEqSimple_Check(343909, "텩㚽댯맑힊骝", "瞐奺ဂ", 917838, 203988, 773250);
+    OpEqSimple_Check(395321, "㝳䵉貟↟ڹ錠쟓쎭뗧", "罚", 978412, 15728, 543714);
+    OpEqSimple_Check(31625, "閯ﺸ娂ᑠ쟀냖럢쩪", "愶彄纇鼗䘚秱ᗱ", 610831, 834401, 438887);
+    OpEqSimple_Check(728516, "Ú銼", "쉰龊〢ᔖ̉韺輨浉ㆠ", 323966, 493150, 371477);
+    OpEqSimple_Check(170942, "囲ﻯ機稻�", "䋰ꭔ䧂", 196654, 968043, 958667);
+    OpEqSimple_Check(223128, "㙫姦䟧ఊꪫ㪛숬勯ﵜ", "圦긡㴽䷗넱", 1447, 703199, 927171);
+    OpEqSimple_Check(714203, "죹⪱濱놿宦奋豮ⴈ", "일ٸ顚", 796197, 147837, 128962);
+    OpEqSimple_Check(901043, "씅煍尪읒쪭剈", "ө㩣�轏", 612128, 959191, 138540);
+    OpEqSimple_Check(801560, "", "㵟蝅迨︧兀ࢺ鱈䛳啨", 696064, 331215, 897341);
+    OpEqSimple_Check(155958, "ힾ䣇ᚇ梅翂", "", 867988, 950426, 250555);
+    OpEqSimple_Check(553377, "枌녑埖韠፧迒", "癓", 445761, 857000, 976480);
+    OpEqSimple_Check(455033, "过�蝄合౜녜뎙㾣", "൹貈垸", 229473, 575927, 155319);
+    OpEqSimple_Check(107419, "䷫킹륦", "䂃堮㹺暮", 856521, 84333, 651960);
+    OpEqSimple_Check(562413, "繶藩륍韚킉迊ṱ帮—", "倢슭펵", 542692, 549628, 303267);
+    OpEqSimple_Check(239582, "䅖ꏊ", "禾", 677295, 262088, 508624);
+    OpEqSimple_Check(38712, "綒搅聍Ꟑᨎﳌ祊⠤❮뙡", "쎙竗硨ɯ䃟偶", 406292, 109178, 333940);
+    OpEqSimple_Check(20634, "ᬣ뾩ᨶ␫祡扁拚ꑧ", "䮕", 24041, 47111, 957356);
+    OpEqSimple_Check(796492, "⏏᧎䫁詵䯻", "뀁م", 55892, 967496, 74974);
+    OpEqSimple_Check(504468, "✜ྦྷ", "낤햳釽⛧옩炰၃鉝", 471983, 508026, 929051);
+    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_Challenge (42 tests)');
+    return;
+  }
+  
+  bool unitTestResults_Challenge_OpEq = true
+    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_Challenge))
+    ;
+  
   /* Test // Mixin: Row Serialization */
   bool Test_SzThenUnSz_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);

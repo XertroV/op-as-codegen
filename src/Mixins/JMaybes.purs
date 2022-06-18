@@ -14,6 +14,7 @@ import Mixins.AllMixins (_MX_TO_FROM_JSON_OBJ_NAME)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (frs_genNamespace, mxRowSz)
+import Mixins.ToString (jValSimpleStr)
 import Mixins.Types (Mixin)
 import Partial.Unsafe (unsafeCrashWith, unsafePartial)
 import SzAsTypes (jValFromStr, jValToStr)
@@ -39,7 +40,7 @@ genMethods (JsonObj name fields) = methods
     true -> do
       intercalate ln $ map getDecl
         $ catMaybes
-            [ consJust, consNothing, consJson, opEq, toRowStr, toJson ]
+            [ consJust, consNothing, consJson, opEq, toStr, toRowStr, toJson ]
         <> (unsafePartial fromJust) getters
 
   getValTy = A.head fields <#> getFTy
@@ -84,6 +85,13 @@ genMethods (JsonObj name fields) = methods
     pure $ wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
       $ wrapIf "IsJust()" [ "return other.IsJust() && (_val == other.val);" ]
       <> [ "return other.IsNothing();" ]
+
+  toStr = do
+    fTy <- getValTy
+    pure $ wrapFunction "const string" "ToString" []
+      $ [ "string ret = '" <> name <> "(';" ]
+      <> wrapIf "IsJust()" [ "ret += " <> jValSimpleStr fTy "_val" <> ";" ]
+      <> [ "return ret + ')';" ]
 
   toRowStr = do
     fTy <- getValTy

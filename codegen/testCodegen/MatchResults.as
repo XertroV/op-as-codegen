@@ -55,10 +55,32 @@ class MatchResults {
     return this._results;
   }
   
+  /* Methods // Mixin: ToString */
+  const string ToString() {
+    return 'MatchResults('
+      + string :: Join({'' + roundPosition, matchLiveId, scoreUnit, TS_Array_MatchResult(results)}, ', ')
+      + ')';
+  }
+  
+  private const string TS_Array_MatchResult(const array<MatchResult@> &in arr) {
+    string ret = '{';
+    for (uint i = 0; i < arr.Length; i++) {
+      if (i > 0) ret += ', ';
+      ret += arr[i].ToString();
+    }
+    return ret + '}';
+  }
+  
   /* Methods // Mixin: Op Eq */
   bool opEquals(const MatchResults@ &in other) {
-    bool _tmp_arrEq_results = true;
+    if (other is null) {
+      return false; // this obj can never be null.
+    }
+    bool _tmp_arrEq_results = _results.Length == other.results.Length;
     for (uint i = 0; i < _results.Length; i++) {
+      if (!_tmp_arrEq_results) {
+        break;
+      }
       _tmp_arrEq_results = _tmp_arrEq_results && (_results[i] == other.results[i]);
     }
     return true

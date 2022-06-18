@@ -14,15 +14,24 @@ initDefaultMixinState = { out: [], priorMixins: [], currMixin: "" }
 
 -- | add a mixin
 addMixinMethods :: JsonObj -> MixinState -> Mixin -> MixinState
-addMixinMethods obj (ms@{ out, priorMixins }) ({ methods, name, requires }) =
+addMixinMethods obj@(JsonObj objName _) (ms@{ out, priorMixins }) ({ methods, name, requires }) =
   if all priorsContain requires then
     if not (elem name priorMixins) then res else unsafeCrashWith ("Mixin has already run: " <> name <> " (priors: " <> priorsStr <> ")")
   else
-    unsafeCrashWith ("Mixin dependency error. Required [" <> joinWith "," requires <> "] -- but only these mixins have run: " <> priorsStr)
+    unsafeCrashWith
+      ( "Mixin dependency error for object: "
+          <> objName
+          <> ". "
+          <> name
+          <> " Requires ["
+          <> joinWith ", " requires
+          <> "] -- but only these mixins have run: "
+          <> priorsStr
+      )
   where
   priorsContain m = elem m priorMixins
 
-  priorsStr = "[" <> joinWith "," priorMixins <> "]"
+  priorsStr = "[" <> joinWith ", " priorMixins <> "]"
 
   res =
     ms
@@ -55,3 +64,7 @@ addMixinTests obj (s@{ out }) ({ tests, name }) = s { out = out <> [ tests <#> \
 -- addMixinNamespaces _ s ({ namespace: Nothing }) = s
 runMixinTests :: PriorMixins -> JsonObj -> Array Mixin -> Array String
 runMixinTests priorMixins obj@(JsonObj n _) mixins = wrapCompilerIf "UNIT_TEST" $ wrapNamespace ("Test_" <> n) $ catMaybes (foldl (addMixinTests obj) (initDefaultMixinState { priorMixins = priorMixins }) mixins).out
+
+-- | make a name for a primary mixin test function
+mixinTestFnName ∷ String → String → String
+mixinTestFnName desc objName = intercalate "_" [ "UnitTest", desc, objName ]

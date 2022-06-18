@@ -19,6 +19,7 @@ import Mixins.OpEq (mxOpEq)
 import Mixins.OpOrd (mxOpOrd)
 import Mixins.RowSz (mxRowSz)
 import Mixins.Testing.Gen (genTestArgs, genTests)
+import Mixins.ToString (mxToString)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators, RunTestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
 import Types (JField(..), JType(..), JsonObj(..), Lines, field, object)
@@ -348,6 +349,7 @@ kvPair (JsonObj objName fields) = { cls, obj }
       , mxDefaultProps
       , mxDefaultCons
       , mxGetters
+      , mxToString
       , mxOpEq
       , mxOpOrd keyF
       , mxRowSz

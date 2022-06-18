@@ -79,8 +79,18 @@ class Competition {
     return this._leaderboardId;
   }
   
+  /* Methods // Mixin: ToString */
+  const string ToString() {
+    return 'Competition('
+      + string :: Join({'' + id, liveId, name, '' + startDate, '' + endDate, '' + matchesGenerationDate, '' + nbPlayers, '' + leaderboardId}, ', ')
+      + ')';
+  }
+  
   /* Methods // Mixin: Op Eq */
   bool opEquals(const Competition@ &in other) {
+    if (other is null) {
+      return false; // this obj can never be null.
+    }
     return true
       && _id == other.id
       && _liveId == other.liveId

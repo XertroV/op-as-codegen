@@ -39,8 +39,18 @@ class MatchResult {
     return this._participant;
   }
   
+  /* Methods // Mixin: ToString */
+  const string ToString() {
+    return 'MatchResult('
+      + string :: Join({rank.ToString(), score.ToString(), participant}, ', ')
+      + ')';
+  }
+  
   /* Methods // Mixin: Op Eq */
   bool opEquals(const MatchResult@ &in other) {
+    if (other is null) {
+      return false; // this obj can never be null.
+    }
     return true
       && _rank == other.rank
       && _score == other.score

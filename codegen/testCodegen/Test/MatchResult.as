@@ -153,6 +153,70 @@ namespace Test_MatchResult {
     && runAsync(CoroutineFunc(UnitTest_MatchResult_Getters))
     ;
   
+  /* Test // Mixin: Op Eq */
+  MatchResult@ lastChecked = null;
+  
+  bool OpEqSimple_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
+    MatchResult@ o1 = MatchResult(rank, score, participant);
+    MatchResult@ o2 = MatchResult(rank, score, participant);
+    assert(o1 == o2, 'OpEqSimple_Check fail for obj: ' + o1.ToString());
+    assert(o1 != lastChecked, 'OpEqSimple_Check failed comparing to last obj');
+    @lastChecked = o1;
+    return true;
+  }
+  
+  void UnitTest_OpEqSimple_MatchResult() {
+    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_MatchResult (42 tests)');
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(393455), "ﷰ눵뭩㵷衟춗䵩");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(217809), "蝔ᔁ䀓⃩쭶퍉첯");
+    OpEqSimple_Check(MaybeOfUint(665920), MaybeOfUint(535487), "਀ꩣ釪�麑遬徨탏");
+    OpEqSimple_Check(MaybeOfUint(618336), MaybeOfUint(693970), "㵣䎵甄壝玃勑");
+    OpEqSimple_Check(MaybeOfUint(332990), MaybeOfUint(591080), "璊诛퇟鯚핦壉");
+    OpEqSimple_Check(MaybeOfUint(776509), MaybeOfUint(645285), "כֿ鐄ℛݙᚬ");
+    OpEqSimple_Check(MaybeOfUint(260320), MaybeOfUint(222008), "");
+    OpEqSimple_Check(MaybeOfUint(631652), MaybeOfUint(480461), "윲冥㶶밑幖許");
+    OpEqSimple_Check(MaybeOfUint(833738), MaybeOfUint(), "ʊ冿�Ⓢꖠ⋳䝅攨鑽烆");
+    OpEqSimple_Check(MaybeOfUint(32507), MaybeOfUint(310378), "뭀ꃲ썵㞫");
+    OpEqSimple_Check(MaybeOfUint(358019), MaybeOfUint(288195), "");
+    OpEqSimple_Check(MaybeOfUint(43208), MaybeOfUint(471876), "␜῰蹎쟳횱宙홧㉜는");
+    OpEqSimple_Check(MaybeOfUint(139088), MaybeOfUint(541699), "");
+    OpEqSimple_Check(MaybeOfUint(554651), MaybeOfUint(179642), "뮱");
+    OpEqSimple_Check(MaybeOfUint(716312), MaybeOfUint(606939), "ʱᯜ鱦ࠡ");
+    OpEqSimple_Check(MaybeOfUint(821821), MaybeOfUint(), "燵㪆汀");
+    OpEqSimple_Check(MaybeOfUint(834349), MaybeOfUint(208909), "䀐硩钗쏥䁏");
+    OpEqSimple_Check(MaybeOfUint(705322), MaybeOfUint(68708), "픽鳐ꈉ");
+    OpEqSimple_Check(MaybeOfUint(885000), MaybeOfUint(909595), "쬟칁껁");
+    OpEqSimple_Check(MaybeOfUint(876624), MaybeOfUint(82116), "뻹");
+    OpEqSimple_Check(MaybeOfUint(375289), MaybeOfUint(), "糓岁ꮸ㏧㽤᪮壐");
+    OpEqSimple_Check(MaybeOfUint(785418), MaybeOfUint(766369), "⃠嚅");
+    OpEqSimple_Check(MaybeOfUint(106739), MaybeOfUint(689395), "櫇");
+    OpEqSimple_Check(MaybeOfUint(153090), MaybeOfUint(897339), "ឰ墐こꅯ");
+    OpEqSimple_Check(MaybeOfUint(539265), MaybeOfUint(12795), "㤬꾷ټ໿ꍱ꟤��");
+    OpEqSimple_Check(MaybeOfUint(544378), MaybeOfUint(263), "館胄ા");
+    OpEqSimple_Check(MaybeOfUint(786095), MaybeOfUint(997818), "");
+    OpEqSimple_Check(MaybeOfUint(681787), MaybeOfUint(), "통�ﭝ豲氹");
+    OpEqSimple_Check(MaybeOfUint(610221), MaybeOfUint(853751), "뛰");
+    OpEqSimple_Check(MaybeOfUint(777120), MaybeOfUint(814326), "⩮�ώ꒏퓂䉰ꋗ嗳ರ");
+    OpEqSimple_Check(MaybeOfUint(925392), MaybeOfUint(747775), "");
+    OpEqSimple_Check(MaybeOfUint(819938), MaybeOfUint(758489), "ⱬ褑");
+    OpEqSimple_Check(MaybeOfUint(177035), MaybeOfUint(909926), "⧙곢歒");
+    OpEqSimple_Check(MaybeOfUint(854291), MaybeOfUint(432666), "ꃢ｡뫇묯");
+    OpEqSimple_Check(MaybeOfUint(243032), MaybeOfUint(636291), "墨큽咪઼側똶뙈");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(601038), "䥓佴ꛬ苵䎥�쭲鄻");
+    OpEqSimple_Check(MaybeOfUint(929569), MaybeOfUint(759681), "粄⅝挝㠊");
+    OpEqSimple_Check(MaybeOfUint(697224), MaybeOfUint(131924), "䳶넊");
+    OpEqSimple_Check(MaybeOfUint(183287), MaybeOfUint(475985), "뱜悶ꂋ鰲");
+    OpEqSimple_Check(MaybeOfUint(39828), MaybeOfUint(667191), "篱鬻피䌱踀뤅");
+    OpEqSimple_Check(MaybeOfUint(300093), MaybeOfUint(992454), "ⓟ娣ዯ﷤賚�");
+    OpEqSimple_Check(MaybeOfUint(627673), MaybeOfUint(356165), "硬");
+    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_MatchResult (42 tests)');
+    return;
+  }
+  
+  bool unitTestResults_MatchResult_OpEq = true
+    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_MatchResult))
+    ;
+  
   /* Test // Mixin: Row Serialization */
   bool Test_SzThenUnSz_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
     MatchResult@ tmp = MatchResult(rank, score, participant);

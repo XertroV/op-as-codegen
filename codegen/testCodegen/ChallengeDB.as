@@ -31,10 +31,32 @@ class ChallengeDB {
     return this._challenges;
   }
   
+  /* Methods // Mixin: ToString */
+  const string ToString() {
+    return 'ChallengeDB('
+      + string :: Join({TS_Array_Challenge(challenges)}, ', ')
+      + ')';
+  }
+  
+  private const string TS_Array_Challenge(const array<Challenge@> &in arr) {
+    string ret = '{';
+    for (uint i = 0; i < arr.Length; i++) {
+      if (i > 0) ret += ', ';
+      ret += arr[i].ToString();
+    }
+    return ret + '}';
+  }
+  
   /* Methods // Mixin: Op Eq */
   bool opEquals(const ChallengeDB@ &in other) {
-    bool _tmp_arrEq_challenges = true;
+    if (other is null) {
+      return false; // this obj can never be null.
+    }
+    bool _tmp_arrEq_challenges = _challenges.Length == other.challenges.Length;
     for (uint i = 0; i < _challenges.Length; i++) {
+      if (!_tmp_arrEq_challenges) {
+        break;
+      }
       _tmp_arrEq_challenges = _tmp_arrEq_challenges && (_challenges[i] == other.challenges[i]);
     }
     return true

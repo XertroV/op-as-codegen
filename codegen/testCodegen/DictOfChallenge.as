@@ -78,8 +78,18 @@ namespace DictOfChallenge {
       return this._val;
     }
     
+    /* Methods // Mixin: ToString */
+    const string ToString() {
+      return 'KvPair('
+        + string :: Join({key, val.ToString()}, ', ')
+        + ')';
+    }
+    
     /* Methods // Mixin: Op Eq */
     bool opEquals(const KvPair@ &in other) {
+      if (other is null) {
+        return false; // this obj can never be null.
+      }
       return true
         && _key == other.key
         && _val == other.val
