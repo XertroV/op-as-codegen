@@ -24,12 +24,72 @@ namespace Test_Challenge {
   }
   
   void UnitTest_Common_Nop() {
+    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
     print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
     return;
   }
   
   bool unitTestResults_Challenge_CommonTesting = true
     && runAsync(CoroutineFunc(UnitTest_Common_Nop))
+    ;
+  
+  /* Test // Mixin: ToFrom JSON Object */
+  bool Test_ToJsonFromJson_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
+    Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
+    assert(tmp == Challenge(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
+    return true;
+  }
+  
+  void UnitTest_ToJsonFromJson_Challenge() {
+    print('\\$26fUnit Test Start: UnitTest_ToJsonFromJson_Challenge (42 tests)');
+    Test_ToJsonFromJson_Check(129450, "㳋뽄旤ᮔ﵇獣ແ", "䃧쁐욘ᱶ谛䆳ꔼ躜ಙ㟊", 673390, 116343, 181454);
+    Test_ToJsonFromJson_Check(620474, "雱燐꬝,汯粌", "饣ퟶ䳟", 292599, 141875, 331925);
+    Test_ToJsonFromJson_Check(541297, "堉⍴ᲊ", "ｓ", 853398, 34736, 880999);
+    Test_ToJsonFromJson_Check(957341, "客㒞᫯볠箢暂遐", "澵z懇", 553541, 857256, 67966);
+    Test_ToJsonFromJson_Check(842264, "⦱", "䞚", 962581, 425743, 228874);
+    Test_ToJsonFromJson_Check(545237, "봌彺য়ꬢ毝", "▏᯿", 8357, 740990, 125510);
+    Test_ToJsonFromJson_Check(201887, "렷뵫皼", "�常祈ᵒ㪗", 291599, 158796, 236301);
+    Test_ToJsonFromJson_Check(772258, "唃徭ྈ", "", 293608, 562436, 192429);
+    Test_ToJsonFromJson_Check(814563, "엣ᩁ㟅ഽ", "", 19141, 147800, 307977);
+    Test_ToJsonFromJson_Check(782152, "鿊坯켫ꗥ쟭", "窐踎윉懜翊신꨻በ", 929417, 362775, 866688);
+    Test_ToJsonFromJson_Check(555417, "躀퓹ꔴ㳇୭鹥灦㣋충왦", "ꧾ큽ⷾ뮁d更든Η", 147453, 442122, 757477);
+    Test_ToJsonFromJson_Check(61319, "죤箖质ᣙ", "", 61424, 123025, 945480);
+    Test_ToJsonFromJson_Check(812588, "㏬蠑坖澂ꉃ뒅Ὄ", "៯ꭍڑ쀈ⵗ", 330434, 960296, 368435);
+    Test_ToJsonFromJson_Check(48539, "䴾퍂蘇賻ᜳ벛", "螝⬣홭ᢻ샞饤", 959377, 703562, 133268);
+    Test_ToJsonFromJson_Check(454929, "�", "䡼淣럸튦蘥", 490369, 936231, 758410);
+    Test_ToJsonFromJson_Check(670355, "瑁캳륣쑋쎧ᨘ퉁濑", "엽뷗뢑", 227340, 204841, 881761);
+    Test_ToJsonFromJson_Check(817776, "㵁㢝", "쐤얪", 235494, 8576, 23152);
+    Test_ToJsonFromJson_Check(201380, "再섚ᘭ", "", 74150, 318565, 35974);
+    Test_ToJsonFromJson_Check(954857, "ᔲ逥좣㉒㇜ꗸ롼ᬁ籕", "", 798815, 951763, 811960);
+    Test_ToJsonFromJson_Check(415355, "꫎淐", "授↳", 91151, 743344, 44570);
+    Test_ToJsonFromJson_Check(56280, "䴨", "겶຾", 532804, 34223, 734280);
+    Test_ToJsonFromJson_Check(226201, "뺪髷漻拹ⓨ淪熷", "聅䄳ㆳ尉ź", 354192, 471506, 827710);
+    Test_ToJsonFromJson_Check(844727, "求뺝숯䐪䈞䞞", "蜵来৷몖괩퉧", 256248, 250599, 907104);
+    Test_ToJsonFromJson_Check(779715, "ħ蔋팪絠촊枤ŀཎ", "穏뫤࡙攴쑋㵗髍澇㤘", 801176, 883112, 765603);
+    Test_ToJsonFromJson_Check(958172, "Ԍ", "䗺", 245672, 817303, 44522);
+    Test_ToJsonFromJson_Check(911772, "৹", "霋", 442711, 615355, 929340);
+    Test_ToJsonFromJson_Check(235459, "", "", 863576, 553871, 150690);
+    Test_ToJsonFromJson_Check(80314, "䐁ߠɯ밥�틭姻韷ሸ蜰", "꺗⯒", 313111, 457076, 470409);
+    Test_ToJsonFromJson_Check(645878, "멨靮垆", "왪噧㉊㚨줫⧑㙵覆", 195672, 489062, 158912);
+    Test_ToJsonFromJson_Check(156113, "䁹呦㷽혭㞥ۚ轔", "⍗ꦘ疁", 260294, 13752, 693335);
+    Test_ToJsonFromJson_Check(143856, "嚄譵ʢᖀ㨎乕", "剈授䎫쉑ᢰ靡", 306458, 632656, 652417);
+    Test_ToJsonFromJson_Check(740388, "祆䊼Ꙕ", "᥌⇝䱓䎸帍곔", 679849, 608847, 283554);
+    Test_ToJsonFromJson_Check(524348, "紣ㄷꀞ秇⋽吢ↈ種祶⯔", "耾㾃庅", 925671, 602002, 114641);
+    Test_ToJsonFromJson_Check(379745, "軬ꇈ퉿ማ鰜㞡吂檞", "꼭㗶", 181844, 822200, 152001);
+    Test_ToJsonFromJson_Check(825672, "骽䭄", "", 814831, 838411, 788089);
+    Test_ToJsonFromJson_Check(621229, "儻쳷계쳣㪏", "㈹�䕋⿬", 355681, 462683, 26762);
+    Test_ToJsonFromJson_Check(578239, "잒淮듑箩厈䃐᲎", "耕굗ご䎽붏矓暴", 688702, 40402, 438512);
+    Test_ToJsonFromJson_Check(740039, "念ꓩꦼ�୹౺삯Ϩ", "뷌齟蜰", 997977, 631049, 988710);
+    Test_ToJsonFromJson_Check(432442, "䎇", "蛢䲲闞ꩍ㨧㞆豽", 804084, 767134, 302662);
+    Test_ToJsonFromJson_Check(890783, "뎝⺧䛙픮", "温膀璠", 45787, 733079, 915433);
+    Test_ToJsonFromJson_Check(849459, "͢떳窖鬦歾䙖ᲀ", "浸酒袑橒", 333832, 314379, 737608);
+    Test_ToJsonFromJson_Check(430147, "똼顯얮듖", "볶烓", 373373, 471592, 172674);
+    print('\\$2f6Unit Test Success: UnitTest_ToJsonFromJson_Challenge (42 tests)');
+    return;
+  }
+  
+  bool unitTestResults_Challenge_ToFromJSONObject = true
+    && runAsync(CoroutineFunc(UnitTest_ToJsonFromJson_Challenge))
     ;
   
   /* Test // Mixin: Getters */
@@ -45,6 +105,7 @@ namespace Test_Challenge {
   }
   
   void UnitTest_Challenge_Getters() {
+    print('\\$26fUnit Test Start: UnitTest_Challenge_Getters (42 tests)');
     Test_CheckProps_Challenge(394184, "馩", "躮", 980813, 825164, 378662);
     Test_CheckProps_Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441);
     Test_CheckProps_Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612);
@@ -103,6 +164,7 @@ namespace Test_Challenge {
   }
   
   void UnitTest_SzThenUnSz_Challenge() {
+    print('\\$26fUnit Test Start: UnitTest_SzThenUnSz_Challenge (42 tests)');
     Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", 325863, 922558, 661263);
     Test_SzThenUnSz_Check(436830, "쯣欚", "⿕氎꼻㤚藴킅", 964425, 605220, 262638);
     Test_SzThenUnSz_Check(498192, "", "賄�匼뒱", 826942, 906038, 616400);

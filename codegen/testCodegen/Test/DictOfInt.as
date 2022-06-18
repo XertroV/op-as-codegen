@@ -24,6 +24,7 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_Common_Nop() {
+    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
     print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
     return;
   }
@@ -54,6 +55,7 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_DictBacking_DictOfInt() {
+    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfInt (42 tests)');
     DictOfInt@ testDict = DictOfInt();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();

@@ -13,11 +13,11 @@ import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.DictBacking (DictOpts, mkDO, mxDictBacking)
-import Mixins.FromJsonObj (mxFromJsonObj)
 import Mixins.Getters (mxGetters)
+import Mixins.JMaybes (mxJMaybes)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
-import Mixins.ToJsonObj (mxToJsonObj)
+import Mixins.ToFromJsonObj (mxToFromJsonObj)
 
 codecChallenge ∷ JsonObj
 codecChallenge =
@@ -30,7 +30,7 @@ codecChallenge =
     # field "leaderboardId" JUint
 
 challengeCls ∷ AsClass
-challengeCls = jsonObjToClass codecChallenge [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxFromJsonObj, mxToJsonObj, mxGetters, mxOpEq, mxRowSz ]
+challengeCls = jsonObjToClass codecChallenge [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
 
 dictGen :: DictOpts -> { cls :: AsClass, obj :: JsonObj }
 dictGen opts@{ valType } = { cls, obj }
@@ -70,8 +70,7 @@ codecChallengeDbCls =
     [ mxCommonTesting
     , mxDefaultProps
     , mxDefaultCons
-    , mxFromJsonObj
-    , mxToJsonObj
+    , mxToFromJsonObj
     , mxGetters
     , mxOpEq
     , mxRowSz
@@ -89,6 +88,48 @@ challengeDb2 = { cls, obj }
       , mxEmptyCons
       ]
 
+type ClsWithObj
+  = { cls :: AsClass, obj :: JsonObj }
+
+competition :: ClsWithObj
+competition = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+
+  obj =
+    object "Competition"
+      # field "id" JUint
+      # field "liveId" JString
+      # field "name" JString
+      # field "startDate" JUint
+      # field "endDate" JUint
+      # field "matchesGenerationDate" JUint
+      # field "nbPlayers" JUint
+      # field "leaderboardId" JUint
+
+matchResult :: ClsWithObj
+matchResult = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+
+  obj =
+    object "MatchResult"
+      # field "rank" (JMaybe JUint)
+      # field "score" (JMaybe JUint)
+      # field "participant" JString
+
+matchResults :: ClsWithObj
+matchResults = { cls, obj }
+  where
+  cls = jsonObjToClass obj [ matchResult.cls ] [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxOpEq, mxRowSz ]
+
+  obj =
+    object "MatchResults"
+      # field "roundPosition" JUint
+      # field "matchLiveId" JString
+      # field "scoreUnit" JString
+      # field "results" (JArray (JObject matchResult.obj))
+
 everything :: Array AsClass
 everything =
   [ dictStr.cls
@@ -98,4 +139,7 @@ everything =
   , dWlChallenge.cls
   , challengeDb2.cls
   , codecChallengeDbCls
+  , competition.cls
+  , matchResult.cls
+  , matchResults.cls
   ]

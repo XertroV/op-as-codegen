@@ -1,11 +1,13 @@
 module Mixins.Testing.Gen where
 
 import Prelude
+import AsTypes (jTyPascalCase, jTyToAsTy)
 import CodeLines (indent, ln)
 import Consts (nTestsToRun)
 import Control.Monad.Rec.Class (Step(..), tailRec)
 import Data.Array (foldl, intercalate)
 import Data.Array as A
+import Data.Array.NonEmpty as NEA
 import Data.DateTime.Instant (unInstant)
 import Data.Int (decimal, round, toStringAs)
 import Data.Newtype (unwrap)
@@ -21,7 +23,7 @@ import Mixins.Types (RunTestGenerators, TestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
 import Random.LCG (mkSeed)
 import Test.QuickCheck (arbitrary)
-import Test.QuickCheck.Gen (Gen, GenState, chooseInt, runGen, suchThat, vectorOf)
+import Test.QuickCheck.Gen (Gen, GenState, chooseInt, frequency, runGen, suchThat, vectorOf)
 import Types (JField(..), JFields, JType(..), JsonObj(..), Lines)
 import Utils (noSpaces, intToStr, floatToStr)
 
@@ -82,3 +84,8 @@ arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(
   gens = arbitraryFromFields fields
 
 arbitraryFromJType (JDict t) = unsafeCrashWith "un impl" -- (arbitraryFromJType t)
+
+arbitraryFromJType m@(JMaybe t) =
+  frequency
+    $ NEA.singleton (Tuple 0.15 $ (arbitrary :: Gen Unit) <#> (\_ -> jTyPascalCase m <> "()"))
+    <> NEA.singleton (Tuple 0.85 $ (arbitraryFromJType t <#> (\v -> jTyPascalCase m <> "(" <> v <> ")")))

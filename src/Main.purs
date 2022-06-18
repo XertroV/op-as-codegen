@@ -1,6 +1,7 @@
 module Main where
 
 import Prelude
+import CommonGlobalClasses (getCommonClasses)
 import DBTest (challengeCls, everything)
 import Data.Array (intercalate)
 import Data.String (joinWith)
@@ -15,12 +16,6 @@ import Node.FS.Sync as F
 
 main :: Effect Unit
 main = do
-  log "\n\n🚕\n\n"
-  log $ intercalate "\n" $ challengeCls.mainFile
-  -- log "\n\n🚕\n\n"
-  -- log codecChallengeDbCls.mainFile
-  log "\n\n🚕\n\n"
-  log $ intercalate "\n" $ challengeCls.testFile
   let
     pluginName = "testCodegen"
   generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
@@ -38,7 +33,7 @@ generateScaffoldProject { cs, dir, pluginName } = do
   mkdir' testDir { mode: P.mkPerms P.all P.all P.none, recursive: true }
   log $ "Initialized " <> dir
   log "Writing class files"
-  _ <- sequence $ writeClass <$> cs
+  _ <- sequence $ writeClass <$> (cs <> getCommonClasses cs)
   log "Writing info.toml"
   genInfoToml dir pluginName
   log "Scaffold project generated"

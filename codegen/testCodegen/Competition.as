@@ -1,39 +1,47 @@
-class Challenge {
+class Competition {
   /* Properties // Mixin: Default Properties */
   private uint _id;
-  private string _uid;
+  private string _liveId;
   private string _name;
   private uint _startDate;
   private uint _endDate;
+  private uint _matchesGenerationDate;
+  private uint _nbPlayers;
   private uint _leaderboardId;
   
   /* Methods // Mixin: Default Constructor */
-  Challenge(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
+  Competition(uint id, const string &in liveId, const string &in name, uint startDate, uint endDate, uint matchesGenerationDate, uint nbPlayers, uint leaderboardId) {
     this._id = id;
-    this._uid = uid;
+    this._liveId = liveId;
     this._name = name;
     this._startDate = startDate;
     this._endDate = endDate;
+    this._matchesGenerationDate = matchesGenerationDate;
+    this._nbPlayers = nbPlayers;
     this._leaderboardId = leaderboardId;
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Challenge(const Json::Value &in j) {
+  Competition(const Json::Value &in j) {
     this._id = j["id"];
-    this._uid = j["uid"];
+    this._liveId = j["liveId"];
     this._name = j["name"];
     this._startDate = j["startDate"];
     this._endDate = j["endDate"];
+    this._matchesGenerationDate = j["matchesGenerationDate"];
+    this._nbPlayers = j["nbPlayers"];
     this._leaderboardId = j["leaderboardId"];
   }
   
   Json::Value ToJson() {
     Json::Value j = Json::Object();
     j["id"] = _id;
-    j["uid"] = _uid;
+    j["liveId"] = _liveId;
     j["name"] = _name;
     j["startDate"] = _startDate;
     j["endDate"] = _endDate;
+    j["matchesGenerationDate"] = _matchesGenerationDate;
+    j["nbPlayers"] = _nbPlayers;
     j["leaderboardId"] = _leaderboardId;
     return j;
   }
@@ -43,8 +51,8 @@ class Challenge {
     return this._id;
   }
   
-  const string get_uid() const {
-    return this._uid;
+  const string get_liveId() const {
+    return this._liveId;
   }
   
   const string get_name() const {
@@ -59,18 +67,28 @@ class Challenge {
     return this._endDate;
   }
   
+  uint get_matchesGenerationDate() const {
+    return this._matchesGenerationDate;
+  }
+  
+  uint get_nbPlayers() const {
+    return this._nbPlayers;
+  }
+  
   uint get_leaderboardId() const {
     return this._leaderboardId;
   }
   
   /* Methods // Mixin: Op Eq */
-  bool opEquals(const Challenge@ &in other) {
+  bool opEquals(const Competition@ &in other) {
     return true
       && _id == other.id
-      && _uid == other.uid
+      && _liveId == other.liveId
       && _name == other.name
       && _startDate == other.startDate
       && _endDate == other.endDate
+      && _matchesGenerationDate == other.matchesGenerationDate
+      && _nbPlayers == other.nbPlayers
       && _leaderboardId == other.leaderboardId
       ;
   }
@@ -79,10 +97,12 @@ class Challenge {
   const string ToRowString() {
     string ret = "";
     ret += '' + _id + ",";
-    ret += TRS_WrapString(_uid) + ",";
+    ret += TRS_WrapString(_liveId) + ",";
     ret += TRS_WrapString(_name) + ",";
     ret += '' + _startDate + ",";
     ret += '' + _endDate + ",";
+    ret += '' + _matchesGenerationDate + ",";
+    ret += '' + _nbPlayers + ",";
     ret += '' + _leaderboardId + ",";
     return ret;
   }
@@ -92,9 +112,9 @@ class Challenge {
   }
 }
 
-namespace Challenge {
+namespace Competition {
   /* Namespace // Mixin: Row Serialization */
-  Challenge FromRowString(const string &in str) {
+  Competition FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
@@ -107,7 +127,7 @@ namespace Challenge {
     chunk = tmp[1].SubStr(0, chunkLen);
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
-    string uid = chunk;
+    string liveId = chunk;
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -123,8 +143,14 @@ namespace Challenge {
     uint endDate = Text::ParseInt(chunk);
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
+    uint matchesGenerationDate = Text::ParseInt(chunk);
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint nbPlayers = Text::ParseInt(chunk);
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
     uint leaderboardId = Text::ParseInt(chunk);
-    return Challenge(id, uid, name, startDate, endDate, leaderboardId);
+    return Competition(id, liveId, name, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId);
   }
   
   void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {

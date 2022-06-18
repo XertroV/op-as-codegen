@@ -29,6 +29,9 @@ clsStart name = [ "class " <> name <> " {" ]
 clsEnd ∷ Lines
 clsEnd = [ "}" ]
 
+clsExportFromNamespace :: String -> String -> String -> Lines
+clsExportFromNamespace name ns clsName = [ "class " <> name <> " : " <> ns <> "::" <> clsName <> " {}" ]
+
 -- | make a comment line
 comment ∷ String → Lines
 comment s = [ "/* " <> s <> " */" ]
@@ -89,6 +92,9 @@ toPropFields fields = fieldPrepend "_" <$> fields
 -- | testing helper
 printTestSuccess ∷ String -> Int -> String
 printTestSuccess fnName nTests = "print('\\\\$2f6Unit Test Success: " <> fnName <> " (" <> intToStr nTests <> " tests)');"
+
+printTestStart ∷ String -> Int -> String
+printTestStart fnName nTests = "print('\\\\$26fUnit Test Start: " <> fnName <> " (" <> intToStr nTests <> " tests)');"
 
 {-
 
@@ -152,7 +158,11 @@ fnCall :: String -> Array String -> String
 fnCall name args = name <> "(" <> joinWith ", " args <> ")"
 
 wrapMainTest ∷ String → Array String → AsFunction
-wrapMainTest name ls = wrapFunction "void" name [] $ ls <> [ printTestSuccess name nTestsToRun, "return;" ]
+wrapMainTest name ls =
+  wrapFunction "void" name []
+    $ [ printTestStart name nTestsToRun ]
+    <> ls
+    <> [ printTestSuccess name nTestsToRun, "return;" ]
 
 wrapForLoop ∷ String → Lines → Lines
 wrapForLoop p = wrapInitedScope ("for (" <> p <> ")")
@@ -165,6 +175,9 @@ wrapIf c = wrapInitedScope ("if (" <> c <> ")")
 
 wrapTwoScopes ∷ String → String → Lines → Lines → Lines
 wrapTwoScopes pre mid s1 s2 = [ pre <> " {" ] <> indent 1 s1 <> [ "} " <> mid <> " {" ] <> indent 1 s2 <> [ "}" ]
+
+wrapIfElse :: String -> Lines -> Lines -> Lines
+wrapIfElse c = wrapTwoScopes ("if (" <> c <> ")") "else"
 
 wrapTryCatch :: Lines -> Lines -> Lines
 wrapTryCatch = wrapTwoScopes "try" "catch"

@@ -1,6 +1,7 @@
 module Mixins.RowSz
   ( mxRowSz
   , trs_arrayFn
+  , frs_genNamespace
   ) where
 
 import Prelude
@@ -18,7 +19,7 @@ import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
 import SzAsTypes (frs_arrayFnName, isJTypeStrWrapped, jValFromStr, jValToStr, trs_arrayFnName)
-import Types (AsFunction, JField(..), JFields, JType(..), JsonObj(..), Lines, CodeBlocks)
+import Types (AsFunction, CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines)
 
 {-|
   The idea is to serialize (sz) into a value-safe format that omits keys and is suitable for an append only DB.
@@ -59,10 +60,10 @@ mxRowSz :: Mixin
 mxRowSz =
   { name: _MX_ROW_SZ_NAME
   , requires: [ mxDefaultProps.name, mxCommonTesting.name, mxOpEq.name ]
-  , comprisingRequires: []
+  , comprisingRequires: [ _MX_ROW_SZ_NAME ]
   , properties: Nothing
   , methods: Just $ \(JsonObj _objName fields) -> intercalate ln $ [ (toRowString fields).decl, trs_wrapStringFn.decl ] <> allArrayTrsFuncs fields
-  , namespace: Just $ \(JsonObj objName fields) -> intercalate ln $ [ (fromRowString objName fields).decl ] <> allArrayFrsFuncs fields
+  , namespace: Just $ frs_genNamespace
   , tests: Just $ genTests rowSzTests
   }
 
@@ -100,6 +101,9 @@ allArrayTrsFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrTrsIfArr
   arrTrsIfArr (JField _n (JArray t)) = (trs_arrayFn t).decl
 
   arrTrsIfArr _ = []
+
+frs_genNamespace :: JsonObj -> Lines
+frs_genNamespace (JsonObj objName fields) = intercalate ln $ [ (fromRowString objName fields).decl ] <> allArrayFrsFuncs fields
 
 fromRowString :: String -> Array JField -> AsFunction
 fromRowString name fields =

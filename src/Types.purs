@@ -44,6 +44,7 @@ data JType
   | JArray JType
   | JObject JsonObj
   | JDict JType -- | Like a JObject but has unknown keys. All values must have the same type. Keys are always strings.
+  | JMaybe JType -- | Nullable json values; either null or JType.
 
 derive instance eqJType :: Eq JType
 
@@ -62,6 +63,11 @@ isJDict j = case j of
   (JDict _) -> true
   _ -> false
 
+isJMaybe ∷ JType → Boolean
+isJMaybe j = case j of
+  (JMaybe _) -> true
+  _ -> false
+
 object ∷ String → JsonObj
 object name = JsonObj name []
 
@@ -74,3 +80,6 @@ type AsFunction
     , callRaw :: Array String -> String
     , fields :: Maybe JFields
     }
+
+getDecl :: AsFunction -> Lines
+getDecl { decl } = decl

@@ -1,5 +1,5 @@
 #if UNIT_TEST
-namespace Test_ChallengeDB2 {
+namespace Test_MaybeOfUint {
   /* Test // Mixin: Common Testing */
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
@@ -29,7 +29,7 @@ namespace Test_ChallengeDB2 {
     return;
   }
   
-  bool unitTestResults_ChallengeDB2_CommonTesting = true
+  bool unitTestResults_MaybeOfUint_CommonTesting = true
     && runAsync(CoroutineFunc(UnitTest_Common_Nop))
     ;
 }

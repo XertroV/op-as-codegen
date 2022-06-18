@@ -24,6 +24,7 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   void UnitTest_Common_Nop() {
+    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
     print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
     return;
   }
@@ -54,6 +55,7 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfChallenge_WriteLog() {
+    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfChallenge_WriteLog (42 tests)');
     DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();

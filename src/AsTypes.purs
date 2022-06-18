@@ -5,7 +5,7 @@ import Data.Array as A
 import Data.Maybe (fromMaybe)
 import Data.String (toUpper)
 import Data.String as S
-import Data.String.Utils (charAt)
+import Data.String.Utils (charAt, endsWith)
 import Partial.Unsafe (unsafeCrashWith)
 import Types (JType(..), JsonObj(..))
 
@@ -29,6 +29,11 @@ jTyToAsTy (JArray t) = "array<" <> jTyToAsTy t <> ">"
 jTyToAsTy (JObject (JsonObj n _fs)) = n <> "@"
 
 jTyToAsTy (JDict t) = "dictionary@"
+
+jTyToAsTy t@(JMaybe _) = jTyPascalCase t # refOnce
+
+refOnce :: String -> String
+refOnce s = if endsWith "@" s then s else s <> "@"
 
 -- | sometimes we want function arguments to be slightly modified versions of what they'd be otherwise, e.g., const string &in
 jTyToFuncArg :: JType -> String
@@ -54,8 +59,18 @@ jTyToFuncRes j = jTyToAsTy j
 jTyPascalCase :: JType -> String
 jTyPascalCase ty = case ty of
   (JArray ty') -> "ArrayOf" <> jTyPascalCase ty'
+  (JMaybe ty') -> "MaybeOf" <> jTyPascalCase ty'
   (JObject (JsonObj n _)) -> n
   _ -> jTyToAsTy ty # \s -> toUpper (charAt 0 s # fromMaybe "") <> fromMaybe "" (S.uncons s <#> \u -> u.tail)
+
+jTyIsPrim :: JType -> Boolean
+jTyIsPrim t = case t of
+  JInt -> true
+  JUint -> true
+  JString -> true
+  JNumber -> true
+  JBool -> true
+  _ -> false
 
 -- | Is this a type that we should reference when setting?
 jTySetAsRef :: JType -> Boolean
@@ -74,6 +89,9 @@ jTySetAsRef JNull = false
 jTySetAsRef (JArray _) = false
 
 jTySetAsRef _ = true
+
+setVarOfJTyToVal ∷ String → JType → String → String
+setVarOfJTyToVal var ty val = (if jTySetAsRef ty then "@" else "") <> var <> " = " <> val <> ";"
 
 -- | When casting might be required, should we?
 -- | (alternative is to wrap like string(x), int(x), etc)
@@ -105,3 +123,5 @@ jTyDefaultVal (JArray t) = "{}" -- "array<" <> <> ">()"
 jTyDefaultVal (JObject (JsonObj n fs)) = if A.length fs == 0 then n <> "()" else unsafeCrashWith "unimpl: default value for JObjs"
 
 jTyDefaultVal (JDict t) = "dictionary()"
+
+jTyDefaultVal t = unsafeCrashWith $ "unimplemented: default value for jtype " <> jTyPascalCase t

@@ -7,16 +7,22 @@ class ChallengeDB {
     this._challenges = challenges;
   }
   
-  /* Methods // Mixin: From JSON Object */
+  /* Methods // Mixin: ToFrom JSON Object */
   ChallengeDB(const Json::Value &in j) {
-    Json::Value _tmp_challenges = j["challenges"];
-    this._challenges = array<Challenge@>(_tmp_challenges.Length);
-    j["challenges"];
+    this._challenges = array<Challenge@>(j["challenges"].Length);
+    for (uint i = 0; i < j["challenges"].Length; i++) {
+      @this._challenges[i] = Challenge(j["challenges"][i]);
+    }
   }
   
-  /* Methods // Mixin: To JSON Object */
   Json::Value ToJson() {
     Json::Value j = Json::Object();
+    Json::Value _tmp_challenges = Json::Array();
+    for (uint i = 0; i < _challenges.Length; i++) {
+      auto v = _challenges[i];
+      _tmp_challenges.Add(v.ToJson());
+    }
+    j["challenges"] = _tmp_challenges;
     return j;
   }
   
