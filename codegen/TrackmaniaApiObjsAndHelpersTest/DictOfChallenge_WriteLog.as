@@ -85,7 +85,7 @@ shared class DictOfChallenge_WriteLog {
         }
       }
       f.Close();
-      trace('DictOfChallenge_WriteLog loaded ' + GetSize() + ' entries from log file: ' + _logPath + ' in ' + (Time::Now - start) + ' ms.');
+      trace('\\$a4fDictOfChallenge_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
       f.Close();

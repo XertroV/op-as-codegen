@@ -1,4 +1,4 @@
-shared class DictOfTrackOfTheDayEntry_WriteLog {
+shared class DictOfTmMap_WriteLog {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
@@ -6,16 +6,16 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   private string _logPath;
   
   /* Methods // Mixin: Dict Backing */
-  DictOfTrackOfTheDayEntry_WriteLog(const string &in logDir, const string &in logFile) {
+  DictOfTmMap_WriteLog(const string &in logDir, const string &in logFile) {
     @_d = dictionary();
     InitLog(logDir, logFile);
   }
   
-  TrackOfTheDayEntry@ Get(const string &in key) const {
-    return cast<TrackOfTheDayEntry@>(_d[key]);
+  TmMap@ Get(const string &in key) const {
+    return cast<TmMap@>(_d[key]);
   }
   
-  void Set(const string &in key, TrackOfTheDayEntry@ value) {
+  void Set(const string &in key, TmMap@ value) {
     @_d[key] = value;
     WriteOnSet(key, value);
   }
@@ -28,12 +28,12 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return _d.GetKeys();
   }
   
-  _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ GetItem(const string &in key) const {
-    return _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, Get(key));
+  _DictOfTmMap_WriteLog::KvPair@ GetItem(const string &in key) const {
+    return _DictOfTmMap_WriteLog::KvPair(key, Get(key));
   }
   
-  array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>@ GetItems() const {
-    array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@> ret = array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>(GetSize());
+  array<_DictOfTmMap_WriteLog::KvPair@>@ GetItems() const {
+    array<_DictOfTmMap_WriteLog::KvPair@> ret = array<_DictOfTmMap_WriteLog::KvPair@>(GetSize());
     array<string> keys = GetKeys();
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
@@ -42,7 +42,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
-  TrackOfTheDayEntry@ opIndex(const string &in key) {
+  TmMap@ opIndex(const string &in key) {
     return Get(key);
   }
   
@@ -62,7 +62,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   /* Dict Optional: Write Log = True */
   private void InitLog(const string &in logDir, const string &in logFile) {
     _logPath = logDir + '/' + logFile;
-    trace('DictOfTrackOfTheDayEntry_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
+    trace('DictOfTmMap_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
     if (logDir.Length == 0) {
       throw('Invalid path: ' + _logPath);
     }
@@ -80,20 +80,20 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
       while (!f.EOF()) {
         line = f.ReadLine();
         if (line.Length > 0) {
-          auto kv = _DictOfTrackOfTheDayEntry_WriteLog::_KvPair::FromRowString(line);
+          auto kv = _DictOfTmMap_WriteLog::_KvPair::FromRowString(line);
           @_d[kv.key] = kv.val;
         }
       }
       f.Close();
-      trace('DictOfTrackOfTheDayEntry_WriteLog loaded ' + GetSize() + ' entries from log file: ' + _logPath + ' in ' + (Time::Now - start) + ' ms.');
+      trace('\\$a4fDictOfTmMap_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
       f.Close();
     }
   }
   
-  private void WriteOnSet(const string &in key, TrackOfTheDayEntry@ value) {
-    _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ p = _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, value);
+  private void WriteOnSet(const string &in key, TmMap@ value) {
+    _DictOfTmMap_WriteLog::KvPair@ p = _DictOfTmMap_WriteLog::KvPair(key, value);
     IO::File f(_logPath, IO::FileMode::Append);
     f.WriteLine(p.ToRowString());
     f.Close();
@@ -106,15 +106,15 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   }
 }
 
-namespace _DictOfTrackOfTheDayEntry_WriteLog {
+namespace _DictOfTmMap_WriteLog {
   /* Namespace // Mixin: Dict Backing */
   shared class KvPair {
     /* Properties // Mixin: Default Properties */
     private string _key;
-    private TrackOfTheDayEntry@ _val;
+    private TmMap@ _val;
     
     /* Methods // Mixin: Default Constructor */
-    KvPair(const string &in key, TrackOfTheDayEntry@ val) {
+    KvPair(const string &in key, TmMap@ val) {
       this._key = key;
       @this._val = val;
     }
@@ -124,7 +124,7 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       return this._key;
     }
     
-    TrackOfTheDayEntry@ get_val() const {
+    TmMap@ get_val() const {
       return this._val;
     }
     
@@ -183,7 +183,7 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       chunk = tmp[1].SubStr(0, chunkLen);
       FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
       remainder = tmp[1].SubStr(chunkLen + 2);
-      TrackOfTheDayEntry@ val = _TrackOfTheDayEntry::FromRowString(chunk);
+      TmMap@ val = _TmMap::FromRowString(chunk);
       return KvPair(key, val);
     }
     

@@ -18,7 +18,7 @@ import Node.FS.Sync as F
 main :: Effect Unit
 main = do
   let
-    baseName = "CotdObjects"
+    baseName = "TrackmaniaApiObjsAndHelpers"
 
     mkPlugin pluginName = generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
   mkPlugin baseName

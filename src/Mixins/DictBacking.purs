@@ -10,6 +10,7 @@ import Data.String (joinWith)
 import Data.String as S
 import Gen.Class (AsClass, jsonObjToClass)
 import Macros.Arrays (mapArray_For)
+import ManiaColors (c_mid_grey, c_purple)
 import Mixins.AllMixins (_MX_DICT_BACKING_NAME)
 import Mixins.CommonTesting (assertFn, countFileLinesFn, mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
@@ -149,7 +150,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
                           ]
                   )
               <> [ "f.Close();"
-                , "trace('" <> n <> " loaded ' + GetSize() + ' entries from log file: ' + _logPath + ' in ' + (Time::Now - start) + ' ms.');"
+                , "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
                 ]
           )
           [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
