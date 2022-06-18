@@ -35,7 +35,7 @@ toStringMethods (JsonObj name fields) = intercalate ln $ [ toStringFn.decl ] <> 
   toStringFn =
     wrapFunction "const string" "ToString" []
       $ [ "return '" <> name <> "('" ]
-      <> indent 1 ([ "+ string " <> ns <> " Join({" <> intercalate ", " (fieldToStringEl <$> fields) <> "}, ', ')" ] <> [ "+ ')';" ])
+      <> indent 1 ([ "+ string" <> ns <> "Join({" <> intercalate ", " (fieldToStringEl <$> fields) <> "}, ', ')" ] <> [ "+ ')';" ])
 
   ns = "::"
 

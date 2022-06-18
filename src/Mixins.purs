@@ -56,7 +56,7 @@ addMixinNamespaces obj (s@{ out }) ({ namespace, name }) = s { out = out <> [ na
 runMixinNamespaces :: JsonObj -> Array Mixin -> Array String
 runMixinNamespaces obj@(JsonObj objName _) mixins = wrapNS $ catMaybes (foldl (addMixinNamespaces obj) initDefaultMixinState mixins).out
   where
-  wrapNS ls = if A.length ls > 0 then wrapNamespace objName ls else []
+  wrapNS ls = if A.length ls > 0 then wrapNamespace ("_" <> objName) ls else []
 
 addMixinTests :: JsonObj -> MixinState -> Mixin -> MixinState
 addMixinTests obj (s@{ out }) ({ tests, name }) = s { out = out <> [ tests <#> \f -> comment ("Test // Mixin: " <> name) <> f (s { currMixin = name }) obj ] }

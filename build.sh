@@ -4,6 +4,8 @@ set -e
 
 npx spago run
 
-rm -r ~/win/OpenplanetNext/Plugins/testCodegen/
+rm -r ~/win/OpenplanetNext/Plugins/CotdObjects
+rm -r ~/win/OpenplanetNext/Plugins/CotdObjectsTest
 
-cp -av ./codegen/testCodegen ~/win/OpenplanetNext/Plugins/
+cp -av ./codegen/CotdObjects ~/win/OpenplanetNext/Plugins/
+cp -av ./codegen/CotdObjectsTest ~/win/OpenplanetNext/Plugins/

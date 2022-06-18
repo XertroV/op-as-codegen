@@ -2,7 +2,7 @@ module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
 import AsTypes (castOrWrap, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
-import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapSQuotes, wrapWhileLoop)
+import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapWhileLoop)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -26,10 +26,10 @@ import Types (JField(..), JType(..), JsonObj(..), Lines, field, object)
 import Utils (intToStr, noSpaces)
 
 type DictOpts
-  = { dictProp :: String, valType :: JType, writeLog :: Boolean }
+  = { dictProp :: String, valType :: JType, writeLog :: Boolean, extraMixins :: Array Mixin }
 
 mkDO :: JType -> DictOpts
-mkDO valType = { dictProp: "d", valType, writeLog: false }
+mkDO valType = { dictProp: "d", valType, writeLog: false, extraMixins: [] }
 
 mxDictBacking :: DictOpts -> Mixin
 mxDictBacking opts@{ dictProp, valType } =
@@ -135,21 +135,24 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
 
   loadWriteLogFromDisk =
     wrapFunction "private void" "LoadWriteLogFromDisk" []
-      $ wrapIf "IO::FileExists(_logPath)"
-      $ [ "string line;"
-        , "IO::File f(_logPath, IO::FileMode::Read);"
-        ]
-      <> wrapWhileLoop "!f.EOF()"
-          ( [ "line = f.ReadLine();" ]
-              <> wrapIf "line.Length > 0"
-                  [ "auto kv = " <> kvPair <> "::FromRowString(line);"
-                  -- , "_d[kv.key] = kv.val;" -- set directly to avoid triggering logging action from Set function.
-                  , setV (JField (d <> "[kv.key]") valType) "kv.val"
-                  ]
+      $ wrapIfElse "IO::FileExists(_logPath)"
+          ( [ "uint start = Time::Now;"
+            , "string line;"
+            , "IO::File f(_logPath, IO::FileMode::Read);"
+            ]
+              <> wrapWhileLoop "!f.EOF()"
+                  ( [ "line = f.ReadLine();" ]
+                      <> wrapIf "line.Length > 0"
+                          [ "auto kv = " <> kvPairNs <> "::FromRowString(line);"
+                          -- , "_d[kv.key] = kv.val;" -- set directly to avoid triggering logging action from Set function.
+                          , setV (JField (d <> "[kv.key]") valType) "kv.val"
+                          ]
+                  )
+              <> [ "f.Close();"
+                , "trace('" <> n <> " loaded ' + GetSize() + ' entries from log file: ' + _logPath + ' in ' + (Time::Now - start) + ' ms.');"
+                ]
           )
-      <> [ "f.Close();"
-        , "trace('" <> n <> " loaded ' + GetSize() + ' entries from log file: ' + _logPath);"
-        ]
+          [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
 
   existsFn = proxyFnKeyRet "bool" "Exists"
 
@@ -174,7 +177,9 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
           [ "@ret[i] = GetItem(key);" ]
       <> [ "return ret;" ]
 
-  kvPair = n <> "::KvPair"
+  kvPair = "_" <> n <> "::KvPair"
+
+  kvPairNs = "_" <> n <> "::_KvPair"
 
   mkKvPair k v = kvPair <> "(" <> joinWith ", " [ k, v ] <> ")"
 
@@ -218,7 +223,7 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   checkerFnName = "Test_ProxyFns_" <> objName
 
-  kvPairName = objName <> "::KvPair"
+  kvPairName = "_" <> objName <> "::KvPair"
 
   kvPairVar = "tmpKV"
 
@@ -329,6 +334,7 @@ namespace = Just namespace'
 namespace' :: JsonObj -> Lines
 namespace' jo = intercalate ln [ (kvPair jo).cls.mainFile ]
 
+kvPairObjName ∷ String
 kvPairObjName = "KvPair"
 
 kvPair :: JsonObj -> { cls :: AsClass, obj :: JsonObj }

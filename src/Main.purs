@@ -5,6 +5,7 @@ import CommonGlobalClasses (getCommonClasses)
 import DBTest (challengeCls, everything)
 import Data.Array (intercalate)
 import Data.String (joinWith)
+import Data.String.Utils (endsWith)
 import Data.Traversable (sequence)
 import Effect (Effect)
 import Effect.Console (log)
@@ -17,8 +18,11 @@ import Node.FS.Sync as F
 main :: Effect Unit
 main = do
   let
-    pluginName = "testCodegen"
-  generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
+    baseName = "CotdObjects"
+
+    mkPlugin pluginName = generateScaffoldProject { dir: "codegen" <> "/" <> pluginName, pluginName, cs: everything }
+  mkPlugin baseName
+  mkPlugin $ baseName <> "Test"
 
 type ScaffoldProps
   = { cs :: Array AsClass, dir :: String, pluginName :: String }
@@ -33,9 +37,9 @@ generateScaffoldProject { cs, dir, pluginName } = do
   mkdir' testDir { mode: P.mkPerms P.all P.all P.none, recursive: true }
   log $ "Initialized " <> dir
   log "Writing class files"
-  _ <- sequence $ writeClass <$> (cs <> getCommonClasses cs)
+  filesWritten <- sequence $ writeClass <$> (cs <> getCommonClasses cs)
   log "Writing info.toml"
-  genInfoToml dir pluginName
+  genInfoToml dir pluginName (if endsWith "Test" pluginName then "UNIT_TEST" else "RELEASE") filesWritten
   log "Scaffold project generated"
   pure unit
   where
@@ -47,18 +51,20 @@ generateScaffoldProject { cs, dir, pluginName } = do
     writeTextFile UTF8 mainPath $ intercalate "\n" cls.mainFile
     writeTextFile UTF8 testPath $ intercalate "\n" cls.testFile
     log $ "Wrote class files w/ main file: " <> mainPath
+    pure $ cls.name <> ".as"
 
-genInfoToml ∷ String → String → Effect Unit
-genInfoToml dir name = do
-  writeTextFile UTF8 (dir <> "/info.toml") (infoTomlContents name)
+genInfoToml ∷ String → String -> String -> Array String → Effect Unit
+genInfoToml dir name envDefine exports = do
+  writeTextFile UTF8 (dir <> "/info.toml") (infoTomlContents name envDefine exports)
 
-infoTomlContents ∷ String → String
-infoTomlContents name =
+infoTomlContents ∷ String → String -> Array String -> String
+infoTomlContents name envDefine exports =
   joinWith "\n"
     [ "[meta]"
     , "name = \"" <> name <> "\""
     , "author = 'op-as-codegen'"
     , ""
     , "[script]"
-    , "defines = [ 'UNIT_TEST' ]"
+    , "defines = [ '" <> envDefine <> "' ]"
+    , "shared_exports = [ '" <> joinWith "', '" exports <> "' ]"
     ]

@@ -44,9 +44,9 @@ jValFromStr JBool var = "('true' == " <> var <> ".ToLower())"
 
 jValFromStr JNull var = unsafeCrashWith $ "Cannot parse null from text. Var name: " <> var <> ""
 
-jValFromStr (JObject (JsonObj n _)) var = n <> "::FromRowString(" <> var <> ")"
+jValFromStr (JObject (JsonObj n _)) var = "_" <> n <> "::FromRowString(" <> var <> ")"
 
-jValFromStr t'@(JMaybe t) var = jTyPascalCase t' <> "::FromRowString(" <> var <> ")"
+jValFromStr t'@(JMaybe t) var = "_" <> jTyPascalCase t' <> "::FromRowString(" <> var <> ")"
 
 jValFromStr (JArray t) var = frs_arrayFnName t <> "(" <> var <> ")"
 

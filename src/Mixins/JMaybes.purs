@@ -115,7 +115,7 @@ genNamespace (JsonObj objName fields) = frs.decl
   fTy = getFTy $ unsafePartial $ P.head fields
 
   frs =
-    wrapFunction' objName "FromRowString" [ "const string &in str" ]
+    wrapFunction' ("shared " <> objName) "FromRowString" [ "const string &in str" ]
       $ [ "string chunk = '', remainder = str;"
         , "array<string> tmp = array<string>(2);"
         , "uint chunkLen;"

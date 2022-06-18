@@ -24,13 +24,13 @@ stmt :: String -> String
 stmt = flip (<>) ";"
 
 clsStart ∷ String → Lines
-clsStart name = [ "class " <> name <> " {" ]
+clsStart name = [ "shared class " <> name <> " {" ]
 
 clsEnd ∷ Lines
 clsEnd = [ "}" ]
 
 clsExportFromNamespace :: String -> String -> String -> Lines
-clsExportFromNamespace name ns clsName = [ "class " <> name <> " : " <> ns <> "::" <> clsName <> " {}" ]
+clsExportFromNamespace name ns clsName = [ "shared class " <> name <> " : " <> ns <> "::" <> clsName <> " {}" ]
 
 -- | make a comment line
 comment ∷ String → Lines

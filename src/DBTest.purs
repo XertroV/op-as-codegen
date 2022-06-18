@@ -47,7 +47,7 @@ dictGen opts@{ valType } = { cls, obj }
   cls =
     jsonObjToClass obj []
       $ [ mxCommonTesting, mxDefaultProps, mxDictBacking opts ]
-      <> (if opts.writeLog then [] else [])
+      <> opts.extraMixins
 
 dictStr :: { cls :: AsClass, obj :: JsonObj }
 dictStr = dictGen $ mkDO JString
@@ -61,29 +61,25 @@ dictChallenge = dictGen $ mkDO $ JObject codecChallenge
 dWlChallenge :: { cls :: AsClass, obj :: JsonObj }
 dWlChallenge = dictGen $ (mkDO $ JObject codecChallenge) { writeLog = true }
 
-codecChallengeDb :: JsonObj
-codecChallengeDb =
-  object "ChallengeDB"
-    # field "challenges"
-        (JArray (JObject codecChallenge))
-
-codecChallengeDbCls :: AsClass
-codecChallengeDbCls =
-  jsonObjToClass codecChallengeDb [ challengeCls ]
-    typicalMixins
-
-challengeDb2 :: { cls :: AsClass, obj :: JsonObj }
-challengeDb2 = { cls, obj }
-  where
-  obj = object "ChallengeDB2" # field "challenges" (JObject dictChallenge.obj)
-
-  cls =
-    jsonObjToClass obj [ challengeCls ]
-      [ mxCommonTesting
-      , mxDefaultProps
-      , mxEmptyCons
-      ]
-
+-- codecChallengeDb :: JsonObj
+-- codecChallengeDb =
+--   object "ChallengeDB"
+--     # field "challenges"
+--         (JArray (JObject codecChallenge))
+-- codecChallengeDbCls :: AsClass
+-- codecChallengeDbCls =
+--   jsonObjToClass codecChallengeDb [ challengeCls ]
+--     typicalMixins
+-- challengeDb :: { cls :: AsClass, obj :: JsonObj }
+-- challengeDb = { cls, obj }
+--   where
+--   obj = object "ChallengeDB" # field "challenges" (JObject dictChallenge.obj)
+--   cls =
+--     jsonObjToClass obj [ challengeCls ]
+--       [ mxCommonTesting
+--       , mxDefaultProps
+--       , mxEmptyCons
+--       ]
 type ClsWithObj
   = { cls :: AsClass, obj :: JsonObj }
 
@@ -126,6 +122,80 @@ matchResults = { cls, obj }
       # field "scoreUnit" JString
       # field "results" (JArray (JObject matchResult.obj))
 
+totdEntry :: ClsWithObj
+totdEntry = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] typicalMixins
+
+  -- additional fields: relativeStart, relativeEnd
+  obj =
+    object "TrackOfTheDayEntry"
+      # field "campaignId" JUint
+      # field "mapUid" JString
+      # field "day" JUint
+      # field "monthDay" JUint
+      # field "seasonUid" JString
+      # field "startTimestamp" JUint
+      # field "endTimestamp" JUint
+
+totdMonth :: ClsWithObj
+totdMonth = { cls, obj }
+  where
+  cls = jsonObjToClass obj [ totdEntry.cls ] typicalMixins
+
+  -- additional field: media object (all fields are "" so who cares)
+  obj =
+    object "TotdMonth"
+      # field "year" JUint
+      # field "month" JUint
+      # field "lastDay" JUint
+      # field "days" (JArray (JObject totdEntry.obj))
+
+totdResp :: ClsWithObj
+totdResp = { cls, obj }
+  where
+  cls = jsonObjToClass obj [ totdMonth.cls ] typicalMixins
+
+  -- additional field: relativeNextRequest
+  obj =
+    object "TotdResp"
+      # field "monthList" (JArray (JObject totdMonth.obj))
+      # field "itemCount" JUint
+      # field "nextRequestTimestamp" JUint
+
+totdDb :: ClsWithObj
+totdDb = dictGen $ (mkDO $ JObject totdEntry.obj) { writeLog = true }
+
+tmMap :: ClsWithObj
+tmMap = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] typicalMixins
+
+  obj =
+    object "TmMap"
+      # field "Id" JString
+      # field "Uid" JString
+      # field "Name" JString
+      # field "FileName" JString
+      # field "AuthorScore" JString
+      # field "GoldScore" JString
+      # field "SilverScore" JString
+      # field "BronzeScore" JString
+      # field "AuthorDisplayName" JString
+      # field "AuthorAccountId" JString
+      # field "AuthorWebServicesUserId" JString
+      # field "SubmitterAccountId" JString
+      # field "SubmitterWebServicesUserId" JString
+      # field "Style" JString
+      # field "TimeStamp" JString
+      # field "Type" JString
+      # field "FileUrl" JString
+      # field "ThumbnailUrl" JString
+
+tmMapDb :: ClsWithObj
+tmMapDb = dictGen $ (mkDO $ JObject tmMap.obj) { writeLog = true }
+
+-- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
   [ dictStr.cls
@@ -133,9 +203,15 @@ everything =
   , dictInt.cls
   , dictChallenge.cls
   , dWlChallenge.cls
-  , challengeDb2.cls
-  , codecChallengeDbCls
+  -- , challengeDb2.cls
+  -- , codecChallengeDbCls
   , competition.cls
   , matchResult.cls
   , matchResults.cls
+  , totdEntry.cls
+  , totdMonth.cls
+  , totdResp.cls
+  , totdDb.cls
+  , tmMap.cls
+  , tmMapDb.cls
   ]

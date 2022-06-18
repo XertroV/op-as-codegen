@@ -2,7 +2,7 @@ module CommonGlobalClasses where
 
 import Prelude
 import AsTypes (jTyPascalCase)
-import Data.Array (catMaybes, intercalate)
+import Data.Array (catMaybes, intercalate, nubEq)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
 import Gen.Class (AsClass, jsonObjToClass)
@@ -22,7 +22,7 @@ getCommonClasses cs = requiredCommonClasses
       <> _getReqJMaybeClasses cs
 
 _getReqJMaybeClasses ∷ Array AsClass → Array AsClass
-_getReqJMaybeClasses cs = getMaybeClassFor <$> jMaybeFs
+_getReqJMaybeClasses cs = getMaybeClassFor <$> (nubEq jMaybeFs)
   where
   allFields = cs <#> (\{ obj: JsonObj n fs } -> fs) # intercalate []
 

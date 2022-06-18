@@ -1,6 +1,0 @@
-[meta]
-name = "testCodegen"
-author = 'op-as-codegen'
-
-[script]
-defines = [ 'UNIT_TEST' ]

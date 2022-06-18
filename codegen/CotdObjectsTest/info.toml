@@ -1,0 +1,7 @@
+[meta]
+name = "CotdObjectsTest"
+author = 'op-as-codegen'
+
+[script]
+defines = [ 'UNIT_TEST' ]
+shared_exports = [ 'DictOfString.as', 'Challenge.as', 'DictOfInt.as', 'DictOfChallenge.as', 'DictOfChallenge_WriteLog.as', 'Competition.as', 'MatchResult.as', 'MatchResults.as', 'TrackOfTheDayEntry.as', 'TotdMonth.as', 'TotdResp.as', 'DictOfTrackOfTheDayEntry_WriteLog.as', 'TmMap.as', 'DictOfTmMap_WriteLog.as', 'MaybeOfUint.as' ]

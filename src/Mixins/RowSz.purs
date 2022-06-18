@@ -107,7 +107,7 @@ frs_genNamespace (JsonObj objName fields) = intercalate ln $ [ (fromRowString ob
 
 fromRowString :: String -> Array JField -> AsFunction
 fromRowString name fields =
-  wrapFunction' name "FromRowString" [ "const string &in str" ]
+  wrapFunction' ("shared " <> name) "FromRowString" [ "const string &in str" ]
     $ [ "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
       , "uint chunkLen;"
@@ -140,7 +140,7 @@ frs_arrayDefn arrTy =
   where
   arrayTypeAs = "array<" <> jTyToAsTy arrTy <> ">"
 
-  mkFunction = wrapFunction ("const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ JField "str" JString ]
+  mkFunction = wrapFunction ("shared const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ JField "str" JString ]
 
 setChunkAndRemainderForTy :: JType -> Lines
 setChunkAndRemainderForTy t = if isJTypeStrWrapped t then setChunkRemUnwrap else setChunkRemSimple
@@ -170,7 +170,7 @@ allArrayFrsFuncs = (_ <> [ frs_AssertDefn.decl ]) <<< A.filter (\ls -> A.length 
 
 frs_AssertDefn :: AsFunction
 frs_AssertDefn =
-  wrapFunction' "void" "FRS_Assert_String_Eq" [ "const string &in sample", "const string &in expected" ]
+  wrapFunction' "shared void" "FRS_Assert_String_Eq" [ "const string &in sample", "const string &in expected" ]
     $ wrapIf "sample != expected" [ "throw('[FRS_Assert_String_Eq] expected sample string to equal: \"' + expected + '\" but it was \"' + sample + '\" instead.');" ]
 
 rowSzTests :: TestGenerators
@@ -190,8 +190,10 @@ test_SzThenUnSz ms o@(JsonObj objName fields) = { fnName, ls }
       
       -- [ "throw('SzThenUnSz fail for "]
       
-      <> [ "assert(tmp == " <> fnCall (objName <> "::FromRowString") [ "tmp.ToRowString()" ] <> ", 'SzThenUnSz fail: ' + tmp.ToRowString());" ]
+      <> [ "assert(tmp == " <> fnCall ("_" <> objName <> ns <> "FromRowString") [ "tmp.ToRowString()" ] <> ", 'SzThenUnSz fail: ' + tmp.ToRowString());" ]
       <> [ "return true;" ]
+
+  ns = "::"
 
   objTy = jTyToAsTy (JObject o)
 
