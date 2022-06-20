@@ -51,7 +51,7 @@ shared class MatchResult {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'MatchResult('
-      + string::Join({rank.ToString(), score.ToString(), participant}, ', ')
+      + string::Join({'rank=' + rank.ToString(), 'score=' + score.ToString(), 'participant=' + participant}, ', ')
       + ')';
   }
   

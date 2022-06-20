@@ -67,7 +67,7 @@ shared class MatchResults {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'MatchResults('
-      + string::Join({'' + roundPosition, matchLiveId, scoreUnit, TS_Array_MatchResult(results)}, ', ')
+      + string::Join({'roundPosition=' + '' + roundPosition, 'matchLiveId=' + matchLiveId, 'scoreUnit=' + scoreUnit, 'results=' + TS_Array_MatchResult(results)}, ', ')
       + ')';
   }
   

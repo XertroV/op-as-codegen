@@ -123,7 +123,7 @@ shared class Competition {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Competition('
-      + string::Join({'' + id, '' + startDate, '' + endDate, matchesGenerationDate.ToString(), '' + nbPlayers, '' + leaderboardId, name, liveId, creator, region.ToString(), description.ToString(), registrationStart.ToString()}, ', ')
+      + string::Join({'id=' + '' + id, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'matchesGenerationDate=' + matchesGenerationDate.ToString(), 'nbPlayers=' + '' + nbPlayers, 'leaderboardId=' + '' + leaderboardId, 'name=' + name, 'liveId=' + liveId, 'creator=' + creator, 'region=' + region.ToString(), 'description=' + description.ToString(), 'registrationStart=' + registrationStart.ToString()}, ', ')
       + ')';
   }
   

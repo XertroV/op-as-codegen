@@ -83,7 +83,7 @@ shared class TrackOfTheDayEntry {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TrackOfTheDayEntry('
-      + string::Join({'' + campaignId, mapUid, '' + day, '' + monthDay, seasonUid, '' + startTimestamp, '' + endTimestamp}, ', ')
+      + string::Join({'campaignId=' + '' + campaignId, 'mapUid=' + mapUid, 'day=' + '' + day, 'monthDay=' + '' + monthDay, 'seasonUid=' + seasonUid, 'startTimestamp=' + '' + startTimestamp, 'endTimestamp=' + '' + endTimestamp}, ', ')
       + ')';
   }
   

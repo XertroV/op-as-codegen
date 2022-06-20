@@ -131,7 +131,7 @@ namespace _DictOfCompetition_WriteLog {
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({key, val.ToString()}, ', ')
+        + string::Join({'key=' + key, 'val=' + val.ToString()}, ', ')
         + ')';
     }
     

@@ -41,7 +41,7 @@ shared class CompRoundMatches {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRoundMatches('
-      + string::Join({TS_Array_CompRoundMatch(matches)}, ', ')
+      + string::Join({'matches=' + TS_Array_CompRoundMatch(matches)}, ', ')
       + ')';
   }
   

@@ -41,7 +41,7 @@ shared class Challenges {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Challenges('
-      + string::Join({TS_Array_Challenge(challenges)}, ', ')
+      + string::Join({'challenges=' + TS_Array_Challenge(challenges)}, ', ')
       + ')';
   }
   

@@ -171,7 +171,7 @@ shared class TmMap {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TmMap('
-      + string::Join({Id, Uid, Name, FileName, '' + AuthorScore, '' + GoldScore, '' + SilverScore, '' + BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, '' + TimeStamp, Type, FileUrl, ThumbnailUrl}, ', ')
+      + string::Join({'Id=' + Id, 'Uid=' + Uid, 'Name=' + Name, 'FileName=' + FileName, 'AuthorScore=' + '' + AuthorScore, 'GoldScore=' + '' + GoldScore, 'SilverScore=' + '' + SilverScore, 'BronzeScore=' + '' + BronzeScore, 'AuthorDisplayName=' + AuthorDisplayName, 'AuthorAccountId=' + AuthorAccountId, 'AuthorWebServicesUserId=' + AuthorWebServicesUserId, 'SubmitterAccountId=' + SubmitterAccountId, 'SubmitterWebServicesUserId=' + SubmitterWebServicesUserId, 'Style=' + Style, 'TimeStamp=' + '' + TimeStamp, 'Type=' + Type, 'FileUrl=' + FileUrl, 'ThumbnailUrl=' + ThumbnailUrl}, ', ')
       + ')';
   }
   

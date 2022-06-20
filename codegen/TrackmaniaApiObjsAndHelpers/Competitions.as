@@ -41,7 +41,7 @@ shared class Competitions {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Competitions('
-      + string::Join({TS_Array_Competition(comps)}, ', ')
+      + string::Join({'comps=' + TS_Array_Competition(comps)}, ', ')
       + ')';
   }
   

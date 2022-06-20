@@ -67,7 +67,7 @@ shared class TotdMonth {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TotdMonth('
-      + string::Join({'' + year, '' + month, '' + lastDay, TS_Array_TrackOfTheDayEntry(days)}, ', ')
+      + string::Join({'year=' + '' + year, 'month=' + '' + month, 'lastDay=' + '' + lastDay, 'days=' + TS_Array_TrackOfTheDayEntry(days)}, ', ')
       + ')';
   }
   

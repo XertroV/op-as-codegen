@@ -39,7 +39,7 @@ toStringMethods (JsonObj name fields) = intercalate ln $ [ toStringFn.decl ] <> 
 
   ns = "::"
 
-  fieldToStringEl (JField n t) = jValSimpleStr t n
+  fieldToStringEl (JField n t) = "'" <> n <> "=' + " <> jValSimpleStr t n
 
 jValSimpleStr :: JType -> String -> String
 jValSimpleStr jf var = case jf of

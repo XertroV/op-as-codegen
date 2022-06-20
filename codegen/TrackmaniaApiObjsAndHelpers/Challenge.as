@@ -75,7 +75,7 @@ shared class Challenge {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Challenge('
-      + string::Join({'' + id, uid, name, '' + startDate, '' + endDate, '' + leaderboardId}, ', ')
+      + string::Join({'id=' + '' + id, 'uid=' + uid, 'name=' + name, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'leaderboardId=' + '' + leaderboardId}, ', ')
       + ')';
   }
   

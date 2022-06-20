@@ -67,7 +67,7 @@ shared class CompRoundMatch {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRoundMatch('
-      + string::Join({'' + id, '' + position, '' + isCompleted, name, clubMatchLiveId}, ', ')
+      + string::Join({'id=' + '' + id, 'position=' + '' + position, 'isCompleted=' + '' + isCompleted, 'name=' + name, 'clubMatchLiveId=' + clubMatchLiveId}, ', ')
       + ')';
   }
   

@@ -115,7 +115,7 @@ shared class CompRound {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRound('
-      + string::Join({'' + id, '' + qualifierChallengeId, '' + position, '' + nbMatches, '' + startDate, '' + endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection}, ', ')
+      + string::Join({'id=' + '' + id, 'qualifierChallengeId=' + '' + qualifierChallengeId, 'position=' + '' + position, 'nbMatches=' + '' + nbMatches, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'name=' + name, 'status=' + status, 'leaderboardComputeType=' + leaderboardComputeType, 'teamLeaderboardComputeType=' + teamLeaderboardComputeType, 'matchScoreDirection=' + matchScoreDirection}, ', ')
       + ')';
   }
   

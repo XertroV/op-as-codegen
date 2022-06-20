@@ -59,7 +59,7 @@ shared class TotdResp {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TotdResp('
-      + string::Join({TS_Array_TotdMonth(monthList), '' + itemCount, '' + nextRequestTimestamp}, ', ')
+      + string::Join({'monthList=' + TS_Array_TotdMonth(monthList), 'itemCount=' + '' + itemCount, 'nextRequestTimestamp=' + '' + nextRequestTimestamp}, ', ')
       + ')';
   }
   
