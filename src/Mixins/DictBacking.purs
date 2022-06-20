@@ -1,7 +1,7 @@
 module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
-import AsTypes (castOrWrap, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
+import AsTypes (castOrWrap, jTyIsPrim, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
 import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapWhileLoop)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
@@ -23,23 +23,30 @@ import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.ToString (mxToString)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators, RunTestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
+import SzAsTypes (jValFromStr)
 import Types (JField(..), JType(..), JsonObj(..), Lines, field, object)
 import Utils (intToStr, noSpaces)
 
 type DictOpts
-  = { dictProp :: String, valType :: JType, writeLog :: Boolean, extraMixins :: Array Mixin }
+  = { dictProp :: String
+    , valType :: JType
+    , writeLog :: Boolean
+    , extraMixins :: Array Mixin
+    , defaultDictVal :: Maybe String
+    , keyType :: JType
+    }
 
 mkDO :: JType -> DictOpts
-mkDO valType = { dictProp: "d", valType, writeLog: false, extraMixins: [] }
+mkDO valType = { dictProp: "d", valType, writeLog: false, extraMixins: [], defaultDictVal: Nothing, keyType: JString }
 
 mxDictBacking :: DictOpts -> Mixin
-mxDictBacking opts@{ dictProp, valType } =
+mxDictBacking opts@{ dictProp, valType, keyType } =
   { name: _MX_DICT_BACKING_NAME
   , requires: [ mxDefaultProps.name ]
   , comprisingRequires
   , methods: Just (genMethods opts)
   , properties: Just (genProps opts)
-  , namespace
+  , namespace: namespace opts
   , tests: tests opts
   }
   where
@@ -48,13 +55,15 @@ mxDictBacking opts@{ dictProp, valType } =
 genProps :: DictOpts -> JsonObj -> Lines
 genProps opts@{ writeLog } (JsonObj _n _fs) =
   []
-    <> (if writeLog then [ "private string _logPath;" ] else [])
+    <> (if writeLog then [ "private string _logPath;", "private bool _initialized = false;" ] else [])
 
 genMethods :: DictOpts -> JsonObj -> Lines
-genMethods opts@{ dictProp, valType } (JsonObj n fs) =
+genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   intercalate ln
     $ [ constructorFn.decl
+      , keyToStrFn.decl
       , getFn.decl
+      , getWDefaultFn.decl
       , setFn.decl
       , existsFn.decl
       , getKeysFn.decl
@@ -68,6 +77,8 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
     <> ( if opts.writeLog then
           [ comment "Dict Optional: Write Log = True" <> initLogFn.decl
           , loadWriteLogFromDisk.decl
+          , getInit.decl
+          , awaitInit.decl
           , writeOnSetFn.decl
           , wlOnResetAll.decl
           ]
@@ -84,9 +95,22 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
 
   constructorArgs = [] <> (if opts.writeLog then [ logDir, logFile ] else [])
 
+  keyToStrFn =
+    wrapConstFunction "private const string" "K" [ keyF ] case keyF of
+      JField _ JString -> [ "return key;" ]
+      JField _ t -> if jTyIsPrim t then [ "return '' + key;" ] else [ "return tostring(key);" ]
+
   getFn =
     wrapConstFunction valAsRetType "Get" [ keyF ]
-      [ "return " <> castOrWrap valType (d <> "[key]") <> ";" ]
+      [ "return " <> castOrWrap valType (d <> "[K(key)]") <> ";" ]
+
+  getWDefaultFn = wrapFunction valAsRetType "GetOrDefault" [ keyF ] innerLs
+    where
+    innerLs = case defaultDictVal of
+      Nothing -> [ "throw('GetOrDefault called on a dict that has no default set.');", "return Get('');" ]
+      Just dv ->
+        wrapIf "!Exists(key)" [ "Set(key, " <> dv <> ");" ]
+          <> [ "return Get(key);" ]
 
   {-
   -- doens't seem to work when valAsRetType is to complex class types like Challenge.
@@ -97,7 +121,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
   -- setFn = proxyFnKeyValRet "void" "Set"
   setFn =
     wrapFunction "void" "Set" [ keyF, valF ]
-      $ [ setV (JField (d <> "[key]") valType) "value" ]
+      $ [ setV (JField (d <> "[K(key)]") valType) "value" ]
       <> writeOnSetLines
 
   writeOnSetLines = if opts.writeLog then [ writeOnSetFn.call [ keyF, valF ] <> ";" ] else []
@@ -154,6 +178,13 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
                 ]
           )
           [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
+      <> [ "_initialized = true;" ]
+
+  getInit = wrapFunction "bool" "get_Initialized" [] [ "return _initialized;" ]
+
+  awaitInit =
+    wrapFunction "void" "AwaitInitialized" []
+      $ wrapWhileLoop "!_initialized" [ "yield();" ]
 
   existsFn = proxyFnKeyRet "bool" "Exists"
 
@@ -163,7 +194,18 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
     proxyFnRet' "void" "DeleteAll"
       (if opts.writeLog then [ stmt $ wlOnResetAll.call [] ] else [])
 
-  getKeysFn = proxyFnConst "array<string>@" "GetKeys"
+  getKeysFn = case keyType of
+    JString -> proxyFnConst "array<string>@" "GetKeys"
+    t ->
+      wrapConstFunction (jTyToFuncRes $ retTy) "GetKeys" []
+        $ [ jTyToAsTy retTy <> " ret = {};"
+          , "auto _keys = " <> d <> ".GetKeys();"
+          ]
+        <> mapArray_For { arr: "_keys", ix: "i", el: "_k" }
+            [ "ret.InsertLast(" <> jValFromStr keyType "_k" <> ");" ]
+        <> [ "return ret;" ]
+    where
+    retTy = JArray keyType
 
   getItemFn =
     wrapConstFunction (kvPair <> "@") "GetItem" [ keyF ]
@@ -172,7 +214,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
   getItemsFn =
     wrapConstFunction ("array<" <> kvPair <> "@>@") "GetItems" []
       $ [ "array<" <> kvPair <> "@> ret = array<" <> kvPair <> "@>(GetSize());"
-        , "array<string> keys = GetKeys();"
+        , "array<" <> jTyToAsTy keyType <> "> keys = GetKeys();"
         ]
       <> mapArray_For { arr: "keys", el: "key", ix: "i" }
           [ "@ret[i] = GetItem(key);" ]
@@ -198,7 +240,7 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
 
   proxyFnRet' retTy fName extraLs = wrapFunction retTy fName [] $ extraLs <> [ retNotVoid retTy <> d <> "." <> fName <> "();" ]
 
-  proxyFnKeyRet retTy fName = wrapFunction retTy fName [ keyF ] [ retNotVoid retTy <> d <> "." <> fName <> "(key);" ]
+  proxyFnKeyRet retTy fName = wrapFunction retTy fName [ keyF ] [ retNotVoid retTy <> d <> "." <> fName <> "(K(key));" ]
 
   proxyFnKeyValRet retTy fName = wrapFunction retTy fName [ keyF, valF ] [ retNotVoid retTy <> d <> "." <> fName <> "(key, value);" ]
 
@@ -208,8 +250,8 @@ genMethods opts@{ dictProp, valType } (JsonObj n fs) =
 
   retNotVoid retTy = if retTy == "void" then "" else "return "
 
-keyF :: JField
-keyF = JField "key" JString
+  keyF :: JField
+  keyF = JField "key" keyType
 
 valFTy ∷ JType → JField
 valFTy vt = JField "value" vt
@@ -227,6 +269,8 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
   kvPairName = "_" <> objName <> "::KvPair"
 
   kvPairVar = "tmpKV"
+
+  keyF = JField "key" opts.keyType
 
   checkerFn =
     wrapFunction "bool" checkerFnName [ thisF, JField "n" JUint, keyF, valF ]
@@ -277,7 +321,7 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
     else
       []
 
-  kvPairClsObj = kvPair this
+  kvPairClsObj = kvPair opts this
 
   wlDir = "Storage/codegenTest/test"
 
@@ -329,17 +373,17 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   nonemptyKey _ = unsafeCrashWith "nonemptyKey expected array of len 2"
 
-namespace :: Maybe (JsonObj -> Lines)
-namespace = Just namespace'
+namespace :: DictOpts -> Maybe (JsonObj -> Lines)
+namespace opts = Just $ namespace' opts
 
-namespace' :: JsonObj -> Lines
-namespace' jo = intercalate ln [ (kvPair jo).cls.mainFile ]
+namespace' :: DictOpts -> JsonObj -> Lines
+namespace' opts jo = intercalate ln [ (kvPair opts jo).cls.mainFile ]
 
 kvPairObjName ∷ String
 kvPairObjName = "KvPair"
 
-kvPair :: JsonObj -> { cls :: AsClass, obj :: JsonObj }
-kvPair (JsonObj objName fields) = { cls, obj }
+kvPair :: DictOpts -> JsonObj -> { cls :: AsClass, obj :: JsonObj }
+kvPair opts (JsonObj objName fields) = { cls, obj }
   where
   valType = case A.head fields of
     Just (JField _ (JDict t)) -> t
@@ -347,8 +391,10 @@ kvPair (JsonObj objName fields) = { cls, obj }
 
   obj =
     object kvPairObjName
-      # field "key" JString
+      # field "key" opts.keyType
       # field "val" valType
+
+  keyF = JField "key" opts.keyType
 
   cls =
     jsonObjToClass obj []
@@ -358,6 +404,6 @@ kvPair (JsonObj objName fields) = { cls, obj }
       , mxGetters
       , mxToString
       , mxOpEq
-      , mxOpOrd keyF
+      -- , mxOpOrd keyF
       , mxRowSz
       ]

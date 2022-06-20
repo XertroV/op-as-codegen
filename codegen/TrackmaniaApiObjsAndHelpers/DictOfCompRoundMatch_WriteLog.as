@@ -4,6 +4,7 @@ shared class DictOfCompRoundMatch_WriteLog {
   
   /* Properties // Mixin: Dict Backing */
   private string _logPath;
+  private bool _initialized = false;
   
   /* Methods // Mixin: Dict Backing */
   DictOfCompRoundMatch_WriteLog(const string &in logDir, const string &in logFile) {
@@ -11,17 +12,26 @@ shared class DictOfCompRoundMatch_WriteLog {
     InitLog(logDir, logFile);
   }
   
+  private const string K(const string &in key) const {
+    return key;
+  }
+  
   CompRoundMatch@ Get(const string &in key) const {
-    return cast<CompRoundMatch@>(_d[key]);
+    return cast<CompRoundMatch@>(_d[K(key)]);
+  }
+  
+  CompRoundMatch@ GetOrDefault(const string &in key) {
+    throw('GetOrDefault called on a dict that has no default set.');
+    return Get('');
   }
   
   void Set(const string &in key, CompRoundMatch@ value) {
-    @_d[key] = value;
+    @_d[K(key)] = value;
     WriteOnSet(key, value);
   }
   
   bool Exists(const string &in key) {
-    return _d.Exists(key);
+    return _d.Exists(K(key));
   }
   
   array<string>@ GetKeys() const {
@@ -51,7 +61,7 @@ shared class DictOfCompRoundMatch_WriteLog {
   }
   
   bool Delete(const string &in key) {
-    return _d.Delete(key);
+    return _d.Delete(K(key));
   }
   
   void DeleteAll() {
@@ -89,6 +99,17 @@ shared class DictOfCompRoundMatch_WriteLog {
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
       f.Close();
+    }
+    _initialized = true;
+  }
+  
+  bool get_Initialized() {
+    return _initialized;
+  }
+  
+  void AwaitInitialized() {
+    while (!_initialized) {
+      yield();
     }
   }
   
@@ -146,11 +167,6 @@ namespace _DictOfCompRoundMatch_WriteLog {
         ;
     }
     
-    /* Methods // Mixin: Op Ord */
-    int opOrd(const KvPair@ &in other) {
-      return key < other.key ? -1 : key == other.key ? 0 : 1;
-    }
-    
     /* Methods // Mixin: Row Serialization */
     const string ToRowString() {
       string ret = "";
@@ -160,7 +176,8 @@ namespace _DictOfCompRoundMatch_WriteLog {
     }
     
     private const string TRS_WrapString(const string &in s) {
-      return '(' + s.Length + ':' + s + ')';
+      string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
+      return '(' + _s.Length + ':' + _s + ')';
     }
   }
   

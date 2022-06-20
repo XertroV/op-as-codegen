@@ -9,16 +9,25 @@ shared class DictOfChallenge {
     @_d = dictionary();
   }
   
+  private const string K(const string &in key) const {
+    return key;
+  }
+  
   Challenge@ Get(const string &in key) const {
-    return cast<Challenge@>(_d[key]);
+    return cast<Challenge@>(_d[K(key)]);
+  }
+  
+  Challenge@ GetOrDefault(const string &in key) {
+    throw('GetOrDefault called on a dict that has no default set.');
+    return Get('');
   }
   
   void Set(const string &in key, Challenge@ value) {
-    @_d[key] = value;
+    @_d[K(key)] = value;
   }
   
   bool Exists(const string &in key) {
-    return _d.Exists(key);
+    return _d.Exists(K(key));
   }
   
   array<string>@ GetKeys() const {
@@ -48,7 +57,7 @@ shared class DictOfChallenge {
   }
   
   bool Delete(const string &in key) {
-    return _d.Delete(key);
+    return _d.Delete(K(key));
   }
   
   void DeleteAll() {
@@ -96,11 +105,6 @@ namespace _DictOfChallenge {
         ;
     }
     
-    /* Methods // Mixin: Op Ord */
-    int opOrd(const KvPair@ &in other) {
-      return key < other.key ? -1 : key == other.key ? 0 : 1;
-    }
-    
     /* Methods // Mixin: Row Serialization */
     const string ToRowString() {
       string ret = "";
@@ -110,7 +114,8 @@ namespace _DictOfChallenge {
     }
     
     private const string TRS_WrapString(const string &in s) {
-      return '(' + s.Length + ':' + s + ')';
+      string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
+      return '(' + _s.Length + ':' + _s + ')';
     }
   }
   

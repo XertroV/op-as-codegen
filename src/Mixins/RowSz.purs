@@ -85,7 +85,9 @@ appendRet (JField n t) = "ret += " <> jValToStr t n
 trs_wrapStringFn :: AsFunction
 trs_wrapStringFn =
   wrapFunction "private const string" "TRS_WrapString" [ JField "s" JString ]
-    $ [ "return '(' + s.Length + ':' + s + ')';" ]
+    $ [ "string _s = s.Replace('\\n', '\\\\n').Replace('\\r', '\\\\r');"
+      , "return '(' + _s.Length + ':' + _s + ')';"
+      ]
 
 trs_arrayFn :: JType -> AsFunction
 trs_arrayFn arrTy =

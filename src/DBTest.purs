@@ -9,6 +9,7 @@ import Mixins
 import Mixins.Types
 import Prelude
 import Types
+import Data.Maybe (Maybe(..))
 import Mixins.ArrayProxy (mxArrayProxy)
 import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
@@ -79,25 +80,11 @@ dictChallenge = dictGen $ mkDO $ JObject codecChallenge
 dWlChallenge :: { cls :: AsClass, obj :: JsonObj }
 dWlChallenge = dictGen $ (mkDO $ JObject codecChallenge) { writeLog = true }
 
--- codecChallengeDb :: JsonObj
--- codecChallengeDb =
---   object "ChallengeDB"
---     # field "challenges"
---         (JArray (JObject codecChallenge))
--- codecChallengeDbCls :: AsClass
--- codecChallengeDbCls =
---   jsonObjToClass codecChallengeDb [ challengeCls ]
---     typicalMixins
--- challengeDb :: { cls :: AsClass, obj :: JsonObj }
--- challengeDb = { cls, obj }
---   where
---   obj = object "ChallengeDB" # field "challenges" (JObject dictChallenge.obj)
---   cls =
---     jsonObjToClass obj [ challengeCls ]
---       [ mxCommonTesting
---       , mxDefaultProps
---       , mxEmptyCons
---       ]
+dictIndex :: ClsWithObj
+dictIndex = dictGen $ (mkDO $ JArray JInt) { defaultDictVal = Just "{}", keyType = JInt }
+
+-- indexDict :: ClsWithObj
+-- indexDict = dictGen $ mkDO (JArray JUint) { writeLog = true, isIndex = true }
 type ClsWithObj
   = { cls :: AsClass, obj :: JsonObj }
 
@@ -277,6 +264,7 @@ everything =
   , challengeCls
   , challenges.cls
   , dictInt.cls
+  , dictIndex.cls
   , dictChallenge.cls
   , dWlChallenge.cls
   -- , challengeDb2.cls

@@ -107,7 +107,8 @@ shared class Challenge {
   }
   
   private const string TRS_WrapString(const string &in s) {
-    return '(' + s.Length + ':' + s + ')';
+    string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
+    return '(' + _s.Length + ':' + _s + ')';
   }
 }
 
