@@ -6,8 +6,7 @@ mkdir -p ./codegen
 
 npx spago run
 
-rm -r ~/win/OpenplanetNext/Plugins/TrackmaniaApiObjsAndHelpers
-rm -r ~/win/OpenplanetNext/Plugins/TrackmaniaApiObjsAndHelpersTest
+rm -r ~/win/OpenplanetNext/Plugins/TrackmaniaApiObjsAndHelpers* || true
 
 cp -av ./codegen/TrackmaniaApiObjsAndHelpers ~/win/OpenplanetNext/Plugins/
 cp -av ./codegen/TrackmaniaApiObjsAndHelpersTest ~/win/OpenplanetNext/Plugins/

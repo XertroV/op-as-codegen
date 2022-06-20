@@ -4,23 +4,23 @@ shared class TmMap {
   private string _Uid;
   private string _Name;
   private string _FileName;
-  private string _AuthorScore;
-  private string _GoldScore;
-  private string _SilverScore;
-  private string _BronzeScore;
+  private uint _AuthorScore;
+  private uint _GoldScore;
+  private uint _SilverScore;
+  private uint _BronzeScore;
   private string _AuthorDisplayName;
   private string _AuthorAccountId;
   private string _AuthorWebServicesUserId;
   private string _SubmitterAccountId;
   private string _SubmitterWebServicesUserId;
   private string _Style;
-  private string _TimeStamp;
+  private uint _TimeStamp;
   private string _Type;
   private string _FileUrl;
   private string _ThumbnailUrl;
   
   /* Methods // Mixin: Default Constructor */
-  TmMap(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, const string &in AuthorScore, const string &in GoldScore, const string &in SilverScore, const string &in BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, const string &in TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
+  TmMap(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, uint AuthorScore, uint GoldScore, uint SilverScore, uint BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, uint TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
     this._Id = Id;
     this._Uid = Uid;
     this._Name = Name;
@@ -103,19 +103,19 @@ shared class TmMap {
     return this._FileName;
   }
   
-  const string get_AuthorScore() const {
+  uint get_AuthorScore() const {
     return this._AuthorScore;
   }
   
-  const string get_GoldScore() const {
+  uint get_GoldScore() const {
     return this._GoldScore;
   }
   
-  const string get_SilverScore() const {
+  uint get_SilverScore() const {
     return this._SilverScore;
   }
   
-  const string get_BronzeScore() const {
+  uint get_BronzeScore() const {
     return this._BronzeScore;
   }
   
@@ -143,7 +143,7 @@ shared class TmMap {
     return this._Style;
   }
   
-  const string get_TimeStamp() const {
+  uint get_TimeStamp() const {
     return this._TimeStamp;
   }
   
@@ -162,7 +162,7 @@ shared class TmMap {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TmMap('
-      + string::Join({Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl}, ', ')
+      + string::Join({Id, Uid, Name, FileName, '' + AuthorScore, '' + GoldScore, '' + SilverScore, '' + BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, '' + TimeStamp, Type, FileUrl, ThumbnailUrl}, ', ')
       + ')';
   }
   
@@ -200,17 +200,17 @@ shared class TmMap {
     ret += TRS_WrapString(_Uid) + ",";
     ret += TRS_WrapString(_Name) + ",";
     ret += TRS_WrapString(_FileName) + ",";
-    ret += TRS_WrapString(_AuthorScore) + ",";
-    ret += TRS_WrapString(_GoldScore) + ",";
-    ret += TRS_WrapString(_SilverScore) + ",";
-    ret += TRS_WrapString(_BronzeScore) + ",";
+    ret += '' + _AuthorScore + ",";
+    ret += '' + _GoldScore + ",";
+    ret += '' + _SilverScore + ",";
+    ret += '' + _BronzeScore + ",";
     ret += TRS_WrapString(_AuthorDisplayName) + ",";
     ret += TRS_WrapString(_AuthorAccountId) + ",";
     ret += TRS_WrapString(_AuthorWebServicesUserId) + ",";
     ret += TRS_WrapString(_SubmitterAccountId) + ",";
     ret += TRS_WrapString(_SubmitterWebServicesUserId) + ",";
     ret += TRS_WrapString(_Style) + ",";
-    ret += TRS_WrapString(_TimeStamp) + ",";
+    ret += '' + _TimeStamp + ",";
     ret += TRS_WrapString(_Type) + ",";
     ret += TRS_WrapString(_FileUrl) + ",";
     ret += TRS_WrapString(_ThumbnailUrl) + ",";
@@ -219,6 +219,28 @@ shared class TmMap {
   
   private const string TRS_WrapString(const string &in s) {
     return '(' + s.Length + ':' + s + ')';
+  }
+  
+  /* Methods // Mixin: From Game Object: CNadeoServicesMap */
+  TmMap(CNadeoServicesMap@ &in gameObj) {
+    this._Id = gameObj.Id;
+    this._Uid = gameObj.Uid;
+    this._Name = gameObj.Name;
+    this._FileName = gameObj.FileName;
+    this._AuthorScore = gameObj.AuthorScore;
+    this._GoldScore = gameObj.GoldScore;
+    this._SilverScore = gameObj.SilverScore;
+    this._BronzeScore = gameObj.BronzeScore;
+    this._AuthorDisplayName = gameObj.AuthorDisplayName;
+    this._AuthorAccountId = gameObj.AuthorAccountId;
+    this._AuthorWebServicesUserId = gameObj.AuthorWebServicesUserId;
+    this._SubmitterAccountId = gameObj.SubmitterAccountId;
+    this._SubmitterWebServicesUserId = gameObj.SubmitterWebServicesUserId;
+    this._Style = gameObj.Style;
+    this._TimeStamp = gameObj.TimeStamp;
+    this._Type = gameObj.Type;
+    this._FileUrl = gameObj.FileUrl;
+    this._ThumbnailUrl = gameObj.ThumbnailUrl;
   }
 }
 
@@ -256,34 +278,18 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string FileName = chunk;
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string AuthorScore = chunk;
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string GoldScore = chunk;
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string SilverScore = chunk;
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string BronzeScore = chunk;
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint AuthorScore = Text::ParseInt(chunk);
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint GoldScore = Text::ParseInt(chunk);
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint SilverScore = Text::ParseInt(chunk);
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint BronzeScore = Text::ParseInt(chunk);
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -326,13 +332,9 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Style = chunk;
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string TimeStamp = chunk;
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint TimeStamp = Text::ParseInt(chunk);
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);

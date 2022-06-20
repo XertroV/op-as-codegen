@@ -86,6 +86,8 @@ indent n lines = (\l -> if startsWith "#" l then l else _whitespace <> l) <$> li
 fieldPrepend :: String -> JField -> JField
 fieldPrepend s (JField n t) = JField (s <> n) t
 
+toPropField f = fieldPrepend "_" f
+
 toPropFields :: Array JField -> Array JField
 toPropFields fields = fieldPrepend "_" <$> fields
 

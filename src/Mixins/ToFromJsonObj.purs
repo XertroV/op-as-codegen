@@ -2,9 +2,12 @@ module Mixins.ToFromJsonObj (mxToFromJsonObj) where
 
 import Prelude
 import AsTypes (jTyIsPrim, jTyPascalCase, jTyToAsTy, setVarOfJTyToVal)
-import CodeLines (comment, fnCall, forLoopArray, indent, ln, toPropFields, wrapFunction, wrapMainTest)
-import Data.Array (foldl, intercalate, zip)
-import Data.Maybe (Maybe(..))
+import CodeLines (comment, fnCall, forLoopArray, indent, ln, toPropField, toPropFields, wrapFunction, wrapMainTest)
+import Data.Array (dropEnd, foldl, intercalate, zip)
+import Data.Array as A
+import Data.Maybe (Maybe(..), fromMaybe)
+import Data.String (Pattern(..), Replacement(..))
+import Data.String as S
 import Data.Tuple (Tuple(..))
 import Macros.Arrays (mapArray_For)
 import Mixins.AllMixins (_MX_TO_FROM_JSON_OBJ_NAME)
@@ -12,7 +15,7 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerators, TestGenerator)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JField(..), JType(..), JsonObj(..))
+import Types (JField(..), JType(..), JsonObj(..), getFTy, isJArray)
 
 mxToFromJsonObj :: Mixin
 mxToFromJsonObj =
@@ -38,7 +41,18 @@ mxToFromJsonObj =
   To Json
 -}
 toJsonBody ∷ Array JField → Array String
-toJsonBody fields = [ "Json::Value j = Json::Object();" ] <> (foldl (<>) [] $ toJsonFieldLines <$> zip fields (toPropFields fields)) <> [ "return j;" ]
+toJsonBody fields = altJsonAllFields mbSingletonCase
+  where
+  altJsonAllFields = fromMaybe $ [ "Json::Value j = Json::Object();" ] <> (foldl (<>) [] $ toJsonFieldLines <$> zip fields (toPropFields fields)) <> [ "return j;" ]
+
+  mbSingletonCase =
+    if A.length fields /= 1 then
+      Nothing
+    else do
+      f <- A.head fields
+      case f of
+        JField n (JArray _) -> Just $ dropEnd 1 (toJsonArray (Tuple f (toPropField f))) <> [ "return _tmp_" <> n <> ";" ]
+        _ -> Nothing
 
 -- | Tuple of (jsonField, clsPropretyField)
 toJsonFieldLines ∷ Tuple JField JField → Array String
@@ -54,7 +68,6 @@ toJsonFieldLines (Tuple (JField n t) (JField p t2)) = [ "j" <> getKey n <> " = "
 -- toJsonFieldLines (Tuple (JField p _) (JField n _)) =
 --   [ "this." <> p <> " = j" <> getKey n <> ";"
 --   ]
--- todo
 toJsonArray :: Tuple JField JField -> Array String
 toJsonArray (Tuple (JField n _) (JField p (JArray arrTy))) =
   [ "Json::Value " <> tmpV <> " = Json::Array();"
@@ -65,11 +78,9 @@ toJsonArray (Tuple (JField n _) (JField p (JArray arrTy))) =
   where
   tmpV = "_tmp_" <> n
 
-  arrDecl (JObject (JsonObj jon _)) = "this." <> p <> " = array<" <> jon <> "@>(" <> tmpV <> ".Length);"
-
-  -- arrDecl (JArray _in) = "this." <> p <> " = array<" <> jon <> "@>(" <> tmpV <> ".Length);"
-  arrDecl _ty = "this." <> p <> " = array<" <> jTyToAsTy _ty <> "@>(" <> tmpV <> ".Length);"
-
+-- arrDecl (JObject (JsonObj jon _)) = "this." <> p <> " = array<" <> jon <> "@>(" <> tmpV <> ".Length);"
+-- -- arrDecl (JArray _in) = "this." <> p <> " = array<" <> jon <> "@>(" <> tmpV <> ".Length);"
+-- arrDecl _ty = "this." <> p <> " = array<" <> jTyToAsTy _ty <> "@>(" <> tmpV <> ".Length);"
 toJsonArray _ = comment "! WARNING: Json non-array passed to toJsonArray"
 
 getKey ∷ String → String
@@ -93,8 +104,22 @@ jTyToJson ty var =
 --
 -- [ "trace('fromJson constructor parsing: ' + Json::Write(j));" ]
 fromJsonBody ∷ Array JField → Array String
-fromJsonBody fields = (foldl (<>) [] $ fromJsonFieldLines <$> zip (toPropFields fields) fields)
+fromJsonBody fields = altJsonAllFields mbSingletonCase
+  where
+  altJsonAllFields = fromMaybe $ (foldl (<>) [] $ fromJsonFieldLines <$> zip (toPropFields fields) fields)
 
+  mbSingletonCase =
+    if A.length fields /= 1 then
+      Nothing
+    else do
+      f <- A.head fields
+      case f of
+        JField n (JArray _) -> Just $ (removeLookup n) <$> fromJsonArray (Tuple (toPropField f) f)
+        _ -> Nothing
+
+  removeLookup n = S.replace (Pattern $ getKey n) (Replacement "")
+
+-- "[\"" <> n <> "\"]"
 fromJsonFieldLines ∷ Tuple JField JField → Array String
 fromJsonFieldLines jf@(Tuple _ (JField _ (JArray _))) = fromJsonArray jf
 

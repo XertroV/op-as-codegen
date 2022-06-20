@@ -16,7 +16,7 @@ initDefaultMixinState = { out: [], priorMixins: [], currMixin: "" }
 addMixinMethods :: JsonObj -> MixinState -> Mixin -> MixinState
 addMixinMethods obj@(JsonObj objName _) (ms@{ out, priorMixins }) ({ methods, name, requires }) =
   if all priorsContain requires then
-    if not (elem name priorMixins) then res else unsafeCrashWith ("Mixin has already run: " <> name <> " (priors: " <> priorsStr <> ")")
+    if not (elem name priorMixins) then res else unsafeCrashWith ("[" <> objName <> "] Mixin has already run: " <> name <> " (priors: " <> priorsStr <> ")")
   else
     unsafeCrashWith
       ( "Mixin dependency error for object: "

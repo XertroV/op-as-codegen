@@ -9,10 +9,12 @@ import Mixins
 import Mixins.Types
 import Prelude
 import Types
+import Mixins.ArrayProxy (mxArrayProxy)
 import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.DictBacking (DictOpts, mkDO, mxDictBacking)
+import Mixins.FromGameObj (mxFromGameObj)
 import Mixins.Getters (mxGetters)
 import Mixins.JMaybes (mxJMaybes)
 import Mixins.OpEq (mxOpEq)
@@ -34,6 +36,13 @@ codecChallenge =
 
 challengeCls ∷ AsClass
 challengeCls = jsonObjToClass codecChallenge [] typicalMixins
+
+challenges :: ClsWithObj
+challenges = { cls, obj }
+  where
+  cls = jsonObjToClass obj [ challengeCls ] (typicalMixins <> [ mxArrayProxy ])
+
+  obj = object "Challenges" # field "challenges" (JArray (JObject codecChallenge))
 
 dictGen :: DictOpts -> { cls :: AsClass, obj :: JsonObj }
 dictGen opts@{ valType } = { cls, obj }
@@ -169,7 +178,8 @@ totdDb = dictGen $ (mkDO $ JObject totdEntry.obj) { writeLog = true }
 tmMap :: ClsWithObj
 tmMap = { cls, obj }
   where
-  cls = jsonObjToClass obj [] typicalMixins
+  -- cls = jsonObjToClass obj [] ([ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxFromGameObj "CNadeoServicesMap", mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz ])
+  cls = jsonObjToClass obj [] (typicalMixins <> [ mxFromGameObj "CNadeoServicesMap" ])
 
   obj =
     object "TmMap"
@@ -177,17 +187,17 @@ tmMap = { cls, obj }
       # field "Uid" JString
       # field "Name" JString
       # field "FileName" JString
-      # field "AuthorScore" JString
-      # field "GoldScore" JString
-      # field "SilverScore" JString
-      # field "BronzeScore" JString
+      # field "AuthorScore" JUint
+      # field "GoldScore" JUint
+      # field "SilverScore" JUint
+      # field "BronzeScore" JUint
       # field "AuthorDisplayName" JString
       # field "AuthorAccountId" JString
       # field "AuthorWebServicesUserId" JString
       # field "SubmitterAccountId" JString
       # field "SubmitterWebServicesUserId" JString
       # field "Style" JString
-      # field "TimeStamp" JString
+      # field "TimeStamp" JUint
       # field "Type" JString
       # field "FileUrl" JString
       # field "ThumbnailUrl" JString
@@ -200,6 +210,7 @@ everything :: Array AsClass
 everything =
   [ dictStr.cls
   , challengeCls
+  , challenges.cls
   , dictInt.cls
   , dictChallenge.cls
   , dWlChallenge.cls
