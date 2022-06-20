@@ -1,9 +1,8 @@
 module Testing where
 
 import Prelude
-import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapInitedScope, wrapTryCatch, wrapWhileLoop)
-import ManiaColors (c_debug, c_green_700, c_orange_600)
-import Test.QuickCheck (printSummary)
+import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapInitedScope, wrapTryCatch, wrapWhileLoop)
+import ManiaColors (c_green_700, c_orange_600)
 import Types (Lines, AsFunction)
 
 utGs :: String
@@ -37,23 +36,27 @@ unitTestSingletonFileLines ∷ Lines
 unitTestSingletonFileLines =
   enumTestStatus
     <> ln
-    <> [ "array<TestStatus> " <> utGs <> ";"
-      , "array<CoroutineFunc@> " <> utFuncs <> ";"
-      , "array<string> " <> utNames <> ";"
-      , "dictionary@ " <> utFms <> ";"
+    <> [ "array<TestStatus> " <> utGs <> " = {};"
+      , "array<CoroutineFunc@> " <> utFuncs <> " = {};"
+      , "array<string> " <> utNames <> " = {};"
+      , "dictionary@ " <> utFms <> " = dictionary();"
       , "uint " <> nbUts <> " = 0;"
       , "uint " <> nbUtsStarted <> " = 0;"
       , "uint " <> nbUtsRunning <> " = 0;"
       , "uint " <> nbUtsDone <> " = 0;"
       , "uint " <> nbUtsPassed <> " = 0;"
-      , "uint _unitTests_startedAt = Time::Now;"
+      , "uint _unitTests_startedAt = 0;"
       , "bool unitTestsStarted = " <> startMainLoop.call [] <> ";"
       ]
     <> ln
     <> registerUnitTest.decl
+    <> ln
     <> startMainLoop.decl
+    <> ln
     <> mainLoop.decl
+    <> ln
     <> runNextTest.decl
+    <> ln
     <> printResults.decl
 
 enumTestStatus :: Array String
@@ -64,12 +67,11 @@ enumTestStatus =
 registerUnitTest :: AsFunction
 registerUnitTest =
   wrapFunction' "bool" "RegisterUnitTest" [ "const string &in name", "CoroutineFunc@ &in func" ]
-    $ wrapIf (utGs <> " is null")
-        [ utGs <> " = {};"
-        , utFuncs <> " = {};"
-        , utNames <> " = {};"
-        , "@" <> utFms <> " = dictionary();"
-        ]
+    $ wrapIf ("_unitTests_startedAt == 0")
+        ( wrapWhileLoop (utGs <> " is null") [ "yield();" ]
+            <> wrapWhileLoop (utFms <> " is null") [ "yield();" ]
+            <> [ "_unitTests_startedAt = Time::Now;" ]
+        )
     <> [ "uint id = " <> nbUts <> "++;"
       , utGs <> ".InsertLast(TestStatus::Waiting);"
       , utFuncs <> ".InsertLast(func);"
@@ -91,9 +93,7 @@ mainLoop =
     $ wrapWhileLoop (utGs <> ".Length == 0")
         [ "yield();" ]
     <> [ "sleep(25);" ]
-    -- while there are tests that are not done
-    
-    <> wrapWhileLoop (nbUts <> " > " <> nbUtsDone)
+    <> wrapWhileLoop (nbUts <> " > " <> nbUtsDone) -- while there are tests that are not done
         -- check if we can start new tests
         -- if so, start the next one, otherwise wait
         ( [] -- "print('N Tests: ' + " <> nbUts <> " + ' | N Tests Running: ' + " <> nbUtsRunning <> " + ' | N Tests Done: ' + " <> nbUtsDone <> ");" ]

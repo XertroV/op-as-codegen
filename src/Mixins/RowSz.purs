@@ -2,6 +2,9 @@ module Mixins.RowSz
   ( mxRowSz
   , trs_arrayFn
   , frs_genNamespace
+  , trs_wrapStringFn
+  , frs_getNext
+  , frs_AssertDefn
   ) where
 
 import Prelude
@@ -113,15 +116,16 @@ fromRowString name fields =
       , "uint chunkLen;"
       -- , "trace('FRS input: \"' + str + '\"');"
       ]
-    <> intercalate [] (getNext <$> fields)
+    <> intercalate [] (frs_getNext <$> fields)
     <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
   where
-  getNext (JField n t) =
-    comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
-      <> setChunkAndRemainderForTy t
-      <> [ jTyToAsTy t <> " " <> n <> " = " <> jValFromStr t "chunk" <> ";" ]
-
   fieldVarNames = fields <#> \(JField n _t) -> n
+
+frs_getNext :: JField -> Lines
+frs_getNext (JField n t) =
+  comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
+    <> setChunkAndRemainderForTy t
+    <> [ jTyToAsTy t <> " " <> n <> " = " <> jValFromStr t "chunk" <> ";" ]
 
 frs_arrayDefn :: JType -> AsFunction
 frs_arrayDefn arrTy =

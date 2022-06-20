@@ -16,7 +16,6 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.DictBacking (DictOpts, mkDO, mxDictBacking)
 import Mixins.FromGameObj (mxFromGameObj)
 import Mixins.Getters (mxGetters)
-import Mixins.JMaybes (mxJMaybes)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToFromJsonObj (mxToFromJsonObj)
@@ -113,16 +112,21 @@ competition = { cls, obj }
       # field "id" JUint
       # field "startDate" JUint
       # field "endDate" JUint
-      # field "matchesGenerationDate" JUint
+      # field "matchesGenerationDate" (JMaybe JUint)
       # field "nbPlayers" JUint
       # field "leaderboardId" JUint
       # field "name" JString
       # field "liveId" JString
       # field "creator" JString
-      # field "region" JString
+      # field "region" (JMaybe JString)
+      # field "description" (JMaybe JString)
+      # field "registrationStart" (JMaybe JUint)
 
 competitions :: ClsWithObj
 competitions = mkArrayProxy { n: "Competitions", f: "comps", o: competition }
+
+compsDb :: ClsWithObj
+compsDb = dictGen $ (mkDO $ JObject competition.obj) { writeLog = true }
 
 compRound :: ClsWithObj
 compRound = { cls, obj }
@@ -146,6 +150,9 @@ compRound = { cls, obj }
 compRounds :: ClsWithObj
 compRounds = mkArrayProxy { n: "CompRounds", f: "rounds", o: compRound }
 
+compRoundsDb :: ClsWithObj
+compRoundsDb = dictGen $ (mkDO $ JObject compRound.obj) { writeLog = true }
+
 compRoundMatch :: ClsWithObj
 compRoundMatch = { cls, obj }
   where
@@ -162,6 +169,9 @@ compRoundMatch = { cls, obj }
 
 compRoundMatches :: ClsWithObj
 compRoundMatches = mkArrayProxy { n: "CompRoundMatches", f: "matches", o: compRoundMatch }
+
+compRoundMatchesDb :: ClsWithObj
+compRoundMatchesDb = dictGen $ (mkDO $ JObject compRoundMatch.obj) { writeLog = true }
 
 matchResult :: ClsWithObj
 matchResult = { cls, obj }
@@ -273,10 +283,13 @@ everything =
   -- , codecChallengeDbCls
   , competition.cls
   , competitions.cls
+  , compsDb.cls
   , compRound.cls
   , compRounds.cls
+  , compRoundsDb.cls
   , compRoundMatch.cls
   , compRoundMatches.cls
+  , compRoundMatchesDb.cls
   , matchResult.cls
   , matchResults.cls
   , totdEntry.cls

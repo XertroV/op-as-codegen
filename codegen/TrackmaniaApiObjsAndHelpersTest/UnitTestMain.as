@@ -2,36 +2,40 @@ enum TestStatus {
   Waiting = 0, Started = 1, Failed = 2, Passed = 3
 }
 
-array<TestStatus> _unitTests_globalSingleton;
-array<CoroutineFunc@> _unitTests_funcs;
-array<string> _unitTests_names;
-dictionary@ _unitTests_failureMessages;
+array<TestStatus> _unitTests_globalSingleton = {};
+array<CoroutineFunc@> _unitTests_funcs = {};
+array<string> _unitTests_names = {};
+dictionary@ _unitTests_failureMessages = dictionary();
 uint _unitTests_counter = 0;
 uint _unitTests_nStarted = 0;
 uint _unitTests_nRunning = 0;
 uint _unitTests_nDone = 0;
 uint _unitTests_nPassed = 0;
-uint _unitTests_startedAt = Time::Now;
+uint _unitTests_startedAt = 0;
 bool unitTestsStarted = UnitTest_StartMainLoop();
 
 bool RegisterUnitTest(const string &in name, CoroutineFunc@ &in func) {
-  if (_unitTests_globalSingleton is null) {
-    _unitTests_globalSingleton = {};
-    _unitTests_funcs = {};
-    _unitTests_names = {};
-    @_unitTests_failureMessages = dictionary();
+  if (_unitTests_startedAt == 0) {
+    while (_unitTests_globalSingleton is null) {
+      yield();
+    }
+    while (_unitTests_failureMessages is null) {
+      yield();
+    }
+    _unitTests_startedAt = Time::Now;
   }
   uint id = _unitTests_counter++;
   _unitTests_globalSingleton.InsertLast(TestStatus::Waiting);
   _unitTests_funcs.InsertLast(func);
   _unitTests_names.InsertLast(name);
-  print('Test registered. ' + id + ': ' + name);
   return true;
 }
+
 bool UnitTest_StartMainLoop() {
   startnew(UnitTest_MainLoop);
   return true;
 }
+
 void UnitTest_MainLoop() {
   while (_unitTests_globalSingleton.Length == 0) {
     yield();
@@ -46,6 +50,7 @@ void UnitTest_MainLoop() {
   UnitTest_SuiteComplete_PrintResults();
   print('Completed ' + _unitTests_counter + ' unit tests.');
 }
+
 void UnitTest_RunNext() {
   while (_unitTests_nStarted >= _unitTests_counter) { yield(); }
   uint id = _unitTests_nStarted++;
@@ -64,6 +69,7 @@ void UnitTest_RunNext() {
   _unitTests_nDone++;
   print('Test completed: ' + _unitTests_names[id]);
 }
+
 void UnitTest_SuiteComplete_PrintResults() {
   print('\\$3a3Tests run: ' + _unitTests_counter);
   print('\\$3a3Tests passed: ' + _unitTests_nPassed);

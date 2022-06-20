@@ -13,18 +13,18 @@ import Data.Tuple (Tuple(..))
 import Mixins.AllMixins (_MX_TO_FROM_JSON_OBJ_NAME)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.OpEq (mxOpEq)
-import Mixins.RowSz (frs_genNamespace, mxRowSz)
+import Mixins.RowSz (frs_AssertDefn, frs_genNamespace, frs_getNext, mxRowSz, trs_wrapStringFn)
 import Mixins.ToString (jValSimpleStr)
 import Mixins.Types (Mixin)
 import Partial.Unsafe (unsafeCrashWith, unsafePartial)
 import SzAsTypes (jValFromStr, jValToStr)
-import Types (CodeBlocks, JField(..), JType(..), JsonObj(..), Lines, AsFunction, getDecl, getFTy)
+import Types (AsFunction, CodeBlocks, JField(..), JType(..), JsonObj(..), Lines, getDecl, getFTy)
 
 -- this is to be mixed in with maybes only
 mxJMaybes :: Mixin
 mxJMaybes =
   { name: "JMaybes"
-  , requires: []
+  , requires: [] -- this mixin should implement all requires
   , comprisingRequires: [ mxOpEq.name, mxRowSz.name ]
   , methods: Just genMethods
   , properties: Nothing
@@ -40,7 +40,7 @@ genMethods (JsonObj name fields) = methods
     true -> do
       intercalate ln $ map getDecl
         $ catMaybes
-            [ consJust, consNothing, consJson, opEq, toStr, toRowStr, toJson ]
+            [ consJust, consNothing, consJson, opEq, toStr, toRowStr, wrapStr, toJson ]
         <> (unsafePartial fromJust) getters
 
   getValTy = A.head fields <#> getFTy
@@ -99,6 +99,8 @@ genMethods (JsonObj name fields) = methods
       $ wrapIf "!_hasVal" [ "return 'null,';" ]
       <> [ "return " <> jValToStr fTy "_val" <> " + ',';" ]
 
+  wrapStr = Just trs_wrapStringFn
+
   toJson = do
     fTy <- getValTy
     pure $ wrapFunction "Json::Value" "ToJson" []
@@ -110,19 +112,18 @@ genMethods (JsonObj name fields) = methods
         ]
 
 genNamespace :: JsonObj -> Lines
-genNamespace (JsonObj objName fields) = frs.decl
+genNamespace (JsonObj objName fields) = frs.decl <> ln <> frs_AssertDefn.decl
   where
-  fTy = getFTy $ unsafePartial $ P.head fields
+  f = unsafePartial $ P.head fields
+
+  fTy = getFTy f
 
   frs =
     wrapFunction' ("shared " <> objName) "FromRowString" [ "const string &in str" ]
       $ [ "string chunk = '', remainder = str;"
         , "array<string> tmp = array<string>(2);"
         , "uint chunkLen;"
-        , "tmp = remainder.Split(',', 2);"
-        , "chunk = tmp[0];"
-        , "remainder = tmp[1]; // should always be ''"
-        -- , "trace('FRS input: \"' + str + '\"');"
         ]
-      <> wrapIf "chunk == 'null'" [ "return " <> objName <> "();" ]
+      <> wrapIf "remainder.SubStr(0, 4) == 'null'" [ "return " <> objName <> "();" ]
+      <> frs_getNext f
       <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]

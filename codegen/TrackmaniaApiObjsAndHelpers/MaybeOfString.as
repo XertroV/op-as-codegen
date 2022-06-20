@@ -1,28 +1,28 @@
-shared class MaybeOfUint {
+shared class MaybeOfString {
   /* Properties // Mixin: Default Properties */
-  private uint _val;
+  private string _val;
   private bool _hasVal;
   
   /* Methods // Mixin: JMaybes */
-  MaybeOfUint(uint val) {
+  MaybeOfString(const string &in val) {
     _hasVal = true;
     _val = val;
   }
   
-  MaybeOfUint() {
+  MaybeOfString() {
     _hasVal = false;
   }
   
-  MaybeOfUint(const Json::Value &in j) {
+  MaybeOfString(const Json::Value &in j) {
     if (j.GetType() % Json::Type::Null == 0) {
       _hasVal = false;
     } else {
       _hasVal = true;
-      _val = uint(j);
+      _val = string(j);
     }
   }
   
-  bool opEquals(const MaybeOfUint@ &in other) {
+  bool opEquals(const MaybeOfString@ &in other) {
     if (IsJust()) {
       return other.IsJust() && (_val == other.val);
     }
@@ -30,9 +30,9 @@ shared class MaybeOfUint {
   }
   
   const string ToString() {
-    string ret = 'MaybeOfUint(';
+    string ret = 'MaybeOfString(';
     if (IsJust()) {
-      ret += '' + _val;
+      ret += _val;
     }
     return ret + ')';
   }
@@ -41,7 +41,7 @@ shared class MaybeOfUint {
     if (!_hasVal) {
       return 'null,';
     }
-    return '' + _val + ',';
+    return TRS_WrapString(_val) + ',';
   }
   
   private const string TRS_WrapString(const string &in s) {
@@ -55,14 +55,14 @@ shared class MaybeOfUint {
     return Json::Value(_val);
   }
   
-  uint get_val() const {
+  const string get_val() const {
     if (!_hasVal) {
       throw('Attempted to access .val of a Nothing');
     }
     return _val;
   }
   
-  uint GetOr(uint _default) {
+  const string GetOr(const string &in _default) {
     return _hasVal ? _val : _default;
   }
   
@@ -83,20 +83,24 @@ shared class MaybeOfUint {
   }
 }
 
-namespace _MaybeOfUint {
+namespace _MaybeOfString {
   /* Namespace // Mixin: JMaybes */
-  shared MaybeOfUint FromRowString(const string &in str) {
+  shared MaybeOfString FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
     if (remainder.SubStr(0, 4) == 'null') {
-      return MaybeOfUint();
+      return MaybeOfString();
     }
-    /* Parse field: val of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
-    uint val = Text::ParseInt(chunk);
-    return MaybeOfUint(Text::ParseInt(chunk));
+    /* Parse field: val of type: string */
+    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+    tmp = remainder.SubStr(1).Split(':', 2);
+    chunkLen = Text::ParseInt(tmp[0]);
+    chunk = tmp[1].SubStr(0, chunkLen);
+    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    remainder = tmp[1].SubStr(chunkLen + 2);
+    string val = chunk;
+    return MaybeOfString(chunk);
   }
   
   shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {
