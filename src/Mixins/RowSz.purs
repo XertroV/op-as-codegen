@@ -6,7 +6,7 @@ module Mixins.RowSz
 
 import Prelude
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (fnCall, indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapTryCatch, wrapWhileLoop)
+import CodeLines (comment, fnCall, indent, jfieldToAsArg, ln, toPropFields, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapMainTest, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, intersperse)
 import Data.Array as A
 import Data.Maybe (Maybe(..))
@@ -107,7 +107,7 @@ frs_genNamespace (JsonObj objName fields) = intercalate ln $ [ (fromRowString ob
 
 fromRowString :: String -> Array JField -> AsFunction
 fromRowString name fields =
-  wrapFunction' ("shared " <> name) "FromRowString" [ "const string &in str" ]
+  wrapFunction' ("shared " <> name <> "@") "FromRowString" [ "const string &in str" ]
     $ [ "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
       , "uint chunkLen;"
@@ -117,7 +117,8 @@ fromRowString name fields =
     <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
   where
   getNext (JField n t) =
-    setChunkAndRemainderForTy t
+    comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
+      <> setChunkAndRemainderForTy t
       <> [ jTyToAsTy t <> " " <> n <> " = " <> jValFromStr t "chunk" <> ";" ]
 
   fieldVarNames = fields <#> \(JField n _t) -> n

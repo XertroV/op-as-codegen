@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_TmMap {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_TmMap_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_TmMap {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TmMap_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_TmMap_CommonTesting = runAsync(Tests_RegisterAll_TmMap_CommonTesting);
   
   /* Test // Mixin: ToFrom JSON Object */
+  void Tests_RegisterAll_TmMap_ToFromJSONObject() {
+    RegisterUnitTest('UnitTest_ToJsonFromJson_TmMap', UnitTest_ToJsonFromJson_TmMap);
+  }
+  
   bool Test_ToJsonFromJson_Check(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, uint AuthorScore, uint GoldScore, uint SilverScore, uint BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, uint TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
     TmMap@ tmp = TmMap(Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl);
     assert(tmp == TmMap(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
@@ -41,7 +44,6 @@ namespace Test_TmMap {
   }
   
   void UnitTest_ToJsonFromJson_TmMap() {
-    print('\\$26fUnit Test Start: UnitTest_ToJsonFromJson_TmMap (42 tests)');
     Test_ToJsonFromJson_Check("", "ꠂ쮰", "ᮔ﵇獣", "ᱶ谛䆳ꔼ躜ಙ㟊罐㳋뽄", 883496, 673390, 116343, 181454, "汯粌鉅", "框雱燐꬝", "㟳䢕颒饣ퟶ", "ꦻ땬黿救솳", "ᲊ̇॑", "堉", 606311, "摂ꖶ鍁紙", "遐鬱峝뻴", "");
     Test_ToJsonFromJson_Check("懇�客㒞᫯볠", "朣뵧칒튪윷窋澵", "䞚㌴⦱扬", "旰蓡柿ஷ", 545237, 796389, 811618, 178687, "᯿쨄봌", "炤䩦ᛥ婫囼", "䦋쁗缧ⱊﱻ狀ꆟ", "", "ᵒ㪗羘렷뵫", "�常", 158796, "鞙栥唃徭ྈ佛ͽ", "咧놪☼앇炄㐕", "罆鹌");
     Test_ToJsonFromJson_Check("엣ᩁ㟅ഽ", "", "銗䔜῏⻖蚇ங⨗萃쎉", "꨻በ↥鿊坯켫ꗥ", 203400, 154767, 510442, 929417, "鹥灦㣋충왦굸褢", "ꔴ㳇", "든Ηꨘ躀", "ⷾ뮁d", "恦鬋鍡轔援�ꧾ", "죤箖质ᣙ", 61424, "", "뗃㷦⏓箝썷", "㏬蠑坖澂ꉃ뒅Ὄ");
@@ -84,15 +86,15 @@ namespace Test_TmMap {
     Test_ToJsonFromJson_Check("綋‧䌪帧", "ꘔ셃逧瘇읃悕᛹欥", "輥봊䢮", "ポ", 142143, 453278, 992703, 590627, "홨襶鍹", "�눐ถ", "ｳ燷௛䱓롃⬛徰⡠ᮣ", "蒖賾甖Ａ즰妐皡㑡", "퍀ࢽ䷷鉋ḛ⿽齸刣", "ࢮዠਓ㨿", 654866, "墠댬氮䛪點업봉㑣섀", "ൺ璂鞧參年", "☖");
     Test_ToJsonFromJson_Check("ⱜ㉌❷ꉙ୑૩", "ᣱ豳륚隰ᴆꦜ", "콊妔ᱸ㵘轚⢅ު凰", "꧔蓖㊥萖ֆ", 406541, 87480, 690779, 675880, "䠗Ꝼ�ﴨ⑷꽍ꋭ", "ླྀ㾭Ӻ慺갆軔ꂛ捨", "晎�๒儀媉䩃", "燶浦桼熊ﺄᜥ㼓", "躈", "ꧤ팗�", 769073, "ຄⶊჼ", "旀齻٥⽲⧸鿹魔쏓", "5");
     Test_ToJsonFromJson_Check("ᘪ館㧈뭋ی픤挠", "", "匾⧒덓ህ诞뙲", "ੴ둑甝ь", 937898, 623734, 526338, 879081, "㤨豒컃㥕㡸⅑", "∘혟㷄�뚫閡͂蠏⠞", "獇츆豠", "羿㑲ﵸঌ", "", "", 695651, "", "꽳襩방饷煃Ꚁ嫯㌗椳", "覥鑜툿�䙹瞸쭟⫒");
-    print('\\$2f6Unit Test Success: UnitTest_ToJsonFromJson_TmMap (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TmMap_ToFromJSONObject = true
-    && runAsync(CoroutineFunc(UnitTest_ToJsonFromJson_TmMap))
-    ;
+  bool unitTestResults_TmMap_ToFromJSONObject = runAsync(Tests_RegisterAll_TmMap_ToFromJSONObject);
   
   /* Test // Mixin: Getters */
+  void Tests_RegisterAll_TmMap_Getters() {
+    RegisterUnitTest('UnitTest_TmMap_Getters', UnitTest_TmMap_Getters);
+  }
+  
   bool Test_CheckProps_TmMap(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, uint AuthorScore, uint GoldScore, uint SilverScore, uint BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, uint TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
     TmMap@ tmp = TmMap(Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl);
     assert(Id == tmp.Id, 'field Id with value `' + Id + '`');
@@ -117,7 +119,6 @@ namespace Test_TmMap {
   }
   
   void UnitTest_TmMap_Getters() {
-    print('\\$26fUnit Test Start: UnitTest_TmMap_Getters (42 tests)');
     Test_CheckProps_TmMap("�￿躮䮠馩�", "㧖⢢羋⽪㎜৏렊", "鰉橿蜽韋�╝㸌", "疍", 14178, 409104, 402441, 464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", "㬪●ꜛ귦翮漽똮", "먳�⿵枵", "۫芁≲彲", "콬", 49504, "握", "㷗᤾虝䰒ஷ", "듡鷰那춴庂ᄼﵰ");
     Test_CheckProps_TmMap("尚豈젮훇懓奲쮄⸔", "ꑙ", "㵹徲㼏", "拣䵱䌏�㯂ᓭ", 433840, 983172, 771070, 736302, "䇢", "윃ᆟ퇚箺᧸䤩", "揘䢊儞祹㚏풓", "쿽騍큋", "뭷", "蹪鈤ꦀ㔭", 733923, "㎀꿈�ᴶ๏㕭∸缲", "㪂", "ᇁ﹀賊惍됞");
     Test_CheckProps_TmMap("撏랭", "�׭駭겯ƴ", "쭜䢝", "䵙嗍珐瀮㍿", 264138, 345680, 37504, 847011, "弊䮷⃷쨗蝢ᳳ", "㶑ꔘₜ齬聎雄攩澴", "뭱過ଚ㩕ၪ㩾껫墰", "䕂륦홰떌䱇盰쩑虿", "鐷痚ꄻ滇�ꒉ㳀䈾", "枦", 89935, "의䉶杻�죝ᝫ᥾鼾㮦", "痒", "웪墒≜蔗塚䌽ୣ");
@@ -160,15 +161,15 @@ namespace Test_TmMap {
     Test_CheckProps_TmMap("淘쭁馉뒿↽̨", "Ꙓ瀽솳俴䑋", "읖տ⾆㻑⊖䙎", "馽⾯宧揈ဣ", 271268, 471845, 650536, 99176, "㦪짉ꋞ쁢雳", "餷瓦䈺構", "荔", "᳓ᄿ", "Œ", "", 606629, "❨겞།㞨", "ዉ", "킅㒏㲇កꠤ");
     Test_CheckProps_TmMap("", "⳰ꠀ줌攰吻သ쵚��", "痎걑뚠떢：䙅좍笑촖", "�", 967217, 620336, 924821, 759692, "熠쿝啩넨曮쭜끗", "", "䶝⤧疫ᬟ剚ꙗ", "", "", "ᡈௌힶ猧ꈈ䷟浣䊈", 279380, "◘鮣謵䔌˪崷跘ꃛ輪Ჺ", "猵읋Ẁ", "勣₂敵");
     Test_CheckProps_TmMap("콯郵㞢㟃誇", "⬃�", "徑됦", "⩖", 759041, 96000, 568077, 498886, "抄뼊됺旞鯉砡", "璭筡̛", "ꋎ縊꽔頪秽", "", "竐ꕻ굏묒", "", 571457, "", "䙂鴺滭殍쏊ﶆ�䏓嵡", "愺ယ");
-    print('\\$2f6Unit Test Success: UnitTest_TmMap_Getters (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TmMap_Getters = true
-    && runAsync(CoroutineFunc(UnitTest_TmMap_Getters))
-    ;
+  bool unitTestResults_TmMap_Getters = runAsync(Tests_RegisterAll_TmMap_Getters);
   
   /* Test // Mixin: Op Eq */
+  void Tests_RegisterAll_TmMap_OpEq() {
+    RegisterUnitTest('UnitTest_OpEqSimple_TmMap', UnitTest_OpEqSimple_TmMap);
+  }
+  
   TmMap@ lastChecked = null;
   
   bool OpEqSimple_Check(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, uint AuthorScore, uint GoldScore, uint SilverScore, uint BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, uint TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
@@ -181,7 +182,6 @@ namespace Test_TmMap {
   }
   
   void UnitTest_OpEqSimple_TmMap() {
-    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_TmMap (42 tests)');
     OpEqSimple_Check("欽᩻⫤䨣叒䝇", "춗䵩첏㞟", "㚥涬凙ﷰ눵뭩㵷", "⃩쭶퍉", 746965, 295268, 535487, 148099, "麑遬徨", "ꩣ釪", "勑뤋펍캒ᨶ롆", "⇩㵣䎵甄壝", "", "", 591080, "璊诛퇟鯚핦壉", "獔", "峵כֿ鐄ℛݙᚬ쇳濶");
     OpEqSimple_Check("ᬤ쿊菆︐좙桭", "ﶇ䚱윲冥㶶밑幖", "ʊ冿�Ⓢꖠ⋳䝅攨鑽烆", "䝕뭀ꃲ썵㞫䫆ើ鹆", 288195, 531474, 7923, 471876, "␜῰蹎쟳횱宙홧㉜는", "蚵⧝耏盧", "ꨕẽ뮱", "ʱᯜ鱦ࠡ", "噚셑燵㪆汀ᆣ젙", "䁏ਮ虴簪䤀", 610006, "䀐硩", "䀿虿砍", "픽鳐ꈉ");
     OpEqSimple_Check("⣣뾈噦", "⻰쬟칁", "�㏊뻹媋痰", "糓岁ꮸ㏧㽤᪮壐", 4203, 147695, 766369, 453007, "", "⬲櫇ꟙ栥鏡螫", "ꅯ껳ሌ", "耽裮ዖ锲釹ឰ墐", "໿ꍱ꟤��뙑", "㤬꾷", 694261, "館胄ા즣", "汢ꏠ⮶", "괗饖㪟");
@@ -224,15 +224,15 @@ namespace Test_TmMap {
     OpEqSimple_Check("䑷�㞕肾", "䫵ꬋ疄찠暋ꋮ粋", "", "秇䤊�ᚂ탥ᜓቶ摍", 500463, 316153, 55531, 436165, "", "垩駀", "뢩㻂䳶阀ᢋ�춄袴", "敚䓊념䆱먕ᅨ", "뜽ㅱ㡁喲ῒ꩝", "鷀စ郚", 476578, "�", "搑ዄ崷꘺쑨ᱰ蕤墜䟘", "ﲞ횕툩㰜℡檐₠");
     OpEqSimple_Check("ꆆ❶櫺纍ꁎ쩲ߧ䉒", "䣒ࡍ海", "", "負寷篝퓎䤥", 162437, 105966, 24732, 541310, "腆梲⎸ᓮ", "៝죟裈쉽釉纋", "狤", "댾湪䫓�▐", "飡썽뒡卋︠昁긨", "渧䎓鿫Ī", 306731, "⛋", "瑘寎", "傇䬖ﰙ燚晐怆");
     OpEqSimple_Check("厄", "य़烃霢", "蘢녆՜䮢삖ᰜ얅�", "䳚ಜ໅慛͕ꈆ禿䝇嘧", 166714, 588968, 547647, 176967, "ꨞⳛ純汻햅↖", "㡜", "觗멋뮻", "⿄㬶幣", "�", "︯䴰탺�义ﴐ൪钾", 412812, "뗆騋䌟羈䞌靫솥৴捦", "", "텰돩�쎨췝ﲣ");
-    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_TmMap (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TmMap_OpEq = true
-    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_TmMap))
-    ;
+  bool unitTestResults_TmMap_OpEq = runAsync(Tests_RegisterAll_TmMap_OpEq);
   
   /* Test // Mixin: Row Serialization */
+  void Tests_RegisterAll_TmMap_RowSerialization() {
+    RegisterUnitTest('UnitTest_SzThenUnSz_TmMap', UnitTest_SzThenUnSz_TmMap);
+  }
+  
   bool Test_SzThenUnSz_Check(const string &in Id, const string &in Uid, const string &in Name, const string &in FileName, uint AuthorScore, uint GoldScore, uint SilverScore, uint BronzeScore, const string &in AuthorDisplayName, const string &in AuthorAccountId, const string &in AuthorWebServicesUserId, const string &in SubmitterAccountId, const string &in SubmitterWebServicesUserId, const string &in Style, uint TimeStamp, const string &in Type, const string &in FileUrl, const string &in ThumbnailUrl) {
     TmMap@ tmp = TmMap(Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl);
     assert(tmp == _TmMap::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
@@ -240,7 +240,6 @@ namespace Test_TmMap {
   }
   
   void UnitTest_SzThenUnSz_TmMap() {
-    print('\\$26fUnit Test Start: UnitTest_SzThenUnSz_TmMap (42 tests)');
     Test_SzThenUnSz_Check("㍒㋪", "翾鵜", "朹鎟ﳙ", "编", 325863, 922558, 661263, 436830, "쯣欚", "⿕氎꼻㤚藴킅", "섌ሥ�밄ꊦ", "", "賄�匼뒱", "瀹ፎ", 906038, "佪�䮞", "㻥잒묑", "蔃");
     Test_SzThenUnSz_Check("Ộ푲", "넲䗵蹟", "", "竟潔箯㉽貺ᠤᝯ", 547338, 697340, 334487, 93517, "쎦㋥霈�ౝ㯠쬙", "竲㽥︠걿좳樁㠵ᢐၛ", "", "瞄", "⏂ꥏ꼼砍띑䗇髣蘟", "鉓켯τ㪔ﻊ爛", 4343, "ꈽ洞⤦➦踆⌾ꎳ", "", "䩸Ὼ㐚ꂖ摇");
     Test_SzThenUnSz_Check("", "᳔䬳⑇勿掝", "最徐㭾멭Პ䑰繤", "퍻", 592141, 288796, 42061, 924208, "诜돚兽奞ͩ줞", "ᄺ膲", "剼᪲ꮚ෌", "ⰳ팑ꇬ䋶慸", "鐮軅㧦胷", "㸕靮", 151896, "巖ㅡ螘笣䨯䄸㻘궈", "⃔煡", "盡ₜ阵");
@@ -283,12 +282,8 @@ namespace Test_TmMap {
     Test_SzThenUnSz_Check("៙ꕶ禞焰鉾뭙蠸ꥁ┷", "툳헆", "濢긑", "", 862756, 263550, 290189, 577628, "䍻虑ᅶᕳ찔ፉ媛䣅犞ಋ", "荦Ῠ袗䧱�ᚁ朝㌑", "弍ﶣ씮ಜ倹첥", "啒秦㍺彞㝏兑작⁆鲇ຫ", "귦Ᾱ彉ࡆ챞맄", "⑛㉮Ѵ펗厫圲獕鎑䖻", 680720, "㗾릨ꊀ", "ḛ潐卉⪙⪬㠬", "仐");
     Test_SzThenUnSz_Check("▓", "㽯䨿ꄊ椟羅꼁偈", "ሗ쩠⡷ꀽ᪴", "騬讽�", 380234, 953047, 462559, 156913, "ᯢ", "卄쨛", "�", "", "댌滗ီ㰶醘", "�⫓䷜ᚷ悮", 655271, "歖㘾꒴첯傳嚜", "�ԑꡳ곈ी鬻", "㥴萙䌣ゐម⽫晎쐑");
     Test_SzThenUnSz_Check("記ו멯鮰䆶", "㮧쮱㝆", "◆䄅䫪晪ຖ", "潅ᔎ膼", 902739, 892890, 536797, 858139, "䎻㼣", "뇵풮", "玛迺뤕눉﩮ࣛ", "蘷쫷씉縔桳䮽랒", "簔�こ�珺ᐯ", "", 461282, "쫷泏�", "㈩螧㫂ް孾樟꣋", "‴Ǳ಄㩴巛휚ޓ");
-    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_TmMap (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TmMap_RowSerialization = true
-    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_TmMap))
-    ;
+  bool unitTestResults_TmMap_RowSerialization = runAsync(Tests_RegisterAll_TmMap_RowSerialization);
 }
 #endif

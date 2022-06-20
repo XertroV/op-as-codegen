@@ -21,13 +21,17 @@ shared class TrackOfTheDayEntry {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TrackOfTheDayEntry(const Json::Value &in j) {
-    this._campaignId = j["campaignId"];
-    this._mapUid = j["mapUid"];
-    this._day = j["day"];
-    this._monthDay = j["monthDay"];
-    this._seasonUid = j["seasonUid"];
-    this._startTimestamp = j["startTimestamp"];
-    this._endTimestamp = j["endTimestamp"];
+    try {
+      this._campaignId = j["campaignId"];
+      this._mapUid = j["mapUid"];
+      this._day = j["day"];
+      this._monthDay = j["monthDay"];
+      this._seasonUid = j["seasonUid"];
+      this._startTimestamp = j["startTimestamp"];
+      this._endTimestamp = j["endTimestamp"];
+    } catch {
+      OnFromJsonError(j);
+    }
   }
   
   Json::Value ToJson() {
@@ -40,6 +44,11 @@ shared class TrackOfTheDayEntry {
     j["startTimestamp"] = _startTimestamp;
     j["endTimestamp"] = _endTimestamp;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -114,13 +123,15 @@ shared class TrackOfTheDayEntry {
 
 namespace _TrackOfTheDayEntry {
   /* Namespace // Mixin: Row Serialization */
-  shared TrackOfTheDayEntry FromRowString(const string &in str) {
+  shared TrackOfTheDayEntry@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: campaignId of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint campaignId = Text::ParseInt(chunk);
+    /* Parse field: mapUid of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -128,12 +139,15 @@ namespace _TrackOfTheDayEntry {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string mapUid = chunk;
+    /* Parse field: day of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint day = Text::ParseInt(chunk);
+    /* Parse field: monthDay of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint monthDay = Text::ParseInt(chunk);
+    /* Parse field: seasonUid of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -141,9 +155,11 @@ namespace _TrackOfTheDayEntry {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string seasonUid = chunk;
+    /* Parse field: startTimestamp of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint startTimestamp = Text::ParseInt(chunk);
+    /* Parse field: endTimestamp of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint endTimestamp = Text::ParseInt(chunk);

@@ -116,10 +116,11 @@ namespace _DictOfChallenge {
   
   namespace _KvPair {
     /* Namespace // Mixin: Row Serialization */
-    shared KvPair FromRowString(const string &in str) {
+    shared KvPair@ FromRowString(const string &in str) {
       string chunk = '', remainder = str;
       array<string> tmp = array<string>(2);
       uint chunkLen;
+      /* Parse field: key of type: string */
       FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
       tmp = remainder.SubStr(1).Split(':', 2);
       chunkLen = Text::ParseInt(tmp[0]);
@@ -127,6 +128,7 @@ namespace _DictOfChallenge {
       FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
       remainder = tmp[1].SubStr(chunkLen + 2);
       string key = chunk;
+      /* Parse field: val of type: Challenge@ */
       FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
       tmp = remainder.SubStr(1).Split(':', 2);
       chunkLen = Text::ParseInt(tmp[0]);

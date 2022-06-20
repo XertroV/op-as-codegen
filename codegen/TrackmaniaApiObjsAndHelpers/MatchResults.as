@@ -15,12 +15,16 @@ shared class MatchResults {
   
   /* Methods // Mixin: ToFrom JSON Object */
   MatchResults(const Json::Value &in j) {
-    this._roundPosition = j["roundPosition"];
-    this._matchLiveId = j["matchLiveId"];
-    this._scoreUnit = j["scoreUnit"];
-    this._results = array<MatchResult@>(j["results"].Length);
-    for (uint i = 0; i < j["results"].Length; i++) {
-      @this._results[i] = MatchResult(j["results"][i]);
+    try {
+      this._roundPosition = j["roundPosition"];
+      this._matchLiveId = j["matchLiveId"];
+      this._scoreUnit = j["scoreUnit"];
+      this._results = array<MatchResult@>(j["results"].Length);
+      for (uint i = 0; i < j["results"].Length; i++) {
+        @this._results[i] = MatchResult(j["results"][i]);
+      }
+    } catch {
+      OnFromJsonError(j);
     }
   }
   
@@ -36,6 +40,11 @@ shared class MatchResults {
     }
     j["results"] = _tmp_results;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -116,13 +125,15 @@ shared class MatchResults {
 
 namespace _MatchResults {
   /* Namespace // Mixin: Row Serialization */
-  shared MatchResults FromRowString(const string &in str) {
+  shared MatchResults@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: roundPosition of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint roundPosition = Text::ParseInt(chunk);
+    /* Parse field: matchLiveId of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -130,6 +141,7 @@ namespace _MatchResults {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string matchLiveId = chunk;
+    /* Parse field: scoreUnit of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -137,6 +149,7 @@ namespace _MatchResults {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string scoreUnit = chunk;
+    /* Parse field: results of type: array<MatchResult@> */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);

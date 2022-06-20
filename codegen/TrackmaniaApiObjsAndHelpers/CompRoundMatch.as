@@ -1,31 +1,28 @@
-shared class Challenge {
+shared class CompRoundMatch {
   /* Properties // Mixin: Default Properties */
   private uint _id;
-  private string _uid;
+  private uint _position;
+  private bool _isCompleted;
   private string _name;
-  private uint _startDate;
-  private uint _endDate;
-  private uint _leaderboardId;
+  private string _clubMatchLiveId;
   
   /* Methods // Mixin: Default Constructor */
-  Challenge(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
+  CompRoundMatch(uint id, uint position, bool isCompleted, const string &in name, const string &in clubMatchLiveId) {
     this._id = id;
-    this._uid = uid;
+    this._position = position;
+    this._isCompleted = isCompleted;
     this._name = name;
-    this._startDate = startDate;
-    this._endDate = endDate;
-    this._leaderboardId = leaderboardId;
+    this._clubMatchLiveId = clubMatchLiveId;
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Challenge(const Json::Value &in j) {
+  CompRoundMatch(const Json::Value &in j) {
     try {
       this._id = j["id"];
-      this._uid = j["uid"];
+      this._position = j["position"];
+      this._isCompleted = j["isCompleted"];
       this._name = j["name"];
-      this._startDate = j["startDate"];
-      this._endDate = j["endDate"];
-      this._leaderboardId = j["leaderboardId"];
+      this._clubMatchLiveId = j["clubMatchLiveId"];
     } catch {
       OnFromJsonError(j);
     }
@@ -34,11 +31,10 @@ shared class Challenge {
   Json::Value ToJson() {
     Json::Value j = Json::Object();
     j["id"] = _id;
-    j["uid"] = _uid;
+    j["position"] = _position;
+    j["isCompleted"] = _isCompleted;
     j["name"] = _name;
-    j["startDate"] = _startDate;
-    j["endDate"] = _endDate;
-    j["leaderboardId"] = _leaderboardId;
+    j["clubMatchLiveId"] = _clubMatchLiveId;
     return j;
   }
   
@@ -52,45 +48,40 @@ shared class Challenge {
     return this._id;
   }
   
-  const string get_uid() const {
-    return this._uid;
+  uint get_position() const {
+    return this._position;
+  }
+  
+  bool get_isCompleted() const {
+    return this._isCompleted;
   }
   
   const string get_name() const {
     return this._name;
   }
   
-  uint get_startDate() const {
-    return this._startDate;
-  }
-  
-  uint get_endDate() const {
-    return this._endDate;
-  }
-  
-  uint get_leaderboardId() const {
-    return this._leaderboardId;
+  const string get_clubMatchLiveId() const {
+    return this._clubMatchLiveId;
   }
   
   /* Methods // Mixin: ToString */
   const string ToString() {
-    return 'Challenge('
-      + string::Join({'' + id, uid, name, '' + startDate, '' + endDate, '' + leaderboardId}, ', ')
+    return 'CompRoundMatch('
+      + string::Join({'' + id, '' + position, '' + isCompleted, name, clubMatchLiveId}, ', ')
       + ')';
   }
   
   /* Methods // Mixin: Op Eq */
-  bool opEquals(const Challenge@ &in other) {
+  bool opEquals(const CompRoundMatch@ &in other) {
     if (other is null) {
       return false; // this obj can never be null.
     }
     return true
       && _id == other.id
-      && _uid == other.uid
+      && _position == other.position
+      && _isCompleted == other.isCompleted
       && _name == other.name
-      && _startDate == other.startDate
-      && _endDate == other.endDate
-      && _leaderboardId == other.leaderboardId
+      && _clubMatchLiveId == other.clubMatchLiveId
       ;
   }
   
@@ -98,11 +89,10 @@ shared class Challenge {
   const string ToRowString() {
     string ret = "";
     ret += '' + _id + ",";
-    ret += TRS_WrapString(_uid) + ",";
+    ret += '' + _position + ",";
+    ret += '' + _isCompleted + ",";
     ret += TRS_WrapString(_name) + ",";
-    ret += '' + _startDate + ",";
-    ret += '' + _endDate + ",";
-    ret += '' + _leaderboardId + ",";
+    ret += TRS_WrapString(_clubMatchLiveId) + ",";
     return ret;
   }
   
@@ -111,9 +101,9 @@ shared class Challenge {
   }
 }
 
-namespace _Challenge {
+namespace _CompRoundMatch {
   /* Namespace // Mixin: Row Serialization */
-  shared Challenge@ FromRowString(const string &in str) {
+  shared CompRoundMatch@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
@@ -121,14 +111,14 @@ namespace _Challenge {
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint id = Text::ParseInt(chunk);
-    /* Parse field: uid of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string uid = chunk;
+    /* Parse field: position of type: uint */
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    uint position = Text::ParseInt(chunk);
+    /* Parse field: isCompleted of type: bool */
+    tmp = remainder.Split(',', 2);
+    chunk = tmp[0]; remainder = tmp[1];
+    bool isCompleted = ('true' == chunk.ToLower());
     /* Parse field: name of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
@@ -137,19 +127,15 @@ namespace _Challenge {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string name = chunk;
-    /* Parse field: startDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
-    uint startDate = Text::ParseInt(chunk);
-    /* Parse field: endDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
-    uint endDate = Text::ParseInt(chunk);
-    /* Parse field: leaderboardId of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
-    uint leaderboardId = Text::ParseInt(chunk);
-    return Challenge(id, uid, name, startDate, endDate, leaderboardId);
+    /* Parse field: clubMatchLiveId of type: string */
+    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+    tmp = remainder.SubStr(1).Split(':', 2);
+    chunkLen = Text::ParseInt(tmp[0]);
+    chunk = tmp[1].SubStr(0, chunkLen);
+    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    remainder = tmp[1].SubStr(chunkLen + 2);
+    string clubMatchLiveId = chunk;
+    return CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
   }
   
   shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {

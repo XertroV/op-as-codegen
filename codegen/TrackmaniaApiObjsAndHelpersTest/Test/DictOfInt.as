@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfInt {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfInt_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfInt_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfInt_CommonTesting = runAsync(Tests_RegisterAll_DictOfInt_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfInt_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfInt', UnitTest_DictBacking_DictOfInt);
+  }
+  
   bool Test_ProxyFns_DictOfInt(DictOfInt@ testDict, uint n, const string &in key, int value) {
     testDict.Set(key, value);
     _DictOfInt::KvPair@ tmpKV = _DictOfInt::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_DictBacking_DictOfInt() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfInt (42 tests)');
     DictOfInt@ testDict = DictOfInt();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -100,12 +102,8 @@ namespace Test_DictOfInt {
     Test_ProxyFns_DictOfInt(testDict, 38, "ﱋ⌎媑", -878784);
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfInt (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfInt_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfInt))
-    ;
+  bool unitTestResults_DictOfInt_DictBacking = runAsync(Tests_RegisterAll_DictOfInt_DictBacking);
 }
 #endif

@@ -1,18 +1,18 @@
-shared class Challenges {
+shared class CompRoundMatches {
   /* Properties // Mixin: Default Properties */
-  private array<Challenge@> _challenges;
+  private array<CompRoundMatch@> _matches;
   
   /* Methods // Mixin: Default Constructor */
-  Challenges(const Challenge@[] &in challenges) {
-    this._challenges = challenges;
+  CompRoundMatches(const CompRoundMatch@[] &in matches) {
+    this._matches = matches;
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Challenges(const Json::Value &in j) {
+  CompRoundMatches(const Json::Value &in j) {
     try {
-      this._challenges = array<Challenge@>(j.Length);
+      this._matches = array<CompRoundMatch@>(j.Length);
       for (uint i = 0; i < j.Length; i++) {
-        @this._challenges[i] = Challenge(j[i]);
+        @this._matches[i] = CompRoundMatch(j[i]);
       }
     } catch {
       OnFromJsonError(j);
@@ -20,12 +20,12 @@ shared class Challenges {
   }
   
   Json::Value ToJson() {
-    Json::Value _tmp_challenges = Json::Array();
-    for (uint i = 0; i < _challenges.Length; i++) {
-      auto v = _challenges[i];
-      _tmp_challenges.Add(v.ToJson());
+    Json::Value _tmp_matches = Json::Array();
+    for (uint i = 0; i < _matches.Length; i++) {
+      auto v = _matches[i];
+      _tmp_matches.Add(v.ToJson());
     }
-    return _tmp_challenges;
+    return _tmp_matches;
   }
   
   void OnFromJsonError(const Json::Value &in j) const {
@@ -34,18 +34,18 @@ shared class Challenges {
   }
   
   /* Methods // Mixin: Getters */
-  const Challenge@[]@ get_challenges() const {
-    return this._challenges;
+  const CompRoundMatch@[]@ get_matches() const {
+    return this._matches;
   }
   
   /* Methods // Mixin: ToString */
   const string ToString() {
-    return 'Challenges('
-      + string::Join({TS_Array_Challenge(challenges)}, ', ')
+    return 'CompRoundMatches('
+      + string::Join({TS_Array_CompRoundMatch(matches)}, ', ')
       + ')';
   }
   
-  private const string TS_Array_Challenge(const array<Challenge@> &in arr) {
+  private const string TS_Array_CompRoundMatch(const array<CompRoundMatch@> &in arr) {
     string ret = '{';
     for (uint i = 0; i < arr.Length; i++) {
       if (i > 0) ret += ', ';
@@ -55,26 +55,26 @@ shared class Challenges {
   }
   
   /* Methods // Mixin: Op Eq */
-  bool opEquals(const Challenges@ &in other) {
+  bool opEquals(const CompRoundMatches@ &in other) {
     if (other is null) {
       return false; // this obj can never be null.
     }
-    bool _tmp_arrEq_challenges = _challenges.Length == other.challenges.Length;
-    for (uint i = 0; i < _challenges.Length; i++) {
-      if (!_tmp_arrEq_challenges) {
+    bool _tmp_arrEq_matches = _matches.Length == other.matches.Length;
+    for (uint i = 0; i < _matches.Length; i++) {
+      if (!_tmp_arrEq_matches) {
         break;
       }
-      _tmp_arrEq_challenges = _tmp_arrEq_challenges && (_challenges[i] == other.challenges[i]);
+      _tmp_arrEq_matches = _tmp_arrEq_matches && (_matches[i] == other.matches[i]);
     }
     return true
-      && _tmp_arrEq_challenges
+      && _tmp_arrEq_matches
       ;
   }
   
   /* Methods // Mixin: Row Serialization */
   const string ToRowString() {
     string ret = "";
-    ret += TRS_WrapString(TRS_Array_Challenge(_challenges)) + ",";
+    ret += TRS_WrapString(TRS_Array_CompRoundMatch(_matches)) + ",";
     return ret;
   }
   
@@ -82,7 +82,7 @@ shared class Challenges {
     return '(' + s.Length + ':' + s + ')';
   }
   
-  private const string TRS_Array_Challenge(const array<Challenge@> &in arr) {
+  private const string TRS_Array_CompRoundMatch(const array<CompRoundMatch@> &in arr) {
     string ret = '';
     for (uint i = 0; i < arr.Length; i++) {
       ret += TRS_WrapString(arr[i].ToRowString()) + ',';
@@ -91,42 +91,42 @@ shared class Challenges {
   }
   
   /* Methods // Mixin: ArrayProxy */
-  Challenge@ opIndex(uint ix) const {
-    return _challenges[ix];
+  CompRoundMatch@ opIndex(uint ix) const {
+    return _matches[ix];
   }
   
   uint get_Length() const {
-    return _challenges.Length;
+    return _matches.Length;
   }
   
   bool IsEmpty() const {
-    return _challenges.IsEmpty();
+    return _matches.IsEmpty();
   }
   
-  void InsertLast(Challenge@ v) {
-    _challenges.InsertLast(v);
+  void InsertLast(CompRoundMatch@ v) {
+    _matches.InsertLast(v);
   }
 }
 
-namespace _Challenges {
+namespace _CompRoundMatches {
   /* Namespace // Mixin: Row Serialization */
-  shared Challenges@ FromRowString(const string &in str) {
+  shared CompRoundMatches@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
-    /* Parse field: challenges of type: array<Challenge@> */
+    /* Parse field: matches of type: array<CompRoundMatch@> */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
     chunk = tmp[1].SubStr(0, chunkLen);
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
-    array<Challenge@> challenges = FRS_Array_Challenge(chunk);
-    return Challenges(challenges);
+    array<CompRoundMatch@> matches = FRS_Array_CompRoundMatch(chunk);
+    return CompRoundMatches(matches);
   }
   
-  shared const array<Challenge@>@ FRS_Array_Challenge(const string &in str) {
-    array<Challenge@> ret = array<Challenge@>(0);
+  shared const array<CompRoundMatch@>@ FRS_Array_CompRoundMatch(const string &in str) {
+    array<CompRoundMatch@> ret = array<CompRoundMatch@>(0);
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
@@ -137,7 +137,7 @@ namespace _Challenges {
       chunk = tmp[1].SubStr(0, chunkLen);
       FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
       remainder = tmp[1].SubStr(chunkLen + 2);
-      ret.InsertLast(_Challenge::FromRowString(chunk));
+      ret.InsertLast(_CompRoundMatch::FromRowString(chunk));
     }
     return ret;
   }

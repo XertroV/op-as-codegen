@@ -4,4 +4,5 @@ author = 'op-as-codegen'
 
 [script]
 defines = [ 'RELEASE' ]
-shared_exports = [ 'DictOfString.as', 'Challenge.as', 'Challenges.as', 'DictOfInt.as', 'DictOfChallenge.as', 'DictOfChallenge_WriteLog.as', 'Competition.as', 'MatchResult.as', 'MatchResults.as', 'TrackOfTheDayEntry.as', 'TotdMonth.as', 'TotdResp.as', 'DictOfTrackOfTheDayEntry_WriteLog.as', 'TmMap.as', 'DictOfTmMap_WriteLog.as', 'MaybeOfUint.as' ]
+shared_exports = [ 'DictOfString.as', 'Challenge.as', 'Challenges.as', 'DictOfInt.as', 'DictOfChallenge.as', 'DictOfChallenge_WriteLog.as', 'Competition.as', 'Competitions.as', 'CompRound.as', 'CompRounds.as', 'CompRoundMatch.as', 'CompRoundMatches.as', 'MatchResult.as', 'MatchResults.as', 'TrackOfTheDayEntry.as', 'TotdMonth.as', 'TotdResp.as', 'DictOfTrackOfTheDayEntry_WriteLog.as', 'TmMap.as', 'DictOfTmMap_WriteLog.as', 'MaybeOfUint.as' ]
+# No deps

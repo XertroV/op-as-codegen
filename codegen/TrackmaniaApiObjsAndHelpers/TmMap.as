@@ -43,24 +43,28 @@ shared class TmMap {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TmMap(const Json::Value &in j) {
-    this._Id = j["Id"];
-    this._Uid = j["Uid"];
-    this._Name = j["Name"];
-    this._FileName = j["FileName"];
-    this._AuthorScore = j["AuthorScore"];
-    this._GoldScore = j["GoldScore"];
-    this._SilverScore = j["SilverScore"];
-    this._BronzeScore = j["BronzeScore"];
-    this._AuthorDisplayName = j["AuthorDisplayName"];
-    this._AuthorAccountId = j["AuthorAccountId"];
-    this._AuthorWebServicesUserId = j["AuthorWebServicesUserId"];
-    this._SubmitterAccountId = j["SubmitterAccountId"];
-    this._SubmitterWebServicesUserId = j["SubmitterWebServicesUserId"];
-    this._Style = j["Style"];
-    this._TimeStamp = j["TimeStamp"];
-    this._Type = j["Type"];
-    this._FileUrl = j["FileUrl"];
-    this._ThumbnailUrl = j["ThumbnailUrl"];
+    try {
+      this._Id = j["Id"];
+      this._Uid = j["Uid"];
+      this._Name = j["Name"];
+      this._FileName = j["FileName"];
+      this._AuthorScore = j["AuthorScore"];
+      this._GoldScore = j["GoldScore"];
+      this._SilverScore = j["SilverScore"];
+      this._BronzeScore = j["BronzeScore"];
+      this._AuthorDisplayName = j["AuthorDisplayName"];
+      this._AuthorAccountId = j["AuthorAccountId"];
+      this._AuthorWebServicesUserId = j["AuthorWebServicesUserId"];
+      this._SubmitterAccountId = j["SubmitterAccountId"];
+      this._SubmitterWebServicesUserId = j["SubmitterWebServicesUserId"];
+      this._Style = j["Style"];
+      this._TimeStamp = j["TimeStamp"];
+      this._Type = j["Type"];
+      this._FileUrl = j["FileUrl"];
+      this._ThumbnailUrl = j["ThumbnailUrl"];
+    } catch {
+      OnFromJsonError(j);
+    }
   }
   
   Json::Value ToJson() {
@@ -84,6 +88,11 @@ shared class TmMap {
     j["FileUrl"] = _FileUrl;
     j["ThumbnailUrl"] = _ThumbnailUrl;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -246,10 +255,11 @@ shared class TmMap {
 
 namespace _TmMap {
   /* Namespace // Mixin: Row Serialization */
-  shared TmMap FromRowString(const string &in str) {
+  shared TmMap@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: Id of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -257,6 +267,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Id = chunk;
+    /* Parse field: Uid of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -264,6 +275,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Uid = chunk;
+    /* Parse field: Name of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -271,6 +283,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Name = chunk;
+    /* Parse field: FileName of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -278,18 +291,23 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string FileName = chunk;
+    /* Parse field: AuthorScore of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint AuthorScore = Text::ParseInt(chunk);
+    /* Parse field: GoldScore of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint GoldScore = Text::ParseInt(chunk);
+    /* Parse field: SilverScore of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint SilverScore = Text::ParseInt(chunk);
+    /* Parse field: BronzeScore of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint BronzeScore = Text::ParseInt(chunk);
+    /* Parse field: AuthorDisplayName of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -297,6 +315,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string AuthorDisplayName = chunk;
+    /* Parse field: AuthorAccountId of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -304,6 +323,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string AuthorAccountId = chunk;
+    /* Parse field: AuthorWebServicesUserId of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -311,6 +331,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string AuthorWebServicesUserId = chunk;
+    /* Parse field: SubmitterAccountId of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -318,6 +339,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string SubmitterAccountId = chunk;
+    /* Parse field: SubmitterWebServicesUserId of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -325,6 +347,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string SubmitterWebServicesUserId = chunk;
+    /* Parse field: Style of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -332,9 +355,11 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Style = chunk;
+    /* Parse field: TimeStamp of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint TimeStamp = Text::ParseInt(chunk);
+    /* Parse field: Type of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -342,6 +367,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string Type = chunk;
+    /* Parse field: FileUrl of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -349,6 +375,7 @@ namespace _TmMap {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     string FileUrl = chunk;
+    /* Parse field: ThumbnailUrl of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);

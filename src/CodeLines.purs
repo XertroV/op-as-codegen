@@ -126,8 +126,11 @@ wrapConstFunction ret name args lines = wrapFunction'' ret name (Just args) (jfi
 wrapFunction' :: String -> String -> Array String -> Lines -> AsFunction
 wrapFunction' ret name args lines = wrapFunction'' ret name Nothing args false lines
 
+wrapConstFunction' :: String -> String -> Array String -> Lines -> AsFunction
+wrapConstFunction' ret name args lines = wrapFunction'' ret name Nothing args true lines
+
 wrapFunction'' :: String -> String -> Maybe JFields -> Array String -> Boolean -> Lines -> AsFunction
-wrapFunction'' ret name fields args isConst lines = { decl, call, callRaw, fields }
+wrapFunction'' ret name fields args isConst lines = { decl, call, callRaw, fields, name }
   where
   decl = wrapInitedScope (ret' <> name <> "(" <> joinWith ", " args <> ")" <> mConst) lines
 
@@ -160,12 +163,11 @@ fnCall :: String -> Array String -> String
 fnCall name args = name <> "(" <> joinWith ", " args <> ")"
 
 wrapMainTest ∷ String → Array String → AsFunction
-wrapMainTest name ls =
-  wrapFunction "void" name []
-    $ [ printTestStart name nTestsToRun ]
-    <> ls
-    <> [ printTestSuccess name nTestsToRun, "return;" ]
+wrapMainTest name ls = wrapFunction "void" name [] ls
 
+-- $ [ printTestStart name nTestsToRun ]
+-- <> ls
+-- <> [ printTestSuccess name nTestsToRun, "return;" ]
 wrapTestFn ∷ String → Array JField → Array String → AsFunction
 wrapTestFn name = wrapFunction "bool" name
 

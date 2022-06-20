@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfTmMap_WriteLog {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfTmMap_WriteLog_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfTmMap_WriteLog {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfTmMap_WriteLog_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfTmMap_WriteLog_CommonTesting = runAsync(Tests_RegisterAll_DictOfTmMap_WriteLog_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfTmMap_WriteLog_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfTmMap_WriteLog', UnitTest_DictBacking_DictOfTmMap_WriteLog);
+  }
+  
   bool Test_ProxyFns_DictOfTmMap_WriteLog(DictOfTmMap_WriteLog@ testDict, uint n, const string &in key, TmMap@ value) {
     testDict.Set(key, value);
     _DictOfTmMap_WriteLog::KvPair@ tmpKV = _DictOfTmMap_WriteLog::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfTmMap_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfTmMap_WriteLog() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfTmMap_WriteLog (42 tests)');
     DictOfTmMap_WriteLog@ testDict = DictOfTmMap_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTmMap_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -111,12 +113,8 @@ namespace Test_DictOfTmMap_WriteLog {
     }
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfTmMap_WriteLog (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfTmMap_WriteLog_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfTmMap_WriteLog))
-    ;
+  bool unitTestResults_DictOfTmMap_WriteLog_DictBacking = runAsync(Tests_RegisterAll_DictOfTmMap_WriteLog_DictBacking);
 }
 #endif

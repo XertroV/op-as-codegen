@@ -13,9 +13,13 @@ shared class MatchResult {
   
   /* Methods // Mixin: ToFrom JSON Object */
   MatchResult(const Json::Value &in j) {
-    @this._rank = MaybeOfUint(j["rank"]);
-    @this._score = MaybeOfUint(j["score"]);
-    this._participant = j["participant"];
+    try {
+      @this._rank = MaybeOfUint(j["rank"]);
+      @this._score = MaybeOfUint(j["score"]);
+      this._participant = j["participant"];
+    } catch {
+      OnFromJsonError(j);
+    }
   }
   
   Json::Value ToJson() {
@@ -24,6 +28,11 @@ shared class MatchResult {
     j["score"] = _score.ToJson();
     j["participant"] = _participant;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -74,10 +83,11 @@ shared class MatchResult {
 
 namespace _MatchResult {
   /* Namespace // Mixin: Row Serialization */
-  shared MatchResult FromRowString(const string &in str) {
+  shared MatchResult@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: rank of type: MaybeOfUint@ */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -85,6 +95,7 @@ namespace _MatchResult {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     MaybeOfUint@ rank = _MaybeOfUint::FromRowString(chunk);
+    /* Parse field: score of type: MaybeOfUint@ */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -92,6 +103,7 @@ namespace _MatchResult {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     MaybeOfUint@ score = _MaybeOfUint::FromRowString(chunk);
+    /* Parse field: participant of type: string */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);

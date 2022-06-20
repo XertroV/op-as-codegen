@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_MatchResult {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_MatchResult_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_MatchResult_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_MatchResult_CommonTesting = runAsync(Tests_RegisterAll_MatchResult_CommonTesting);
   
   /* Test // Mixin: ToFrom JSON Object */
+  void Tests_RegisterAll_MatchResult_ToFromJSONObject() {
+    RegisterUnitTest('UnitTest_ToJsonFromJson_MatchResult', UnitTest_ToJsonFromJson_MatchResult);
+  }
+  
   bool Test_ToJsonFromJson_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
     MatchResult@ tmp = MatchResult(rank, score, participant);
     assert(tmp == MatchResult(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
@@ -41,7 +44,6 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_ToJsonFromJson_MatchResult() {
-    print('\\$26fUnit Test Start: UnitTest_ToJsonFromJson_MatchResult (42 tests)');
     Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "ꠂ쮰");
     Test_ToJsonFromJson_Check(MaybeOfUint(712811), MaybeOfUint(126408), "罐");
     Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(191439), "ᱶ");
@@ -84,15 +86,15 @@ namespace Test_MatchResult {
     Test_ToJsonFromJson_Check(MaybeOfUint(212735), MaybeOfUint(811960), "꺒Ｅ澮");
     Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(610207), "⧼馣谱蘄딙授");
     Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "");
-    print('\\$2f6Unit Test Success: UnitTest_ToJsonFromJson_MatchResult (42 tests)');
-    return;
   }
   
-  bool unitTestResults_MatchResult_ToFromJSONObject = true
-    && runAsync(CoroutineFunc(UnitTest_ToJsonFromJson_MatchResult))
-    ;
+  bool unitTestResults_MatchResult_ToFromJSONObject = runAsync(Tests_RegisterAll_MatchResult_ToFromJSONObject);
   
   /* Test // Mixin: Getters */
+  void Tests_RegisterAll_MatchResult_Getters() {
+    RegisterUnitTest('UnitTest_MatchResult_Getters', UnitTest_MatchResult_Getters);
+  }
+  
   bool Test_CheckProps_MatchResult(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
     MatchResult@ tmp = MatchResult(rank, score, participant);
     assert(rank == tmp.rank, 'field rank');
@@ -102,7 +104,6 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_MatchResult_Getters() {
-    print('\\$26fUnit Test Start: UnitTest_MatchResult_Getters (42 tests)');
     Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(), "㎜৏렊빬�￿躮䮠馩�");
     Test_CheckProps_MatchResult(MaybeOfUint(780361), MaybeOfUint(378662), "╝㸌鐁");
     Test_CheckProps_MatchResult(MaybeOfUint(397204), MaybeOfUint(230597), "旱疍");
@@ -145,15 +146,15 @@ namespace Test_MatchResult {
     Test_CheckProps_MatchResult(MaybeOfUint(520163), MaybeOfUint(850147), "扚듍꩐瘁쪟怢瞱");
     Test_CheckProps_MatchResult(MaybeOfUint(61779), MaybeOfUint(), "");
     Test_CheckProps_MatchResult(MaybeOfUint(302773), MaybeOfUint(623932), "ȟ薲ꭉ");
-    print('\\$2f6Unit Test Success: UnitTest_MatchResult_Getters (42 tests)');
-    return;
   }
   
-  bool unitTestResults_MatchResult_Getters = true
-    && runAsync(CoroutineFunc(UnitTest_MatchResult_Getters))
-    ;
+  bool unitTestResults_MatchResult_Getters = runAsync(Tests_RegisterAll_MatchResult_Getters);
   
   /* Test // Mixin: Op Eq */
+  void Tests_RegisterAll_MatchResult_OpEq() {
+    RegisterUnitTest('UnitTest_OpEqSimple_MatchResult', UnitTest_OpEqSimple_MatchResult);
+  }
+  
   MatchResult@ lastChecked = null;
   
   bool OpEqSimple_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
@@ -166,7 +167,6 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_OpEqSimple_MatchResult() {
-    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_MatchResult (42 tests)');
     OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(393455), "ﷰ눵뭩㵷衟춗䵩");
     OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(217809), "蝔ᔁ䀓⃩쭶퍉첯");
     OpEqSimple_Check(MaybeOfUint(665920), MaybeOfUint(535487), "਀ꩣ釪�麑遬徨탏");
@@ -209,15 +209,15 @@ namespace Test_MatchResult {
     OpEqSimple_Check(MaybeOfUint(39828), MaybeOfUint(667191), "篱鬻피䌱踀뤅");
     OpEqSimple_Check(MaybeOfUint(300093), MaybeOfUint(992454), "ⓟ娣ዯ﷤賚�");
     OpEqSimple_Check(MaybeOfUint(627673), MaybeOfUint(356165), "硬");
-    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_MatchResult (42 tests)');
-    return;
   }
   
-  bool unitTestResults_MatchResult_OpEq = true
-    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_MatchResult))
-    ;
+  bool unitTestResults_MatchResult_OpEq = runAsync(Tests_RegisterAll_MatchResult_OpEq);
   
   /* Test // Mixin: Row Serialization */
+  void Tests_RegisterAll_MatchResult_RowSerialization() {
+    RegisterUnitTest('UnitTest_SzThenUnSz_MatchResult', UnitTest_SzThenUnSz_MatchResult);
+  }
+  
   bool Test_SzThenUnSz_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
     MatchResult@ tmp = MatchResult(rank, score, participant);
     assert(tmp == _MatchResult::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
@@ -225,7 +225,6 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_SzThenUnSz_MatchResult() {
-    print('\\$26fUnit Test Start: UnitTest_SzThenUnSz_MatchResult (42 tests)');
     Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "ﳙ㻲翾鵜靀㍒㋪");
     Test_SzThenUnSz_Check(MaybeOfUint(730596), MaybeOfUint(530766), "编");
     Test_SzThenUnSz_Check(MaybeOfUint(47355), MaybeOfUint(325863), "藴킅Ề쯣欚엻렒哾๺⾖");
@@ -268,12 +267,8 @@ namespace Test_MatchResult {
     Test_SzThenUnSz_Check(MaybeOfUint(332985), MaybeOfUint(478495), "䗶");
     Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(806313), "濜ḟ₺洉疧");
     Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "㌲㯊䂁∐⒳伷鳯");
-    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_MatchResult (42 tests)');
-    return;
   }
   
-  bool unitTestResults_MatchResult_RowSerialization = true
-    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_MatchResult))
-    ;
+  bool unitTestResults_MatchResult_RowSerialization = runAsync(Tests_RegisterAll_MatchResult_RowSerialization);
 }
 #endif

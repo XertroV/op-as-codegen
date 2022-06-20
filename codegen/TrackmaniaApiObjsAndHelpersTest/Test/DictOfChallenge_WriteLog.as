@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfChallenge_WriteLog {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfChallenge_WriteLog_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfChallenge_WriteLog_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfChallenge_WriteLog_CommonTesting = runAsync(Tests_RegisterAll_DictOfChallenge_WriteLog_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfChallenge_WriteLog_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfChallenge_WriteLog', UnitTest_DictBacking_DictOfChallenge_WriteLog);
+  }
+  
   bool Test_ProxyFns_DictOfChallenge_WriteLog(DictOfChallenge_WriteLog@ testDict, uint n, const string &in key, Challenge@ value) {
     testDict.Set(key, value);
     _DictOfChallenge_WriteLog::KvPair@ tmpKV = _DictOfChallenge_WriteLog::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfChallenge_WriteLog() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfChallenge_WriteLog (42 tests)');
     DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -112,12 +114,8 @@ namespace Test_DictOfChallenge_WriteLog {
     }
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge_WriteLog (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfChallenge_WriteLog_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfChallenge_WriteLog))
-    ;
+  bool unitTestResults_DictOfChallenge_WriteLog_DictBacking = runAsync(Tests_RegisterAll_DictOfChallenge_WriteLog_DictBacking);
 }
 #endif

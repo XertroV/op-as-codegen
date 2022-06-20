@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_Challenge {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_Challenge_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_Challenge {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_Challenge_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_Challenge_CommonTesting = runAsync(Tests_RegisterAll_Challenge_CommonTesting);
   
   /* Test // Mixin: ToFrom JSON Object */
+  void Tests_RegisterAll_Challenge_ToFromJSONObject() {
+    RegisterUnitTest('UnitTest_ToJsonFromJson_Challenge', UnitTest_ToJsonFromJson_Challenge);
+  }
+  
   bool Test_ToJsonFromJson_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
     assert(tmp == Challenge(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
@@ -41,7 +44,6 @@ namespace Test_Challenge {
   }
   
   void UnitTest_ToJsonFromJson_Challenge() {
-    print('\\$26fUnit Test Start: UnitTest_ToJsonFromJson_Challenge (42 tests)');
     Test_ToJsonFromJson_Check(129450, "㳋뽄旤ᮔ﵇獣ແ", "䃧쁐욘ᱶ谛䆳ꔼ躜ಙ㟊", 673390, 116343, 181454);
     Test_ToJsonFromJson_Check(620474, "雱燐꬝,汯粌", "饣ퟶ䳟", 292599, 141875, 331925);
     Test_ToJsonFromJson_Check(541297, "堉⍴ᲊ", "ｓ", 853398, 34736, 880999);
@@ -84,15 +86,15 @@ namespace Test_Challenge {
     Test_ToJsonFromJson_Check(890783, "뎝⺧䛙픮", "温膀璠", 45787, 733079, 915433);
     Test_ToJsonFromJson_Check(849459, "͢떳窖鬦歾䙖ᲀ", "浸酒袑橒", 333832, 314379, 737608);
     Test_ToJsonFromJson_Check(430147, "똼顯얮듖", "볶烓", 373373, 471592, 172674);
-    print('\\$2f6Unit Test Success: UnitTest_ToJsonFromJson_Challenge (42 tests)');
-    return;
   }
   
-  bool unitTestResults_Challenge_ToFromJSONObject = true
-    && runAsync(CoroutineFunc(UnitTest_ToJsonFromJson_Challenge))
-    ;
+  bool unitTestResults_Challenge_ToFromJSONObject = runAsync(Tests_RegisterAll_Challenge_ToFromJSONObject);
   
   /* Test // Mixin: Getters */
+  void Tests_RegisterAll_Challenge_Getters() {
+    RegisterUnitTest('UnitTest_Challenge_Getters', UnitTest_Challenge_Getters);
+  }
+  
   bool Test_CheckProps_Challenge(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
     assert(id == tmp.id, 'field id with value `' + id + '`');
@@ -105,7 +107,6 @@ namespace Test_Challenge {
   }
   
   void UnitTest_Challenge_Getters() {
-    print('\\$26fUnit Test Start: UnitTest_Challenge_Getters (42 tests)');
     Test_CheckProps_Challenge(394184, "馩", "躮", 980813, 825164, 378662);
     Test_CheckProps_Challenge(252919, "蜽韋�╝", "鰉", 14178, 409104, 402441);
     Test_CheckProps_Challenge(464786, "鳔ꂆऒ涮�뗗", "﶑䙢꺰ꦞ", 504000, 654758, 678612);
@@ -148,15 +149,15 @@ namespace Test_Challenge {
     Test_CheckProps_Challenge(387647, "쩢姽ἆ奨", "ꌗ枚逳剭ﺏ柙", 282186, 400614, 951189);
     Test_CheckProps_Challenge(894450, "컏�嚌", "⶯弸", 751600, 82673, 881873);
     Test_CheckProps_Challenge(44403, "륍虋陱濣灈￨℈⩝ꝶ", "莻ጺ䭉胼ᑝ쨀", 873724, 994918, 343715);
-    print('\\$2f6Unit Test Success: UnitTest_Challenge_Getters (42 tests)');
-    return;
   }
   
-  bool unitTestResults_Challenge_Getters = true
-    && runAsync(CoroutineFunc(UnitTest_Challenge_Getters))
-    ;
+  bool unitTestResults_Challenge_Getters = runAsync(Tests_RegisterAll_Challenge_Getters);
   
   /* Test // Mixin: Op Eq */
+  void Tests_RegisterAll_Challenge_OpEq() {
+    RegisterUnitTest('UnitTest_OpEqSimple_Challenge', UnitTest_OpEqSimple_Challenge);
+  }
+  
   Challenge@ lastChecked = null;
   
   bool OpEqSimple_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
@@ -169,7 +170,6 @@ namespace Test_Challenge {
   }
   
   void UnitTest_OpEqSimple_Challenge() {
-    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_Challenge (42 tests)');
     OpEqSimple_Check(393455, "ﷰ눵뭩㵷衟춗䵩", "쭶퍉첯㚥涬", 606964, 746965, 295268);
     OpEqSimple_Check(535487, "਀ꩣ釪�麑遬徨탏", "壝玃勑뤋펍캒ᨶ", 526999, 962771, 489079);
     OpEqSimple_Check(509350, "", "", 591080, 333816, 159512);
@@ -212,15 +212,15 @@ namespace Test_Challenge {
     OpEqSimple_Check(20634, "ᬣ뾩ᨶ␫祡扁拚ꑧ", "䮕", 24041, 47111, 957356);
     OpEqSimple_Check(796492, "⏏᧎䫁詵䯻", "뀁م", 55892, 967496, 74974);
     OpEqSimple_Check(504468, "✜ྦྷ", "낤햳釽⛧옩炰၃鉝", 471983, 508026, 929051);
-    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_Challenge (42 tests)');
-    return;
   }
   
-  bool unitTestResults_Challenge_OpEq = true
-    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_Challenge))
-    ;
+  bool unitTestResults_Challenge_OpEq = runAsync(Tests_RegisterAll_Challenge_OpEq);
   
   /* Test // Mixin: Row Serialization */
+  void Tests_RegisterAll_Challenge_RowSerialization() {
+    RegisterUnitTest('UnitTest_SzThenUnSz_Challenge', UnitTest_SzThenUnSz_Challenge);
+  }
+  
   bool Test_SzThenUnSz_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
     assert(tmp == _Challenge::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
@@ -228,7 +228,6 @@ namespace Test_Challenge {
   }
   
   void UnitTest_SzThenUnSz_Challenge() {
-    print('\\$26fUnit Test Start: UnitTest_SzThenUnSz_Challenge (42 tests)');
     Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", 325863, 922558, 661263);
     Test_SzThenUnSz_Check(436830, "쯣欚", "⿕氎꼻㤚藴킅", 964425, 605220, 262638);
     Test_SzThenUnSz_Check(498192, "", "賄�匼뒱", 826942, 906038, 616400);
@@ -271,12 +270,8 @@ namespace Test_Challenge {
     Test_SzThenUnSz_Check(17733, "Ⱄㄺ꛼㻔㴕", "窗䊨㎠๥Ⲣ⪒冁", 896342, 154401, 373048);
     Test_SzThenUnSz_Check(125776, "ꨟ泒擵䆲罋婬", "ૐ", 363891, 810147, 786060);
     Test_SzThenUnSz_Check(403152, "옮伴ꁧⓚ紝쾲铃켴돺", "ᚡ窓", 576027, 20949, 788899);
-    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_Challenge (42 tests)');
-    return;
   }
   
-  bool unitTestResults_Challenge_RowSerialization = true
-    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_Challenge))
-    ;
+  bool unitTestResults_Challenge_RowSerialization = runAsync(Tests_RegisterAll_Challenge_RowSerialization);
 }
 #endif

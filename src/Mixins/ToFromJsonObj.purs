@@ -2,7 +2,7 @@ module Mixins.ToFromJsonObj (mxToFromJsonObj) where
 
 import Prelude
 import AsTypes (jTyIsPrim, jTyPascalCase, jTyToAsTy, setVarOfJTyToVal)
-import CodeLines (comment, fnCall, forLoopArray, indent, ln, toPropField, toPropFields, wrapFunction, wrapMainTest)
+import CodeLines (comment, fnCall, forLoopArray, indent, ln, stmt, toPropField, toPropFields, wrapConstFunction, wrapConstFunction', wrapFunction, wrapMainTest, wrapTryCatch)
 import Data.Array (dropEnd, foldl, intercalate, zip)
 import Data.Array as A
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -15,7 +15,7 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerators, TestGenerator)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JField(..), JType(..), JsonObj(..), getFTy, isJArray)
+import Types (JField(..), JType(..), JsonObj(..), AsFunction, getFTy, isJArray)
 
 mxToFromJsonObj :: Mixin
 mxToFromJsonObj =
@@ -32,10 +32,19 @@ mxToFromJsonObj =
               <> [ "Json::Value ToJson() {" ]
               <> indent 1 (toJsonBody fields)
               <> [ "}" ]
+              <> ln
+              <> onFromJsonError.decl
   , properties: Nothing
   , namespace: Nothing
   , tests: Just $ genTests jsonSzTests
   }
+
+onFromJsonError :: AsFunction
+onFromJsonError =
+  wrapConstFunction' "void" "OnFromJsonError" [ "const Json::Value &in j" ]
+    [ "warn('Parsing json failed: ' + Json::Write(j));"
+    , "throw('Failed to parse JSON: ' + getExceptionInfo());"
+    ]
 
 {-
   To Json
@@ -104,7 +113,7 @@ jTyToJson ty var =
 --
 -- [ "trace('fromJson constructor parsing: ' + Json::Write(j));" ]
 fromJsonBody ∷ Array JField → Array String
-fromJsonBody fields = altJsonAllFields mbSingletonCase
+fromJsonBody fields = wrapTryCatch (altJsonAllFields mbSingletonCase) ([ "OnFromJsonError(j);" ])
   where
   altJsonAllFields = fromMaybe $ (foldl (<>) [] $ fromJsonFieldLines <$> zip (toPropFields fields) fields)
 

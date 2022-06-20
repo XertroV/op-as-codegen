@@ -29,7 +29,7 @@ jValToStr (JDict _) n = unsafeCrashWith "jValToStr JDict not impl"
 jValToStr (JMaybe t) n = "TRS_WrapString(" <> n <> ".ToRowString())"
 
 isJTypeStrWrapped :: JType -> Boolean
-isJTypeStrWrapped t = not $ A.elem t [ JNull, JNumber, JUint, JInt ]
+isJTypeStrWrapped t = not $ A.elem t [ JNull, JNumber, JUint, JInt, JBool ]
 
 jValFromStr :: JType -> String -> String
 jValFromStr JString var = var

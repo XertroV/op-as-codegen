@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfTrackOfTheDayEntry_WriteLog_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfTrackOfTheDayEntry_WriteLog_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfTrackOfTheDayEntry_WriteLog_CommonTesting = runAsync(Tests_RegisterAll_DictOfTrackOfTheDayEntry_WriteLog_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfTrackOfTheDayEntry_WriteLog_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog', UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog);
+  }
+  
   bool Test_ProxyFns_DictOfTrackOfTheDayEntry_WriteLog(DictOfTrackOfTheDayEntry_WriteLog@ testDict, uint n, const string &in key, TrackOfTheDayEntry@ value) {
     testDict.Set(key, value);
     _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ tmpKV = _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog (42 tests)');
     DictOfTrackOfTheDayEntry_WriteLog@ testDict = DictOfTrackOfTheDayEntry_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTrackOfTheDayEntry_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -110,12 +112,8 @@ namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
     }
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfTrackOfTheDayEntry_WriteLog_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog))
-    ;
+  bool unitTestResults_DictOfTrackOfTheDayEntry_WriteLog_DictBacking = runAsync(Tests_RegisterAll_DictOfTrackOfTheDayEntry_WriteLog_DictBacking);
 }
 #endif

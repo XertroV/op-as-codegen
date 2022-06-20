@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfString {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfString_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfString {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfString_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfString_CommonTesting = runAsync(Tests_RegisterAll_DictOfString_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfString_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfString', UnitTest_DictBacking_DictOfString);
+  }
+  
   bool Test_ProxyFns_DictOfString(DictOfString@ testDict, uint n, const string &in key, const string &in value) {
     testDict.Set(key, value);
     _DictOfString::KvPair@ tmpKV = _DictOfString::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfString {
   }
   
   void UnitTest_DictBacking_DictOfString() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfString (42 tests)');
     DictOfString@ testDict = DictOfString();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -102,12 +104,8 @@ namespace Test_DictOfString {
     Test_ProxyFns_DictOfString(testDict, 40, "莫攃嶁ড়鏧呲䞿", "멃㳦꛹槛컙瞘䝩땑");
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfString (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfString_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfString))
-    ;
+  bool unitTestResults_DictOfString_DictBacking = runAsync(Tests_RegisterAll_DictOfString_DictBacking);
 }
 #endif

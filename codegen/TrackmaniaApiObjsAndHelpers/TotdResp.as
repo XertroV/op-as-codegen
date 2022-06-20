@@ -13,12 +13,16 @@ shared class TotdResp {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TotdResp(const Json::Value &in j) {
-    this._monthList = array<TotdMonth@>(j["monthList"].Length);
-    for (uint i = 0; i < j["monthList"].Length; i++) {
-      @this._monthList[i] = TotdMonth(j["monthList"][i]);
+    try {
+      this._monthList = array<TotdMonth@>(j["monthList"].Length);
+      for (uint i = 0; i < j["monthList"].Length; i++) {
+        @this._monthList[i] = TotdMonth(j["monthList"][i]);
+      }
+      this._itemCount = j["itemCount"];
+      this._nextRequestTimestamp = j["nextRequestTimestamp"];
+    } catch {
+      OnFromJsonError(j);
     }
-    this._itemCount = j["itemCount"];
-    this._nextRequestTimestamp = j["nextRequestTimestamp"];
   }
   
   Json::Value ToJson() {
@@ -32,6 +36,11 @@ shared class TotdResp {
     j["itemCount"] = _itemCount;
     j["nextRequestTimestamp"] = _nextRequestTimestamp;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -106,10 +115,11 @@ shared class TotdResp {
 
 namespace _TotdResp {
   /* Namespace // Mixin: Row Serialization */
-  shared TotdResp FromRowString(const string &in str) {
+  shared TotdResp@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: monthList of type: array<TotdMonth@> */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
@@ -117,9 +127,11 @@ namespace _TotdResp {
     FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
     remainder = tmp[1].SubStr(chunkLen + 2);
     array<TotdMonth@> monthList = FRS_Array_TotdMonth(chunk);
+    /* Parse field: itemCount of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint itemCount = Text::ParseInt(chunk);
+    /* Parse field: nextRequestTimestamp of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint nextRequestTimestamp = Text::ParseInt(chunk);

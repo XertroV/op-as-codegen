@@ -2,7 +2,7 @@ module Mixins.Testing.Gen where
 
 import Prelude
 import AsTypes (jTyPascalCase, jTyToAsTy)
-import CodeLines (indent, ln)
+import CodeLines (indent, ln, wrapFunction)
 import Consts (nTestsToRun)
 import Control.Monad.Rec.Class (Step(..), tailRec)
 import Data.Array (foldl, intercalate)
@@ -15,6 +15,7 @@ import Data.Number.Format (toString)
 import Data.String (Pattern(..), Replacement(..), joinWith)
 import Data.String as S
 import Data.String.Base64 as B64
+import Data.String.Utils (stripChars)
 import Data.Traversable (sequence)
 import Data.Tuple (Tuple(..))
 import Effect.Now (now)
@@ -37,13 +38,17 @@ genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> 
   where
   allTestsInfo = allTestGenerators <*> [ ms ] <*> [ obj ]
 
-  allTestsFunctions = intercalate ln $ (\r -> r.ls) <$> allTestsInfo
+  allTestsFunctions = intercalate ln $ [ registerAll.decl ] <> ((\r -> r.ls) <$> allTestsInfo)
 
   allTestsNames = allTestsInfo <#> \r -> r.fnName
 
-  testResult =
-    [ "bool unitTestResults_" <> name <> "_" <> noSpaces ms.currMixin <> " = true" ]
-      <> indent 1 ((allTestsNames <#> \fnName -> "&& runAsync(CoroutineFunc(" <> fnName <> "))") <> [ ";" ])
+  uniqNameForTest = name <> "_" <> noSpaces ms.currMixin
+
+  registerAll =
+    wrapFunction "void" ("Tests_RegisterAll_" <> uniqNameForTest) []
+      $ (allTestsNames <#> \fnName -> "RegisterUnitTest('" <> fnName <> "', " <> fnName <> ");")
+
+  testResult = [ "bool unitTestResults_" <> uniqNameForTest <> " = runAsync(" <> registerAll.name <> ");" ]
 
 -- | each mixin calling genTestArgs should choose a different initSeed Int.
 -- | Smash the numpad or use the current unix time if you need a suggestion.
@@ -75,9 +80,9 @@ arbitraryFromJType JNull = (arbitrary :: Gen Unit) <#> (\_ -> "NULL")
 arbitraryFromJType JBool = (arbitrary :: Gen Boolean) <#> (\b -> if b then "true" else "false")
 
 -- helpful to add for debug mb: <#> B64.encode
-arbitraryFromJType JString = (arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
+arbitraryFromJType JString = (stripChars "\"\n\\" <$> arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
 
-arbitraryFromJType (JArray t) = (chooseInt 0 10) >>= (\i -> vectorOf i (arbitraryFromJType t)) <#> (\vs -> "{" <> joinWith ", " vs <> "}")
+arbitraryFromJType (JArray t) = genIntRarelyZero >>= (\i -> vectorOf i (arbitraryFromJType t)) <#> (\vs -> "{" <> joinWith ", " vs <> "}")
 
 arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(" <> joinWith ", " fs <> ")")
   where
@@ -89,3 +94,9 @@ arbitraryFromJType m@(JMaybe t) =
   frequency
     $ NEA.singleton (Tuple 0.15 $ (arbitrary :: Gen Unit) <#> (\_ -> jTyPascalCase m <> "()"))
     <> NEA.singleton (Tuple 0.85 $ (arbitraryFromJType t <#> (\v -> jTyPascalCase m <> "(" <> v <> ")")))
+
+genIntRarelyZero ∷ Gen Int
+genIntRarelyZero =
+  frequency
+    $ NEA.singleton (Tuple 0.01 $ (arbitrary :: Gen Unit) <#> (\_ -> 0))
+    <> NEA.singleton (Tuple 0.99 $ (chooseInt 1 4))

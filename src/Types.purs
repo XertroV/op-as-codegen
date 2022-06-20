@@ -79,6 +79,7 @@ type AsFunction
     , call :: JFields -> String
     , callRaw :: Array String -> String
     , fields :: Maybe JFields
+    , name :: String
     }
 
 getDecl :: AsFunction -> Lines

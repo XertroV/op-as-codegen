@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_DictOfChallenge {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_DictOfChallenge_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_DictOfChallenge {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfChallenge_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_DictOfChallenge_CommonTesting = runAsync(Tests_RegisterAll_DictOfChallenge_CommonTesting);
   
   /* Test // Mixin: Dict Backing */
+  void Tests_RegisterAll_DictOfChallenge_DictBacking() {
+    RegisterUnitTest('UnitTest_DictBacking_DictOfChallenge', UnitTest_DictBacking_DictOfChallenge);
+  }
+  
   bool Test_ProxyFns_DictOfChallenge(DictOfChallenge@ testDict, uint n, const string &in key, Challenge@ value) {
     testDict.Set(key, value);
     _DictOfChallenge::KvPair@ tmpKV = _DictOfChallenge::KvPair(key, value);
@@ -55,7 +58,6 @@ namespace Test_DictOfChallenge {
   }
   
   void UnitTest_DictBacking_DictOfChallenge() {
-    print('\\$26fUnit Test Start: UnitTest_DictBacking_DictOfChallenge (42 tests)');
     DictOfChallenge@ testDict = DictOfChallenge();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -103,12 +105,8 @@ namespace Test_DictOfChallenge {
     Test_ProxyFns_DictOfChallenge(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
-    print('\\$2f6Unit Test Success: UnitTest_DictBacking_DictOfChallenge (42 tests)');
-    return;
   }
   
-  bool unitTestResults_DictOfChallenge_DictBacking = true
-    && runAsync(CoroutineFunc(UnitTest_DictBacking_DictOfChallenge))
-    ;
+  bool unitTestResults_DictOfChallenge_DictBacking = runAsync(Tests_RegisterAll_DictOfChallenge_DictBacking);
 }
 #endif

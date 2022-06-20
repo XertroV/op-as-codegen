@@ -44,6 +44,16 @@ challenges = { cls, obj }
 
   obj = object "Challenges" # field "challenges" (JArray (JObject codecChallenge))
 
+type ArrayProxyOpts
+  = { n :: String, f :: String, o :: ClsWithObj }
+
+mkArrayProxy :: ArrayProxyOpts -> ClsWithObj
+mkArrayProxy { n, f, o } = { cls, obj }
+  where
+  cls = jsonObjToClass obj [ o.cls ] (typicalMixins <> [ mxArrayProxy ])
+
+  obj = object n # field f (JArray (JObject o.obj))
+
 dictGen :: DictOpts -> { cls :: AsClass, obj :: JsonObj }
 dictGen opts@{ valType } = { cls, obj }
   where
@@ -97,16 +107,61 @@ competition = { cls, obj }
   where
   cls = jsonObjToClass obj [] typicalMixins
 
+  -- lots more fields that are omitted
   obj =
     object "Competition"
       # field "id" JUint
-      # field "liveId" JString
-      # field "name" JString
       # field "startDate" JUint
       # field "endDate" JUint
       # field "matchesGenerationDate" JUint
       # field "nbPlayers" JUint
       # field "leaderboardId" JUint
+      # field "name" JString
+      # field "liveId" JString
+      # field "creator" JString
+      # field "region" JString
+
+competitions :: ClsWithObj
+competitions = mkArrayProxy { n: "Competitions", f: "comps", o: competition }
+
+compRound :: ClsWithObj
+compRound = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] typicalMixins
+
+  obj =
+    object "CompRound"
+      # field "id" JUint
+      # field "qualifierChallengeId" JUint
+      # field "position" JUint
+      # field "nbMatches" JUint
+      # field "startDate" JUint
+      # field "endDate" JUint
+      # field "name" JString
+      # field "status" JString
+      # field "leaderboardComputeType" JString
+      # field "teamLeaderboardComputeType" JString
+      # field "matchScoreDirection" JString
+
+compRounds :: ClsWithObj
+compRounds = mkArrayProxy { n: "CompRounds", f: "rounds", o: compRound }
+
+compRoundMatch :: ClsWithObj
+compRoundMatch = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] typicalMixins
+
+  -- # field "tags" (JArray (JString)) -- not sure what type this is
+  obj =
+    object "CompRoundMatch"
+      # field "id" JUint
+      # field "position" JUint
+      # field "isCompleted" JBool
+      # field "name" JString
+      # field "clubMatchLiveId" JString
+
+compRoundMatches :: ClsWithObj
+compRoundMatches = mkArrayProxy { n: "CompRoundMatches", f: "matches", o: compRoundMatch }
 
 matchResult :: ClsWithObj
 matchResult = { cls, obj }
@@ -217,6 +272,11 @@ everything =
   -- , challengeDb2.cls
   -- , codecChallengeDbCls
   , competition.cls
+  , competitions.cls
+  , compRound.cls
+  , compRounds.cls
+  , compRoundMatch.cls
+  , compRoundMatches.cls
   , matchResult.cls
   , matchResults.cls
   , totdEntry.cls

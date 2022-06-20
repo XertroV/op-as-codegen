@@ -1,6 +1,10 @@
 #if UNIT_TEST
 namespace Test_TrackOfTheDayEntry {
   /* Test // Mixin: Common Testing */
+  void Tests_RegisterAll_TrackOfTheDayEntry_CommonTesting() {
+    RegisterUnitTest('UnitTest_Common_Nop', UnitTest_Common_Nop);
+  }
+  
   bool runAsync(CoroutineFunc@ func) {
     startnew(func);
     return true;
@@ -24,16 +28,15 @@ namespace Test_TrackOfTheDayEntry {
   }
   
   void UnitTest_Common_Nop() {
-    print('\\$26fUnit Test Start: UnitTest_Common_Nop (42 tests)');
-    print('\\$2f6Unit Test Success: UnitTest_Common_Nop (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TrackOfTheDayEntry_CommonTesting = true
-    && runAsync(CoroutineFunc(UnitTest_Common_Nop))
-    ;
+  bool unitTestResults_TrackOfTheDayEntry_CommonTesting = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_CommonTesting);
   
   /* Test // Mixin: ToFrom JSON Object */
+  void Tests_RegisterAll_TrackOfTheDayEntry_ToFromJSONObject() {
+    RegisterUnitTest('UnitTest_ToJsonFromJson_TrackOfTheDayEntry', UnitTest_ToJsonFromJson_TrackOfTheDayEntry);
+  }
+  
   bool Test_ToJsonFromJson_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
     TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
     assert(tmp == TrackOfTheDayEntry(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
@@ -41,7 +44,6 @@ namespace Test_TrackOfTheDayEntry {
   }
   
   void UnitTest_ToJsonFromJson_TrackOfTheDayEntry() {
-    print('\\$26fUnit Test Start: UnitTest_ToJsonFromJson_TrackOfTheDayEntry (42 tests)');
     Test_ToJsonFromJson_Check(129450, "㳋뽄旤ᮔ﵇獣ແ", 191439, 86104, "䚏꼸䃧쁐", 673390, 116343);
     Test_ToJsonFromJson_Check(181454, "汯粌鉅", 259935, 975206, "䢕颒饣ퟶ䳟框雱", 292599, 141875);
     Test_ToJsonFromJson_Check(331925, "ᲊ̇॑", 138748, 606311, "摂ꖶ鍁紙", 957341, 711273);
@@ -84,15 +86,15 @@ namespace Test_TrackOfTheDayEntry {
     Test_ToJsonFromJson_Check(338922, "", 800492, 242717, "", 627628, 354961);
     Test_ToJsonFromJson_Check(685120, "ꮚ찌", 55990, 602416, "ⱪ탵", 394098, 183673);
     Test_ToJsonFromJson_Check(729860, "䋛頹", 903843, 272557, "黌", 82722, 754312);
-    print('\\$2f6Unit Test Success: UnitTest_ToJsonFromJson_TrackOfTheDayEntry (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TrackOfTheDayEntry_ToFromJSONObject = true
-    && runAsync(CoroutineFunc(UnitTest_ToJsonFromJson_TrackOfTheDayEntry))
-    ;
+  bool unitTestResults_TrackOfTheDayEntry_ToFromJSONObject = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_ToFromJSONObject);
   
   /* Test // Mixin: Getters */
+  void Tests_RegisterAll_TrackOfTheDayEntry_Getters() {
+    RegisterUnitTest('UnitTest_TrackOfTheDayEntry_Getters', UnitTest_TrackOfTheDayEntry_Getters);
+  }
+  
   bool Test_CheckProps_TrackOfTheDayEntry(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
     TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
     assert(campaignId == tmp.campaignId, 'field campaignId with value `' + campaignId + '`');
@@ -106,7 +108,6 @@ namespace Test_TrackOfTheDayEntry {
   }
   
   void UnitTest_TrackOfTheDayEntry_Getters() {
-    print('\\$26fUnit Test Start: UnitTest_TrackOfTheDayEntry_Getters (42 tests)');
     Test_CheckProps_TrackOfTheDayEntry(394184, "馩", 888896, 284583, "⢢羋⽪㎜৏렊빬�", 252919, 886792);
     Test_CheckProps_TrackOfTheDayEntry(185139, "콠旱疍鰉橿蜽", 409104, 402441, "㘇힞", 464786, 672947);
     Test_CheckProps_TrackOfTheDayEntry(490383, "覧﶑䙢꺰ꦞᩘ鳔", 654758, 678612, "먳�⿵枵ⴾ㬪●ꜛ귦", 622511, 937581);
@@ -149,15 +150,15 @@ namespace Test_TrackOfTheDayEntry {
     Test_CheckProps_TrackOfTheDayEntry(889541, "졠陨❝�⥉嫾쀵", 657129, 400651, "쪺⾉輖쀠껲", 810229, 594916);
     Test_CheckProps_TrackOfTheDayEntry(429882, "㘅驹劣", 478706, 227812, "", 429408, 429967);
     Test_CheckProps_TrackOfTheDayEntry(78422, "욀쿏靆ﰭᖦ涹", 967173, 36520, "ྊ䐊罶㭹뱍᭲", 530693, 384605);
-    print('\\$2f6Unit Test Success: UnitTest_TrackOfTheDayEntry_Getters (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TrackOfTheDayEntry_Getters = true
-    && runAsync(CoroutineFunc(UnitTest_TrackOfTheDayEntry_Getters))
-    ;
+  bool unitTestResults_TrackOfTheDayEntry_Getters = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_Getters);
   
   /* Test // Mixin: Op Eq */
+  void Tests_RegisterAll_TrackOfTheDayEntry_OpEq() {
+    RegisterUnitTest('UnitTest_OpEqSimple_TrackOfTheDayEntry', UnitTest_OpEqSimple_TrackOfTheDayEntry);
+  }
+  
   TrackOfTheDayEntry@ lastChecked = null;
   
   bool OpEqSimple_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
@@ -170,7 +171,6 @@ namespace Test_TrackOfTheDayEntry {
   }
   
   void UnitTest_OpEqSimple_TrackOfTheDayEntry() {
-    print('\\$26fUnit Test Start: UnitTest_OpEqSimple_TrackOfTheDayEntry (42 tests)');
     OpEqSimple_Check(393455, "ﷰ눵뭩㵷衟춗䵩", 631581, 217809, "蝔ᔁ䀓⃩쭶퍉첯", 535487, 148099);
     OpEqSimple_Check(713558, "釪�麑遬", 551494, 414864, "勑뤋펍캒", 526999, 962771);
     OpEqSimple_Check(489079, "", 509350, 591080, "璊诛퇟鯚핦壉", 643073, 272489);
@@ -213,15 +213,15 @@ namespace Test_TrackOfTheDayEntry {
     OpEqSimple_Check(385338, "﷤枲ꩀ옲죥魍镠", 28598, 546073, "꼡姐䊂⤭�Ჺⅶ엱ǫ", 40492, 262430);
     OpEqSimple_Check(839490, "ꖙ∴簾", 407040, 674434, "摓릺칻", 210923, 189775);
     OpEqSimple_Check(849529, "ꍶ⨙獵鳙막퇭ꥑ", 813124, 679750, "ᨏ衔ΰ탡뒤엄闼", 74666, 414623);
-    print('\\$2f6Unit Test Success: UnitTest_OpEqSimple_TrackOfTheDayEntry (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TrackOfTheDayEntry_OpEq = true
-    && runAsync(CoroutineFunc(UnitTest_OpEqSimple_TrackOfTheDayEntry))
-    ;
+  bool unitTestResults_TrackOfTheDayEntry_OpEq = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_OpEq);
   
   /* Test // Mixin: Row Serialization */
+  void Tests_RegisterAll_TrackOfTheDayEntry_RowSerialization() {
+    RegisterUnitTest('UnitTest_SzThenUnSz_TrackOfTheDayEntry', UnitTest_SzThenUnSz_TrackOfTheDayEntry);
+  }
+  
   bool Test_SzThenUnSz_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
     TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
     assert(tmp == _TrackOfTheDayEntry::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
@@ -229,7 +229,6 @@ namespace Test_TrackOfTheDayEntry {
   }
   
   void UnitTest_SzThenUnSz_TrackOfTheDayEntry() {
-    print('\\$26fUnit Test Start: UnitTest_SzThenUnSz_TrackOfTheDayEntry (42 tests)');
     Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", 141231, 325863, "藴킅Ề쯣欚엻렒哾๺⾖", 327500, 300954);
     Test_SzThenUnSz_Check(714358, "�밄ꊦ⊼", 262638, 498192, "", 179363, 144555);
     Test_SzThenUnSz_Check(409427, "瀹ፎ", 906038, 616400, "佪�", 263354, 427441);
@@ -272,12 +271,8 @@ namespace Test_TrackOfTheDayEntry {
     Test_SzThenUnSz_Check(20949, "➵孞扎㹰㽙ᶝ㒾ⴙ荡옄", 763745, 133184, "ಖⳡ忆悑翐䈐풼仫", 985661, 412956);
     Test_SzThenUnSz_Check(219851, "ꙵ", 722283, 416051, "켊෦聁�诨", 550861, 181236);
     Test_SzThenUnSz_Check(462111, "憖ꀖ銱❕蒚ₖ", 293221, 133601, "灣眇죫ㅿ傴灲纹謐ሙ", 113139, 633845);
-    print('\\$2f6Unit Test Success: UnitTest_SzThenUnSz_TrackOfTheDayEntry (42 tests)');
-    return;
   }
   
-  bool unitTestResults_TrackOfTheDayEntry_RowSerialization = true
-    && runAsync(CoroutineFunc(UnitTest_SzThenUnSz_TrackOfTheDayEntry))
-    ;
+  bool unitTestResults_TrackOfTheDayEntry_RowSerialization = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_RowSerialization);
 }
 #endif

@@ -15,12 +15,16 @@ shared class TotdMonth {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TotdMonth(const Json::Value &in j) {
-    this._year = j["year"];
-    this._month = j["month"];
-    this._lastDay = j["lastDay"];
-    this._days = array<TrackOfTheDayEntry@>(j["days"].Length);
-    for (uint i = 0; i < j["days"].Length; i++) {
-      @this._days[i] = TrackOfTheDayEntry(j["days"][i]);
+    try {
+      this._year = j["year"];
+      this._month = j["month"];
+      this._lastDay = j["lastDay"];
+      this._days = array<TrackOfTheDayEntry@>(j["days"].Length);
+      for (uint i = 0; i < j["days"].Length; i++) {
+        @this._days[i] = TrackOfTheDayEntry(j["days"][i]);
+      }
+    } catch {
+      OnFromJsonError(j);
     }
   }
   
@@ -36,6 +40,11 @@ shared class TotdMonth {
     }
     j["days"] = _tmp_days;
     return j;
+  }
+  
+  void OnFromJsonError(const Json::Value &in j) const {
+    warn('Parsing json failed: ' + Json::Write(j));
+    throw('Failed to parse JSON: ' + getExceptionInfo());
   }
   
   /* Methods // Mixin: Getters */
@@ -116,19 +125,23 @@ shared class TotdMonth {
 
 namespace _TotdMonth {
   /* Namespace // Mixin: Row Serialization */
-  shared TotdMonth FromRowString(const string &in str) {
+  shared TotdMonth@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
     uint chunkLen;
+    /* Parse field: year of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint year = Text::ParseInt(chunk);
+    /* Parse field: month of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint month = Text::ParseInt(chunk);
+    /* Parse field: lastDay of type: uint */
     tmp = remainder.Split(',', 2);
     chunk = tmp[0]; remainder = tmp[1];
     uint lastDay = Text::ParseInt(chunk);
+    /* Parse field: days of type: array<TrackOfTheDayEntry@> */
     FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
     tmp = remainder.SubStr(1).Split(':', 2);
     chunkLen = Text::ParseInt(tmp[0]);
