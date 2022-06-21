@@ -95,6 +95,40 @@ shared class CompRounds {
     return ret;
   }
   
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    WTB_Array_CompRound(buf, _rounds);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += CBB_Array_CompRound(_rounds);
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
+  
+  void WTB_Array_CompRound(Buffer@ &in buf, const array<CompRound@> &in arr) {
+    buf.Write(uint(arr.Length));
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      el.WriteToBuffer(buf);
+    }
+  }
+  
+  uint CBB_Array_CompRound(const array<CompRound@> &in arr) {
+    uint bytes = 4;
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      bytes += el.CountBufBytes();
+    }
+    return bytes;
+  }
+  
   /* Methods // Mixin: ArrayProxy */
   CompRound@ opIndex(uint ix) const {
     return _rounds[ix];
@@ -161,5 +195,26 @@ namespace _CompRounds {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared CompRounds@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: rounds of type: array<CompRound@> */
+    array<CompRound@> rounds = RFB_Array_CompRound(buf);
+    return CompRounds(rounds);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
+  }
+  
+  shared const array<CompRound@>@ RFB_Array_CompRound(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    array<CompRound@> arr = array<CompRound@>(len);
+    for (uint i = 0; i < arr.Length; i++) {
+      @arr[i] = _CompRound::ReadFromBuffer(buf);
+    }
+    return arr;
   }
 }

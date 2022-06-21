@@ -58,6 +58,9 @@ namespace Test_DictOfUintToCompRound_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfUintToCompRound_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToCompRound_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToCompRound_WriteLog.txt');
+    }
     DictOfUintToCompRound_WriteLog@ testDict = DictOfUintToCompRound_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToCompRound_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -104,11 +107,13 @@ namespace Test_DictOfUintToCompRound_WriteLog {
     Test_ProxyFns_DictOfUintToCompRound_WriteLog(testDict, 40, 779430, CompRound(572430, 513711, 7215, 976153, 132588, 538271, "筛�襗篒", "䍮", "셪ꠀ지봉鮨虳", MaybeOfString("ᤨ눒鵶⪱䚸훨蛘"), "㿨빖ඍ粑給ឥ豈ꡎ"));
     Test_ProxyFns_DictOfUintToCompRound_WriteLog(testDict, 41, 66775, CompRound(12053, 423606, 562264, 424639, 188477, 303240, "ሟ뤕俅䵮", "䆕篔“釁要倓", "쾊㣦ᷙ�뉆", MaybeOfString("颤ꄈ俪ꨃ坞"), "앪둁獸㮀켝"));
     Test_ProxyFns_DictOfUintToCompRound_WriteLog(testDict, 42, 565403, CompRound(480346, 12689, 369316, 580535, 819121, 570777, "࢘䫛", "঎햧嶮鿴얂�", "", MaybeOfString("䖏㩲"), "ᡑ鵞ψゔ䌝難鯼ᬚ"));
-    assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToCompRound_WriteLog.txt')), "Should have written exactly 42*2 lines to the log.");
+    sleep(50);
+    assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToCompRound_WriteLog.txt')), "Should have written exactly 42*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToCompRound_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfUintToCompRound_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToCompRound_WriteLog.txt');
-    assert(42 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());
+    testDict.AwaitInitialized();
+    assert(42 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToCompRound_WriteLog.txt');
     for (uint i = 0; i < kvs.Length; i++) {
       auto kv = kvs[i];
       assert(kv.val == testDict.Get(kv.key), 'Key ' + kv.key + ' did not match expected.');

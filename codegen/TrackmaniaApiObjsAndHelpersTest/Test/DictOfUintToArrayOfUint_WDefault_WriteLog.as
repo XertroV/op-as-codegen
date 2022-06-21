@@ -58,6 +58,9 @@ namespace Test_DictOfUintToArrayOfUint_WDefault_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfUintToArrayOfUint_WDefault_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToArrayOfUint_WDefault_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToArrayOfUint_WDefault_WriteLog.txt');
+    }
     DictOfUintToArrayOfUint_WDefault_WriteLog@ testDict = DictOfUintToArrayOfUint_WDefault_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToArrayOfUint_WDefault_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -104,11 +107,13 @@ namespace Test_DictOfUintToArrayOfUint_WDefault_WriteLog {
     Test_ProxyFns_DictOfUintToArrayOfUint_WDefault_WriteLog(testDict, 40, 102175, {591737, 928716, 33820, 158875});
     Test_ProxyFns_DictOfUintToArrayOfUint_WDefault_WriteLog(testDict, 41, 526691, {528692, 182075, 354540, 109712});
     Test_ProxyFns_DictOfUintToArrayOfUint_WDefault_WriteLog(testDict, 42, 606826, {585360, 569198, 945693, 709702});
-    assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToArrayOfUint_WDefault_WriteLog.txt')), "Should have written exactly 42*2 lines to the log.");
+    sleep(50);
+    assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToArrayOfUint_WDefault_WriteLog.txt')), "Should have written exactly 42*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToArrayOfUint_WDefault_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfUintToArrayOfUint_WDefault_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToArrayOfUint_WDefault_WriteLog.txt');
-    assert(42 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());
+    testDict.AwaitInitialized();
+    assert(42 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToArrayOfUint_WDefault_WriteLog.txt');
     for (uint i = 0; i < kvs.Length; i++) {
       auto kv = kvs[i];
       assert(kv.val == testDict.Get(kv.key), 'Key ' + kv.key + ' did not match expected.');

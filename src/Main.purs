@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import CommonGlobalClasses (getCommonClasses)
+import CommonGlobalClasses (getCommonClasses, getCommonGlobalFuncs)
 import DBTest (challengeCls, everything)
 import Data.Array (intercalate)
 import Data.Array as A
@@ -40,7 +40,7 @@ generateScaffoldProject { cs, pluginName, isTest } = do
   log $ "Initialized " <> dir
   log "Writing class files"
   filesWritten <- sequence $ writeClass <$> (cs <> getCommonClasses cs)
-  writeTestingSingleton
+  writeSingleton
   log "Writing info.toml"
   genInfoToml dir pluginName' defines filesWritten dependencies
   log "Scaffold project generated"
@@ -56,12 +56,14 @@ generateScaffoldProject { cs, pluginName, isTest } = do
 
   dependencies = if isTest then [ pluginName ] else []
 
-  writeTestingSingleton =
+  writeSingleton =
     if isTest then do
       log "Writing testing singleton"
       writeTextFile UTF8 (dir <> "/UnitTestMain.as") $ intercalate "\n" unitTestSingletonFileLines
     else
-      pure unit
+      writeAsFile "CodegenSupport" getCommonGlobalFuncs
+
+  writeAsFile name lines = writeTextFile UTF8 (joinWith "/" [ dir, name <> ".as" ]) $ intercalate "\n" lines
 
   writeClass cls = do
     let

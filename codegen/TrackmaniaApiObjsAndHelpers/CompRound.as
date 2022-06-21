@@ -164,6 +164,43 @@ shared class CompRound {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_id);
+    buf.Write(_qualifierChallengeId);
+    buf.Write(_position);
+    buf.Write(_nbMatches);
+    buf.Write(_startDate);
+    buf.Write(_endDate);
+    WTB_LP_String(buf, _name);
+    WTB_LP_String(buf, _status);
+    WTB_LP_String(buf, _leaderboardComputeType);
+    _teamLeaderboardComputeType.WriteToBuffer(buf);
+    WTB_LP_String(buf, _matchScoreDirection);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4 + _name.Length;
+    bytes += 4 + _status.Length;
+    bytes += 4 + _leaderboardComputeType.Length;
+    bytes += _teamLeaderboardComputeType.CountBufBytes();
+    bytes += 4 + _matchScoreDirection.Length;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _CompRound {
@@ -298,5 +335,37 @@ namespace _CompRound {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared CompRound@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: id of type: uint */
+    uint id = buf.ReadUInt32();
+    /* Parse field: qualifierChallengeId of type: uint */
+    uint qualifierChallengeId = buf.ReadUInt32();
+    /* Parse field: position of type: uint */
+    uint position = buf.ReadUInt32();
+    /* Parse field: nbMatches of type: uint */
+    uint nbMatches = buf.ReadUInt32();
+    /* Parse field: startDate of type: uint */
+    uint startDate = buf.ReadUInt32();
+    /* Parse field: endDate of type: uint */
+    uint endDate = buf.ReadUInt32();
+    /* Parse field: name of type: string */
+    string name = RFB_LP_String(buf);
+    /* Parse field: status of type: string */
+    string status = RFB_LP_String(buf);
+    /* Parse field: leaderboardComputeType of type: string */
+    string leaderboardComputeType = RFB_LP_String(buf);
+    /* Parse field: teamLeaderboardComputeType of type: MaybeOfString@ */
+    MaybeOfString@ teamLeaderboardComputeType = _MaybeOfString::ReadFromBuffer(buf);
+    /* Parse field: matchScoreDirection of type: string */
+    string matchScoreDirection = RFB_LP_String(buf);
+    return CompRound(id, qualifierChallengeId, position, nbMatches, startDate, endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

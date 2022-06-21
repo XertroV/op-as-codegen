@@ -124,6 +124,35 @@ shared class TrackOfTheDayEntry {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_campaignId);
+    WTB_LP_String(buf, _mapUid);
+    buf.Write(_day);
+    buf.Write(_monthDay);
+    WTB_LP_String(buf, _seasonUid);
+    buf.Write(_startTimestamp);
+    buf.Write(_endTimestamp);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4 + _mapUid.Length;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4 + _seasonUid.Length;
+    bytes += 4;
+    bytes += 4;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _TrackOfTheDayEntry {
@@ -210,5 +239,29 @@ namespace _TrackOfTheDayEntry {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared TrackOfTheDayEntry@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: campaignId of type: uint */
+    uint campaignId = buf.ReadUInt32();
+    /* Parse field: mapUid of type: string */
+    string mapUid = RFB_LP_String(buf);
+    /* Parse field: day of type: uint */
+    uint day = buf.ReadUInt32();
+    /* Parse field: monthDay of type: uint */
+    uint monthDay = buf.ReadUInt32();
+    /* Parse field: seasonUid of type: string */
+    string seasonUid = RFB_LP_String(buf);
+    /* Parse field: startTimestamp of type: uint */
+    uint startTimestamp = buf.ReadUInt32();
+    /* Parse field: endTimestamp of type: uint */
+    uint endTimestamp = buf.ReadUInt32();
+    return TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

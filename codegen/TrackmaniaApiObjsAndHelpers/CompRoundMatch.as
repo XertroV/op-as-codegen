@@ -104,6 +104,31 @@ shared class CompRoundMatch {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_id);
+    buf.Write(_position);
+    buf.Write(uint8(_isCompleted ? 1 : 0));
+    WTB_LP_String(buf, _name);
+    WTB_LP_String(buf, _clubMatchLiveId);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4;
+    bytes += 1;
+    bytes += 4 + _name.Length;
+    bytes += 4 + _clubMatchLiveId.Length;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _CompRoundMatch {
@@ -172,5 +197,25 @@ namespace _CompRoundMatch {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared CompRoundMatch@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: id of type: uint */
+    uint id = buf.ReadUInt32();
+    /* Parse field: position of type: uint */
+    uint position = buf.ReadUInt32();
+    /* Parse field: isCompleted of type: bool */
+    bool isCompleted = buf.ReadUInt8() > 0;
+    /* Parse field: name of type: string */
+    string name = RFB_LP_String(buf);
+    /* Parse field: clubMatchLiveId of type: string */
+    string clubMatchLiveId = RFB_LP_String(buf);
+    return CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

@@ -58,6 +58,9 @@ namespace Test_DictOfTmMap_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfTmMap_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfTmMap_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfTmMap_WriteLog.txt');
+    }
     DictOfTmMap_WriteLog@ testDict = DictOfTmMap_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTmMap_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -102,11 +105,13 @@ namespace Test_DictOfTmMap_WriteLog {
     Test_ProxyFns_DictOfTmMap_WriteLog(testDict, 38, "ﴅ젢㪳區酤鬦墬⍳", TmMap("큈惑憕ښ瘨䦭嵡ᩫ휸眂", "ꌞ됭䙷�", "窴㿹痕㫴ꆷ跸潨適웁�", "ं", 948504, 816023, 413169, 432347, "輮๫ꧣ记ᮟ唥閜", "ฒ섛쎻⭰贤Čޘ겻", "夀䴖奀鿸", "ꛆ寨뫔뷂፵", "卵♦Ằ鬽妰멉啣�ᣮ뱌", "卷ꞎ⯎里틨", 81184, "ន쎸譨潬쀇霾곜", "", "ઍ"));
     Test_ProxyFns_DictOfTmMap_WriteLog(testDict, 39, "醟뇄�⽦", TmMap("縀쩶덤⬍鬖厳럐背媩ﬡ", "禶㕍늳茞휆㆗╧꾴됗Ლ", "Ѫ毋", "ꬷꙆ飺䡍澎", 140457, 687592, 983025, 39149, "隳", "ﾝ맪", "쵊", "䇺ᇻ⽱辏ᒡ", "�蚥古ꤒ", "", 226981, "焂䒹໑皈녮", "㏮︠⩇睏", "퀓⇸"));
     Test_ProxyFns_DictOfTmMap_WriteLog(testDict, 40, "ꇛ⎭儭䕞", TmMap("柂鑦", "㓓땃ﵨ想푼採㬚ࣖ", "ꉽ", "ᲈ옎漲알Ⱖ毂", 321331, 221054, 658194, 309983, "ﭪ㩲", "✀콚൰툔�룓⁼剋", "莰ȅ⿬乐Ⅵṋ䋿锲簏", "흯螀척ⰺ샯௴", "甥ᕐ嬣陵信돷맔钘䞺䄹", "�셚䜒", 344176, "ᩩ颪躰胏霵鲕慷䩫䭰", "�", "黚必ᐽ拚⩮ᒏ賛貜"));
-    assert(40*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfTmMap_WriteLog.txt')), "Should have written exactly 40*2 lines to the log.");
+    sleep(50);
+    assert(40*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfTmMap_WriteLog.txt')), "Should have written exactly 40*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfTmMap_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfTmMap_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTmMap_WriteLog.txt');
-    assert(40 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());
+    testDict.AwaitInitialized();
+    assert(40 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfTmMap_WriteLog.txt');
     for (uint i = 0; i < kvs.Length; i++) {
       auto kv = kvs[i];
       assert(kv.val == testDict.Get(kv.key), 'Key ' + kv.key + ' did not match expected.');

@@ -19,10 +19,12 @@ import Mixins.FromGameObj (mxFromGameObj)
 import Mixins.Getters (mxGetters)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (mxRowSz)
+import Mixins.ToFromBuffer (mxToFromBuffer)
 import Mixins.ToFromJsonObj (mxToFromJsonObj)
 import Mixins.ToString (mxToString)
 
-typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz ]
+typicalMixins :: Array Mixin
+typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz, mxToFromBuffer ]
 
 codecChallenge ∷ JsonObj
 codecChallenge =

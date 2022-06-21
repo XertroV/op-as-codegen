@@ -113,6 +113,7 @@ shared class DictOfUintToArrayOfUint_WDefault_WriteLog {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
       MemoryBuffer fb = f.Read(f.Size());
+      print('buffer getsize: ' + fb.GetSize());
       f.Close();
       uint lineNum = 0;
       string line;
@@ -153,12 +154,14 @@ shared class DictOfUintToArrayOfUint_WDefault_WriteLog {
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(Text::Format('%08d', s.Length));
     f.WriteLine(s);
+    f.Flush();
     f.Close();
   }
   
   private void WriteLogOnResetAll() {
     IO::File f(_logPath, IO::FileMode::Write);
     f.Write('');
+    f.Flush();
     f.Close();
   }
 }
@@ -243,6 +246,42 @@ namespace _DictOfUintToArrayOfUint_WDefault_WriteLog {
       }
       return ret;
     }
+    
+    /* Methods // Mixin: ToFromBuffer */
+    void WriteToBuffer(Buffer@ &in buf) {
+      print('Bytes required: ' + CountBufBytes());
+      buf.Write(_key);
+      WTB_Array_Uint(buf, _val);
+    }
+    
+    uint CountBufBytes() {
+      uint bytes = 0;
+      bytes += 4;
+      bytes += CBB_Array_Uint(_val);
+      return bytes;
+    }
+    
+    void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+      buf.Write(uint(s.Length));
+      buf.Write(s);
+    }
+    
+    void WTB_Array_Uint(Buffer@ &in buf, const array<uint> &in arr) {
+      buf.Write(uint(arr.Length));
+      for (uint ix = 0; ix < arr.Length; ix++) {
+        auto el = arr[ix];
+        buf.Write(el);
+      }
+    }
+    
+    uint CBB_Array_Uint(const array<uint> &in arr) {
+      uint bytes = 4;
+      for (uint ix = 0; ix < arr.Length; ix++) {
+        auto el = arr[ix];
+        bytes += 4;
+      }
+      return bytes;
+    }
   }
   
   namespace _KvPair {
@@ -298,6 +337,29 @@ namespace _DictOfUintToArrayOfUint_WDefault_WriteLog {
       if (sample != expected) {
         throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
       }
+    }
+    
+    /* Namespace // Mixin: ToFromBuffer */
+    shared KvPair@ ReadFromBuffer(Buffer@ &in buf) {
+      /* Parse field: key of type: uint */
+      uint key = buf.ReadUInt32();
+      /* Parse field: val of type: array<uint> */
+      array<uint> val = RFB_Array_Uint(buf);
+      return KvPair(key, val);
+    }
+    
+    shared const string RFB_LP_String(Buffer@ &in buf) {
+      uint len = buf.ReadUInt32();
+      return buf.ReadString(len);
+    }
+    
+    shared const array<uint>@ RFB_Array_Uint(Buffer@ &in buf) {
+      uint len = buf.ReadUInt32();
+      array<uint> arr = array<uint>(len);
+      for (uint i = 0; i < arr.Length; i++) {
+        arr[i] = buf.ReadUInt32();
+      }
+      return arr;
     }
   }
 }

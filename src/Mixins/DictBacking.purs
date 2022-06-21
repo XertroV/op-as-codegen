@@ -20,6 +20,7 @@ import Mixins.OpEq (mxOpEq)
 import Mixins.OpOrd (mxOpOrd)
 import Mixins.RowSz (mxRowSz)
 import Mixins.Testing.Gen (genTestArgs, genTests)
+import Mixins.ToFromBuffer (mxToFromBuffer)
 import Mixins.ToString (mxToString)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators, RunTestGenerators)
 import Partial.Unsafe (unsafeCrashWith)
@@ -168,6 +169,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       , "f.Write(Text::Format('%08d', s.Length));"
       , "f.WriteLine(s);"
       -- , "print('write line of length: ' + uint(s.Length));"
+      , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -175,6 +177,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     wrapFunction "private void" "WriteLogOnResetAll" []
       [ "IO::File f(_logPath, IO::FileMode::Write);"
       , "f.Write('');"
+      , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -184,6 +187,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
           ( [ "uint start = Time::Now;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
             , "MemoryBuffer fb = f.Read(f.Size());"
+            , "print('buffer getsize: ' + fb.GetSize());"
             , "f.Close();"
             , "uint lineNum = 0;"
             , "string line;"
@@ -326,11 +330,14 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   mainFn =
     wrapMainTest fnName
-      $ [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
+      $ wrapIf ("IO::FileExists(" <> logPath <> ")")
+          [ "IO::Delete(" <> logPath <> ");" ]
+      <> [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
       <> wrapIf "testDict.GetSize() > 0" [ "testDict.DeleteAll();" ]
       <> ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
             allTestArgs
         )
+      <> [ "sleep(50);" ]
       <> preDeleteAllTestExtra
       <> assertIfLoadFromDisk
       <> [ "testDict.DeleteAll();"
@@ -342,8 +349,9 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
       [ "// del testDict; // todo: destroy obj but not data."
       , "auto kvs = testDict.GetItems();"
       , "@testDict = " <> objName <> "(" <> mainTestObjArgs <> ");"
+      , "testDict.AwaitInitialized();"
       -- , "sleep(20);"
-      , "assert(" <> nTestsStr <> " == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());"
+      , "assert(" <> nTestsStr <> " == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + " <> logPath <> ");"
       ]
         <> mapArray_For { arr: "kvs", ix: "i", el: "kv" }
             [ stmt $ assertFn.callRaw [ "kv.val == testDict.Get(kv.key)", "'Key ' + kv.key + ' did not match expected.'" ] ]
@@ -369,6 +377,8 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
     else
       ""
 
+  logPath = "IO::FromDataFolder(" <> wrapSQuotes wlDir <> ") + '/' + " <> wrapSQuotes wlFile
+
   nTestsStr = intToStr (A.length allTestArgs)
 
   preDeleteAllTestExtra = case opts.writeLog of
@@ -377,7 +387,7 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
       [ stmt
           $ assertFn.callRaw
               [ nTestsStr <> "*2 == " <> countFileLinesFn.callRaw [ absWlPath ]
-              , wrapDQuotes $ "Should have written exactly " <> nTestsStr <> "*2 lines to the log."
+              , (wrapDQuotes $ "Should have written exactly " <> nTestsStr <> "*2 lines to the log, but wrote: ") <> " + " <> countFileLinesFn.callRaw [ absWlPath ]
               ]
       ]
 
@@ -435,4 +445,5 @@ kvPair opts (JsonObj objName fields) = { cls, obj }
       , mxOpEq
       -- , mxOpOrd keyF
       , mxRowSz
+      , mxToFromBuffer
       ]

@@ -58,6 +58,9 @@ namespace Test_DictOfChallenge_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfChallenge_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfChallenge_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfChallenge_WriteLog.txt');
+    }
     DictOfChallenge_WriteLog@ testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -103,11 +106,13 @@ namespace Test_DictOfChallenge_WriteLog {
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 39, "폁趗婆引兘뛮�", Challenge(80948, "Ꜯ謃꛼", "", 124520, 749383, 922529));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 40, "�Ⱦ燷⑅", Challenge(500571, "", "쨙肮⇭�ራ䀄", 982822, 330394, 52025));
     Test_ProxyFns_DictOfChallenge_WriteLog(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
-    assert(41*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfChallenge_WriteLog.txt')), "Should have written exactly 41*2 lines to the log.");
+    sleep(50);
+    assert(41*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfChallenge_WriteLog.txt')), "Should have written exactly 41*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfChallenge_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfChallenge_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfChallenge_WriteLog.txt');
-    assert(41 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize());
+    testDict.AwaitInitialized();
+    assert(41 == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfChallenge_WriteLog.txt');
     for (uint i = 0; i < kvs.Length; i++) {
       auto kv = kvs[i];
       assert(kv.val == testDict.Get(kv.key), 'Key ' + kv.key + ' did not match expected.');

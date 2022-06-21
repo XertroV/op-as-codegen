@@ -235,6 +235,57 @@ shared class TmMap {
     return ret;
   }
   
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    WTB_LP_String(buf, _Id);
+    WTB_LP_String(buf, _Uid);
+    WTB_LP_String(buf, _Name);
+    WTB_LP_String(buf, _FileName);
+    buf.Write(_AuthorScore);
+    buf.Write(_GoldScore);
+    buf.Write(_SilverScore);
+    buf.Write(_BronzeScore);
+    WTB_LP_String(buf, _AuthorDisplayName);
+    WTB_LP_String(buf, _AuthorAccountId);
+    WTB_LP_String(buf, _AuthorWebServicesUserId);
+    WTB_LP_String(buf, _SubmitterAccountId);
+    WTB_LP_String(buf, _SubmitterWebServicesUserId);
+    WTB_LP_String(buf, _Style);
+    buf.Write(_TimeStamp);
+    WTB_LP_String(buf, _Type);
+    WTB_LP_String(buf, _FileUrl);
+    WTB_LP_String(buf, _ThumbnailUrl);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4 + _Id.Length;
+    bytes += 4 + _Uid.Length;
+    bytes += 4 + _Name.Length;
+    bytes += 4 + _FileName.Length;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4 + _AuthorDisplayName.Length;
+    bytes += 4 + _AuthorAccountId.Length;
+    bytes += 4 + _AuthorWebServicesUserId.Length;
+    bytes += 4 + _SubmitterAccountId.Length;
+    bytes += 4 + _SubmitterWebServicesUserId.Length;
+    bytes += 4 + _Style.Length;
+    bytes += 4;
+    bytes += 4 + _Type.Length;
+    bytes += 4 + _FileUrl.Length;
+    bytes += 4 + _ThumbnailUrl.Length;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
+  
   /* Methods // Mixin: From Game Object: CNadeoServicesMap */
   TmMap(CNadeoServicesMap@ &in gameObj) {
     this._Id = gameObj.Id;
@@ -485,5 +536,51 @@ namespace _TmMap {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared TmMap@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: Id of type: string */
+    string Id = RFB_LP_String(buf);
+    /* Parse field: Uid of type: string */
+    string Uid = RFB_LP_String(buf);
+    /* Parse field: Name of type: string */
+    string Name = RFB_LP_String(buf);
+    /* Parse field: FileName of type: string */
+    string FileName = RFB_LP_String(buf);
+    /* Parse field: AuthorScore of type: uint */
+    uint AuthorScore = buf.ReadUInt32();
+    /* Parse field: GoldScore of type: uint */
+    uint GoldScore = buf.ReadUInt32();
+    /* Parse field: SilverScore of type: uint */
+    uint SilverScore = buf.ReadUInt32();
+    /* Parse field: BronzeScore of type: uint */
+    uint BronzeScore = buf.ReadUInt32();
+    /* Parse field: AuthorDisplayName of type: string */
+    string AuthorDisplayName = RFB_LP_String(buf);
+    /* Parse field: AuthorAccountId of type: string */
+    string AuthorAccountId = RFB_LP_String(buf);
+    /* Parse field: AuthorWebServicesUserId of type: string */
+    string AuthorWebServicesUserId = RFB_LP_String(buf);
+    /* Parse field: SubmitterAccountId of type: string */
+    string SubmitterAccountId = RFB_LP_String(buf);
+    /* Parse field: SubmitterWebServicesUserId of type: string */
+    string SubmitterWebServicesUserId = RFB_LP_String(buf);
+    /* Parse field: Style of type: string */
+    string Style = RFB_LP_String(buf);
+    /* Parse field: TimeStamp of type: uint */
+    uint TimeStamp = buf.ReadUInt32();
+    /* Parse field: Type of type: string */
+    string Type = RFB_LP_String(buf);
+    /* Parse field: FileUrl of type: string */
+    string FileUrl = RFB_LP_String(buf);
+    /* Parse field: ThumbnailUrl of type: string */
+    string ThumbnailUrl = RFB_LP_String(buf);
+    return TmMap(Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

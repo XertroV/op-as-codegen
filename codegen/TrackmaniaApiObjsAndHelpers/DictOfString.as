@@ -135,6 +135,25 @@ namespace _DictOfString {
       }
       return ret;
     }
+    
+    /* Methods // Mixin: ToFromBuffer */
+    void WriteToBuffer(Buffer@ &in buf) {
+      print('Bytes required: ' + CountBufBytes());
+      WTB_LP_String(buf, _key);
+      WTB_LP_String(buf, _val);
+    }
+    
+    uint CountBufBytes() {
+      uint bytes = 0;
+      bytes += 4 + _key.Length;
+      bytes += 4 + _val.Length;
+      return bytes;
+    }
+    
+    void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+      buf.Write(uint(s.Length));
+      buf.Write(s);
+    }
   }
   
   namespace _KvPair {
@@ -176,6 +195,20 @@ namespace _DictOfString {
       if (sample != expected) {
         throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
       }
+    }
+    
+    /* Namespace // Mixin: ToFromBuffer */
+    shared KvPair@ ReadFromBuffer(Buffer@ &in buf) {
+      /* Parse field: key of type: string */
+      string key = RFB_LP_String(buf);
+      /* Parse field: val of type: string */
+      string val = RFB_LP_String(buf);
+      return KvPair(key, val);
+    }
+    
+    shared const string RFB_LP_String(Buffer@ &in buf) {
+      uint len = buf.ReadUInt32();
+      return buf.ReadString(len);
     }
   }
 }

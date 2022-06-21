@@ -14,11 +14,12 @@ import Mixins.AllMixins (_MX_TO_FROM_JSON_OBJ_NAME)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.OpEq (mxOpEq)
 import Mixins.RowSz (frs_AssertDefn, frs_genNamespace, frs_getNext, mxRowSz, trs_wrapStringFn)
+import Mixins.ToFromBuffer (cbb_arrayFn, rfbLpStringFn, rfb_getNext, wtbLpStringFn)
 import Mixins.ToString (jValSimpleStr)
 import Mixins.Types (Mixin)
 import Partial.Unsafe (unsafeCrashWith, unsafePartial)
-import SzAsTypes (jValFromStr, jValToStr)
-import Types (AsFunction, CodeBlocks, JField(..), JType(..), JsonObj(..), Lines, getDecl, getFTy)
+import SzAsTypes (jFieldCountBufBytes, jFieldToBuf, jValFromStr, jValToStr)
+import Types (AsFunction, CodeBlocks, JField(..), JType(..), JsonObj(..), Lines, getDecl, getFName, getFTy)
 
 -- this is to be mixed in with maybes only
 mxJMaybes :: Mixin
@@ -40,7 +41,7 @@ genMethods (JsonObj name fields) = methods
     true -> do
       intercalate ln $ map getDecl
         $ catMaybes
-            [ consJust, consNothing, consJson, opEq, toStr, toRowStr, wrapStr, toJson ]
+            [ consJust, consNothing, consJson, opEq, toStr, toRowStr, wrapStr, toJson, writeToBuffer, Just wtbLpStringFn, countBufBytes ]
         <> (unsafePartial fromJust) getters
 
   getValTy = A.head fields <#> getFTy
@@ -111,19 +112,48 @@ genMethods (JsonObj name fields) = methods
             "return _val.ToJson();"
         ]
 
+  writeToBuffer = do
+    fTy <- getValTy
+    pure $ wrapFunction' "void" "WriteToBuffer" [ "Buffer@ &in buf" ]
+      $ wrapIfElse "IsNothing()" [ "buf.Write(uint8(0));" ]
+      $ [ "buf.Write(uint8(1));"
+        , stmt $ jFieldToBuf "buf" (JField "_val" fTy)
+        ]
+
+  countBufBytes = do
+    fTy <- getValTy
+    pure $ wrapFunction' "uint" "CountBufBytes" []
+      $ wrapIf "IsNothing()" [ "return 1;" ]
+      <> [ "return 1 + " <> jFieldCountBufBytes (JField "_val" fTy) <> ";" ]
+
 genNamespace :: JsonObj -> Lines
-genNamespace (JsonObj objName fields) = frs.decl <> ln <> frs_AssertDefn.decl
+genNamespace (JsonObj objName fields) =
+  intercalate ln
+    $ [ frs.decl
+      , frs_AssertDefn.decl
+      , rfb.decl
+      , rfbLpStringFn.decl
+      ]
   where
   f = unsafePartial $ P.head fields
 
   fTy = getFTy f
 
   frs =
-    wrapFunction' ("shared " <> objName) "FromRowString" [ "const string &in str" ]
+    wrapFunction' ("shared " <> objName <> "@") "FromRowString" [ "const string &in str" ]
       $ [ "string chunk = '', remainder = str;"
         , "array<string> tmp = array<string>(2);"
-        , "uint chunkLen;"
+        , "uint chunkLen = 0;"
         ]
       <> wrapIf "remainder.SubStr(0, 4) == 'null'" [ "return " <> objName <> "();" ]
       <> frs_getNext f
       <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]
+
+  rfb =
+    wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "Buffer@ &in buf" ]
+      $ [ "bool isNothing = 0 == buf.ReadUInt8();" ]
+      <> wrapIfElse "isNothing"
+          [ "return " <> objName <> "();" ]
+          ( rfb_getNext f
+              <> [ "return " <> objName <> "(" <> getFName f <> ");" ]
+          )

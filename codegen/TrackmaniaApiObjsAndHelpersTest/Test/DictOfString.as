@@ -58,6 +58,9 @@ namespace Test_DictOfString {
   }
   
   void UnitTest_DictBacking_DictOfString() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfString.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfString.txt');
+    }
     DictOfString@ testDict = DictOfString();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -102,6 +105,7 @@ namespace Test_DictOfString {
     Test_ProxyFns_DictOfString(testDict, 38, "乪剤⹥먃ꑐ㷠얌苫", "䞭橄䨛㾢┪�ဩ");
     Test_ProxyFns_DictOfString(testDict, 39, "۸", "둭껦퓵뺟⪂䞨");
     Test_ProxyFns_DictOfString(testDict, 40, "莫攃嶁ড়鏧呲䞿", "멃㳦꛹槛컙瞘䝩땑");
+    sleep(50);
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
   }

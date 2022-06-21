@@ -174,6 +174,45 @@ shared class Competition {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_id);
+    buf.Write(_startDate);
+    buf.Write(_endDate);
+    _matchesGenerationDate.WriteToBuffer(buf);
+    buf.Write(_nbPlayers);
+    buf.Write(_leaderboardId);
+    WTB_LP_String(buf, _name);
+    WTB_LP_String(buf, _liveId);
+    WTB_LP_String(buf, _creator);
+    _region.WriteToBuffer(buf);
+    _description.WriteToBuffer(buf);
+    _registrationStart.WriteToBuffer(buf);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += _matchesGenerationDate.CountBufBytes();
+    bytes += 4;
+    bytes += 4;
+    bytes += 4 + _name.Length;
+    bytes += 4 + _liveId.Length;
+    bytes += 4 + _creator.Length;
+    bytes += _region.CountBufBytes();
+    bytes += _description.CountBufBytes();
+    bytes += _registrationStart.CountBufBytes();
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _Competition {
@@ -325,5 +364,39 @@ namespace _Competition {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared Competition@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: id of type: uint */
+    uint id = buf.ReadUInt32();
+    /* Parse field: startDate of type: uint */
+    uint startDate = buf.ReadUInt32();
+    /* Parse field: endDate of type: uint */
+    uint endDate = buf.ReadUInt32();
+    /* Parse field: matchesGenerationDate of type: MaybeOfUint@ */
+    MaybeOfUint@ matchesGenerationDate = _MaybeOfUint::ReadFromBuffer(buf);
+    /* Parse field: nbPlayers of type: uint */
+    uint nbPlayers = buf.ReadUInt32();
+    /* Parse field: leaderboardId of type: uint */
+    uint leaderboardId = buf.ReadUInt32();
+    /* Parse field: name of type: string */
+    string name = RFB_LP_String(buf);
+    /* Parse field: liveId of type: string */
+    string liveId = RFB_LP_String(buf);
+    /* Parse field: creator of type: string */
+    string creator = RFB_LP_String(buf);
+    /* Parse field: region of type: MaybeOfString@ */
+    MaybeOfString@ region = _MaybeOfString::ReadFromBuffer(buf);
+    /* Parse field: description of type: MaybeOfString@ */
+    MaybeOfString@ description = _MaybeOfString::ReadFromBuffer(buf);
+    /* Parse field: registrationStart of type: MaybeOfUint@ */
+    MaybeOfUint@ registrationStart = _MaybeOfUint::ReadFromBuffer(buf);
+    return Competition(id, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId, name, liveId, creator, region, description, registrationStart);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

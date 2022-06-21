@@ -268,5 +268,69 @@ namespace Test_CompRoundMatches {
   }
   
   bool unitTestResults_CompRoundMatches_RowSerialization = runAsync(Tests_RegisterAll_CompRoundMatches_RowSerialization);
+  
+  /* Test // Mixin: ToFromBuffer */
+  void Tests_RegisterAll_CompRoundMatches_ToFromBuffer() {
+    RegisterUnitTest('UnitTest_ToFromBuffer_CompRoundMatches', UnitTest_ToFromBuffer_CompRoundMatches);
+  }
+  
+  bool Test_ToFromBuffer_Check(const CompRoundMatch@[] &in matches) {
+    CompRoundMatches@ tmp = CompRoundMatches(matches);
+    Buffer@ buf = Buffer();
+    print('buf size pre: ' + buf.GetSize());
+    tmp.WriteToBuffer(buf);
+    print('buf size post: ' + buf.GetSize());
+    buf.Seek(0, 0);
+    print('buf size post seek: ' + buf.GetSize());
+    assert(tmp == _CompRoundMatches::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
+    return true;
+  }
+  
+  void UnitTest_ToFromBuffer_CompRoundMatches() {
+    Test_ToFromBuffer_Check({});
+    Test_ToFromBuffer_Check({});
+    Test_ToFromBuffer_Check({CompRoundMatch(826942, 906038, false, "ﬕ૆ࣥ蕇", "뾠粯ꣿ僨躗괱韲瓄ﲼ᭫"), CompRoundMatch(150771, 415169, true, "", "賄�匼뒱"), CompRoundMatch(661263, 436830, true, "錭鿩꤉䵚ࢂ浮翅쿕焫", "䃜"), CompRoundMatch(275348, 184954, false, "鎟ﳙ㻲翾", "⾖㻄쪼ﰙ⠁玭텆编�")});
+    Test_ToFromBuffer_Check({CompRoundMatch(833324, 660129, false, "鉓", "⤦➦踆⌾ꎳ"), CompRoundMatch(67877, 569276, false, "ꍸ", "䕖⭮�␪短"), CompRoundMatch(812842, 729434, true, "쎦㋥霈�ౝ㯠쬙", "竲㽥︠걿좳樁㠵ᢐၛ"), CompRoundMatch(7008, 117440, true, "�쵒닟", "䪉Ꮢ榋")});
+    Test_ToFromBuffer_Check({CompRoundMatch(214679, 943855, false, "솛格둪퍻䳥最徐㭾", "ፕ⎃ﲀ"), CompRoundMatch(964248, 970574, true, "䒙̊鳩", ""), CompRoundMatch(313581, 51991, true, "䩸Ὼ", "")});
+    Test_ToFromBuffer_Check({CompRoundMatch(407577, 833014, false, "膲㑅诜돚兽奞", "෌ᚸ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(176289, 263591, false, "ₜ", "ు"), CompRoundMatch(405127, 314974, true, "䗽ﵱꐎ굻⛩㰣兵", "ᢂ䙏ຸ"), CompRoundMatch(28064, 49272, true, "ⰳ팑ꇬ䋶慸", "鐮軅㧦胷")});
+    Test_ToFromBuffer_Check({CompRoundMatch(809993, 973135, false, "ꡥ愨", "滕윑ᄃ毃枔"), CompRoundMatch(362888, 609943, true, "줒女ѽ泡誄狋", "佌Țꡮ殴䉵庨嶏")});
+    Test_ToFromBuffer_Check({CompRoundMatch(12322, 613456, false, "㢴翹া䦾灋", "ᗿ鉞ꊵ㻛踴Ṷ耦"), CompRoundMatch(154873, 97019, false, "③享㐟", "ൃ䶀椼ズꡃ᫔躹䰑"), CompRoundMatch(647490, 647392, true, "넺硫銚䋱垇ᒋ젔攸戴", "绹")});
+    Test_ToFromBuffer_Check({CompRoundMatch(597747, 283451, true, "鯲人覚�ᕞ�난ힼ", "鄮陏殀蟇忖"), CompRoundMatch(554352, 612172, false, "Ꮪ猾ؙ太", "傩Ἂ嚓慻徐"), CompRoundMatch(447767, 195527, true, "︮䡴", "춸�")});
+    Test_ToFromBuffer_Check({CompRoundMatch(859526, 830203, false, "ᾂꞿ뭨ើ溥줊ƒ蠐", "矣₳迿ⵢ⎕곰✁麯")});
+    Test_ToFromBuffer_Check({CompRoundMatch(769796, 544943, true, "肯䨏﻿ꓼ构", "�鸓㮝ႝ䖟哢ꐽ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(271358, 595771, false, "", "⟸嚟挆ꡨ⚝霡༺�띩")});
+    Test_ToFromBuffer_Check({CompRoundMatch(703179, 605664, false, "", "웕펽꩙负釺锼珟"), CompRoundMatch(360995, 43735, true, "코姦퇈⻟돴", "㙂詵"), CompRoundMatch(623212, 396305, true, "풠氂", "ຶꔽﾜᵏ"), CompRoundMatch(450685, 913447, false, "", "騧➊皠㓧脺﫭맢ﬗ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(808646, 898762, true, "ꆺ햆﷔癥ઈ얏", "穰~ꆛዂ슲빑"), CompRoundMatch(901092, 198107, true, "⊂农陣", "ை牖Ⲋ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(886316, 383122, false, "먓쏜뙅橙䳅퓪룐บ", "૵瘞⺔셡秆ᢜ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(315247, 912496, false, "鼂㦦턗굽", "㟧歒䉛笔ꦚ흯슍뾚ॄ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(141403, 123480, true, "ⶾ仄떏ମ뇌ß儴礋啹ӧ", "긂䋛잯铜來扸偩㥬")});
+    Test_ToFromBuffer_Check({CompRoundMatch(281680, 40045, false, "맣Լ颋骶熎吤", "刎퍒幽㔻ᓵ倽䨬㭺"), CompRoundMatch(485481, 801039, true, "럕ț頛", "鱫댫"), CompRoundMatch(27512, 645217, true, "ᱰᆧᡒ희폿ざ綥", "�夛篢椞◌꽣⎄૧")});
+    Test_ToFromBuffer_Check({CompRoundMatch(913745, 370248, false, "뒧蟐ﶾ鞞㉪", "韑튏ࡑ"), CompRoundMatch(312859, 716, true, "שּׂ맳站둨爘騑䌴", "ﾊ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(675616, 713480, true, "䞓㕋", "砚乸̛瀎ᭆ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(274246, 680518, false, "", "뒭㺡࣊砅婌ਠ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(108423, 165515, true, "왓꿨᳁ْଠ墻ἰ쟽뻗", "챲퉗溕㹅灜桩弜")});
+    Test_ToFromBuffer_Check({CompRoundMatch(896342, 154401, true, "믱ᶮ苿", "ެ䡠ࠋ祐鹒"), CompRoundMatch(465736, 127425, true, "᯳Ⱄㄺ꛼㻔㴕뺠ꖡ", "䊨㎠๥Ⲣ⪒"), CompRoundMatch(581686, 977267, true, "�毾᥋䅪䷺粭", "谸"), CompRoundMatch(952806, 152050, true, "尷ꦾ첥⡵苨", "놲싵뇵쯷")});
+    Test_ToFromBuffer_Check({CompRoundMatch(206934, 719225, false, "", "聁�诨苵"), CompRoundMatch(763745, 133184, true, "럝잓헥Ⱦ", "⋵꣕查羮튉椧騿ㅧ푫"), CompRoundMatch(454459, 920400, false, "扎㹰㽙ᶝ㒾ⴙ", "�悝ㅍ➵"), CompRoundMatch(810147, 786060, false, "ꋾ⸏윲氕繍廻", "례呞폹ꬻᷪ汍䃿檔")});
+    Test_ToFromBuffer_Check({CompRoundMatch(978008, 379909, true, "䢌᱕", ""), CompRoundMatch(559479, 293221, false, "겋㞔鲱˯掑⺃", "陋㋫艠濖෷൹袴"), CompRoundMatch(448848, 150798, false, "蒚ₖᒁ토ф", "憖ꀖ銱❕")});
+    Test_ToFromBuffer_Check({CompRoundMatch(172777, 816885, true, "妓�鎐壤䬦ᕴ�鸬?�", "葑氊듳쎴"), CompRoundMatch(87422, 331361, true, "備㵛䓤≴ꠋ", "宁"), CompRoundMatch(629344, 701117, true, "὏鞳鿔", "떾")});
+    Test_ToFromBuffer_Check({CompRoundMatch(698855, 640500, true, "臘༝吽턛惠璐擃晙흶", "䨄쪆锍ⶀ춻㏯ᵚ୑跞"), CompRoundMatch(659378, 630831, true, "", "﫦㊷")});
+    Test_ToFromBuffer_Check({CompRoundMatch(663005, 385761, false, "", ""), CompRoundMatch(432129, 995984, true, "࡞啈냢໚껃꽉೵", "䡬ٍ눘")});
+    Test_ToFromBuffer_Check({CompRoundMatch(857629, 844818, false, "ᡣ䓌", "ꗨ紓뻽"), CompRoundMatch(549839, 922455, false, "퓣䲊폫⤫ꗱ᫞菓镫웤ꢚ", "泈ₙ搯臕䘔꫈ᨋ》")});
+    Test_ToFromBuffer_Check({CompRoundMatch(862762, 735662, false, "", "瓩O⁞鰎㨪愵透፳䵔퇢")});
+    Test_ToFromBuffer_Check({CompRoundMatch(467039, 190972, false, "㯤㡆햽㸞뮸쉅", "ᨠ礇並並"), CompRoundMatch(299030, 746125, false, "J飔탟㏁׬繭蟣㴶", "厩⽷〹㏮랬쉰븐쐍貥"), CompRoundMatch(21513, 875535, false, "", "溛륹甄☸⨝쭻"), CompRoundMatch(637750, 41139, false, "浗导�ṶԹ", "")});
+    Test_ToFromBuffer_Check({CompRoundMatch(851159, 119882, false, "틟業噧", "ń⸥ꀤ㟵藩洨ᢧ䔴╁"), CompRoundMatch(465809, 587490, true, "婽搅䉗꙱멘", "쫒뗺磝脮঍ꆡ�鯉"), CompRoundMatch(595611, 243548, false, "", "鶩껳慅뎟䜪柦"), CompRoundMatch(208906, 715528, false, "ዼ眒沸쏀闎", "鹜瘁⟱")});
+    Test_ToFromBuffer_Check({CompRoundMatch(845752, 20491, false, "㭐銣콇ﲇ꽾", "皎䊭匑⩶妗�Ț釄툆"), CompRoundMatch(100690, 42448, false, "诛", "恍Ꚇ脽㡷徯ˮ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(401760, 410374, true, "ὪＩ", "휄Ｋ咱敏࿥")});
+    Test_ToFromBuffer_Check({CompRoundMatch(981158, 268955, true, "가郩㌼㏖⼇", "ᐱ鉓䞓"), CompRoundMatch(502267, 5979, false, "ꛠ瞣䔋黏", "➦"), CompRoundMatch(835211, 124992, true, "", "紘⅛")});
+    Test_ToFromBuffer_Check({CompRoundMatch(212480, 361747, false, "쉌籡䰦粌猙", "〦滒콼䱫"), CompRoundMatch(747670, 698236, true, "㗫䐮勍㮼쓎憷Ὄ", "弮�옚䬟뮳ॾ�")});
+    Test_ToFromBuffer_Check({CompRoundMatch(156734, 398948, true, "鴥", ""), CompRoundMatch(724134, 823505, false, "ն鋋騿", "ۥ焳")});
+    Test_ToFromBuffer_Check({CompRoundMatch(811494, 135421, true, "䉬كꍩ", ""), CompRoundMatch(404141, 441900, true, "졗볆丕鈂", "톽"), CompRoundMatch(602381, 378021, false, "", "﬩险"), CompRoundMatch(425594, 459576, false, "徵ꨩ穕", "᧪귮煢쇳")});
+    Test_ToFromBuffer_Check({CompRoundMatch(706528, 809621, true, "�꒭ɞ�斧晛昱", "Ꙍ㦩霘蒃")});
+    Test_ToFromBuffer_Check({CompRoundMatch(158127, 844070, true, "᫺鱴䝧ꁥ", "쓊쵠署ᇨ")});
+    Test_ToFromBuffer_Check({CompRoundMatch(965682, 219767, false, "ᓮ腄墋", "㭯⦱⽂䥐ﶈ爒㎶"), CompRoundMatch(436377, 222921, false, "䳨⼨늾쏲⦜냍䖨", "䷐ꌂ䈀菿ԏ�럔㼪쁉㪒"), CompRoundMatch(42480, 39287, true, "韶啇许䑐", "ና苔놗퇝⺠"), CompRoundMatch(645572, 163036, false, "", "建龰ᘃ㵶燞⻱")});
+  }
+  
+  bool unitTestResults_CompRoundMatches_ToFromBuffer = runAsync(Tests_RegisterAll_CompRoundMatches_ToFromBuffer);
 }
 #endif

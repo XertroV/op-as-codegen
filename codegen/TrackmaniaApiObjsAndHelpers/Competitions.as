@@ -95,6 +95,40 @@ shared class Competitions {
     return ret;
   }
   
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    WTB_Array_Competition(buf, _comps);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += CBB_Array_Competition(_comps);
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
+  
+  void WTB_Array_Competition(Buffer@ &in buf, const array<Competition@> &in arr) {
+    buf.Write(uint(arr.Length));
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      el.WriteToBuffer(buf);
+    }
+  }
+  
+  uint CBB_Array_Competition(const array<Competition@> &in arr) {
+    uint bytes = 4;
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      bytes += el.CountBufBytes();
+    }
+    return bytes;
+  }
+  
   /* Methods // Mixin: ArrayProxy */
   Competition@ opIndex(uint ix) const {
     return _comps[ix];
@@ -161,5 +195,26 @@ namespace _Competitions {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared Competitions@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: comps of type: array<Competition@> */
+    array<Competition@> comps = RFB_Array_Competition(buf);
+    return Competitions(comps);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
+  }
+  
+  shared const array<Competition@>@ RFB_Array_Competition(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    array<Competition@> arr = array<Competition@>(len);
+    for (uint i = 0; i < arr.Length; i++) {
+      @arr[i] = _Competition::ReadFromBuffer(buf);
+    }
+    return arr;
   }
 }

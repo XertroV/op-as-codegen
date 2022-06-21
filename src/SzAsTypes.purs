@@ -2,10 +2,11 @@ module SzAsTypes where
 
 import Prelude
 import AsTypes (jTyPascalCase, jTyToAsTy)
+import CodeLines (fnCall)
 import Data.Array as A
-import Data.String (Pattern(..), Replacement(..), replace)
+import Data.String (Pattern(..), Replacement(..), joinWith, replace)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JType(..), JsonObj(..))
+import Types (JField(..), JType(..), JsonObj(..))
 
 jValToStr :: JType -> String -> String
 jValToStr JInt n = "'' + " <> n
@@ -57,3 +58,55 @@ frs_arrayFnName arrTy = "FRS_Array_" <> replace (Pattern "@") (Replacement "") (
 
 trs_arrayFnName :: JType -> String
 trs_arrayFnName arrTy = "TRS_Array_" <> replace (Pattern "@") (Replacement "") (jTyToAsTy arrTy)
+
+stripRef ∷ String → String
+stripRef = replace (Pattern "@") (Replacement "")
+
+{- buffers -}
+wtb_arrayFnName ∷ JType → String
+wtb_arrayFnName arrTy = "WTB_Array_" <> stripRef (jTyPascalCase arrTy)
+
+rfb_arrayFnName ∷ JType → String
+rfb_arrayFnName arrTy = "RFB_Array_" <> stripRef (jTyPascalCase arrTy)
+
+cbb_arrayFnName :: JType -> String
+cbb_arrayFnName arrTy = "CBB_Array_" <> stripRef (jTyPascalCase arrTy)
+
+jFieldToBuf :: String -> JField -> String
+jFieldToBuf buf (JField var ty) = case ty of
+  JNull -> ""
+  JInt -> buf <> ".Write(" <> var <> ")"
+  JUint -> buf <> ".Write(" <> var <> ")"
+  JNumber -> buf <> ".Write(" <> var <> ")"
+  JBool -> buf <> ".Write(uint8(" <> var <> " ? 1 : 0))"
+  JString -> "WTB_LP_String(" <> joinWith ", " [ buf, var ] <> ")"
+  (JMaybe _) -> var <> ".WriteToBuffer(" <> buf <> ")"
+  (JObject _) -> var <> ".WriteToBuffer(" <> buf <> ")"
+  (JArray t) -> wtb_arrayFnName t <> "(" <> joinWith ", " [ buf, var ] <> ")"
+  (JDict _) -> unsafeCrashWith "jFieldToBuf JDict not impl"
+
+jFieldCountBufBytes :: JField -> String
+jFieldCountBufBytes (JField var ty) = case ty of
+  JNull -> "0"
+  JInt -> "4"
+  JUint -> "4"
+  JNumber -> "4"
+  JBool -> "1"
+  JString -> "4 + " <> var <> ".Length"
+  JDict _ -> unsafeCrashWith "jFieldCountBufBytes JDict not impl"
+  JObject _ -> var <> ".CountBufBytes()"
+  JMaybe _ -> var <> ".CountBufBytes()"
+  JArray t -> fnCall (cbb_arrayFnName t) [ var ]
+
+jTyFromBuf :: String -> JType -> String
+jTyFromBuf buf ty = case ty of
+  JNull -> ""
+  JInt -> buf <> ".ReadInt32()"
+  JUint -> buf <> ".ReadUInt32()"
+  JNumber -> buf <> ".ReadFloat()"
+  JBool -> buf <> ".ReadUInt8() > 0"
+  JString -> "RFB_LP_String(" <> buf <> ")"
+  (JMaybe _) -> "_" <> jTyPascalCase ty <> "::ReadFromBuffer(" <> buf <> ")"
+  (JObject (JsonObj n _)) -> "_" <> n <> "::ReadFromBuffer(" <> buf <> ")"
+  (JArray t') -> rfb_arrayFnName t' <> "(" <> buf <> ")"
+  (JDict _) -> unsafeCrashWith "jFieldToBuf JDict not impl"

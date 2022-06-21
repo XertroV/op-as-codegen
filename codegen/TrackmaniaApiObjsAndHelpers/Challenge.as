@@ -114,6 +114,33 @@ shared class Challenge {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_id);
+    WTB_LP_String(buf, _uid);
+    WTB_LP_String(buf, _name);
+    buf.Write(_startDate);
+    buf.Write(_endDate);
+    buf.Write(_leaderboardId);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4 + _uid.Length;
+    bytes += 4 + _name.Length;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _Challenge {
@@ -191,5 +218,27 @@ namespace _Challenge {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared Challenge@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: id of type: uint */
+    uint id = buf.ReadUInt32();
+    /* Parse field: uid of type: string */
+    string uid = RFB_LP_String(buf);
+    /* Parse field: name of type: string */
+    string name = RFB_LP_String(buf);
+    /* Parse field: startDate of type: uint */
+    uint startDate = buf.ReadUInt32();
+    /* Parse field: endDate of type: uint */
+    uint endDate = buf.ReadUInt32();
+    /* Parse field: leaderboardId of type: uint */
+    uint leaderboardId = buf.ReadUInt32();
+    return Challenge(id, uid, name, startDate, endDate, leaderboardId);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

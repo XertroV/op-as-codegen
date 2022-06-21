@@ -1,7 +1,7 @@
 module Testing where
 
 import Prelude
-import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapInitedScope, wrapTryCatch, wrapWhileLoop)
+import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapInitedScope, wrapTryCatch, wrapTryCatchFake, wrapWhileLoop)
 import ManiaColors (c_green_700, c_orange_600)
 import Types (Lines, AsFunction)
 

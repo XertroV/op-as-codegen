@@ -94,6 +94,29 @@ shared class MatchResult {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    _rank.WriteToBuffer(buf);
+    _score.WriteToBuffer(buf);
+    WTB_LP_String(buf, _participant);
+    WTB_LP_String(buf, _zone);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += _rank.CountBufBytes();
+    bytes += _score.CountBufBytes();
+    bytes += 4 + _participant.Length;
+    bytes += 4 + _zone.Length;
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
 }
 
 namespace _MatchResult {
@@ -161,5 +184,23 @@ namespace _MatchResult {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared MatchResult@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: rank of type: MaybeOfUint@ */
+    MaybeOfUint@ rank = _MaybeOfUint::ReadFromBuffer(buf);
+    /* Parse field: score of type: MaybeOfUint@ */
+    MaybeOfUint@ score = _MaybeOfUint::ReadFromBuffer(buf);
+    /* Parse field: participant of type: string */
+    string participant = RFB_LP_String(buf);
+    /* Parse field: zone of type: string */
+    string zone = RFB_LP_String(buf);
+    return MatchResult(rank, score, participant, zone);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
 }

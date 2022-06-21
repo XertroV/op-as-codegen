@@ -126,6 +126,46 @@ shared class TotdMonth {
     }
     return ret;
   }
+  
+  /* Methods // Mixin: ToFromBuffer */
+  void WriteToBuffer(Buffer@ &in buf) {
+    print('Bytes required: ' + CountBufBytes());
+    buf.Write(_year);
+    buf.Write(_month);
+    buf.Write(_lastDay);
+    WTB_Array_TrackOfTheDayEntry(buf, _days);
+  }
+  
+  uint CountBufBytes() {
+    uint bytes = 0;
+    bytes += 4;
+    bytes += 4;
+    bytes += 4;
+    bytes += CBB_Array_TrackOfTheDayEntry(_days);
+    return bytes;
+  }
+  
+  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    buf.Write(uint(s.Length));
+    buf.Write(s);
+  }
+  
+  void WTB_Array_TrackOfTheDayEntry(Buffer@ &in buf, const array<TrackOfTheDayEntry@> &in arr) {
+    buf.Write(uint(arr.Length));
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      el.WriteToBuffer(buf);
+    }
+  }
+  
+  uint CBB_Array_TrackOfTheDayEntry(const array<TrackOfTheDayEntry@> &in arr) {
+    uint bytes = 4;
+    for (uint ix = 0; ix < arr.Length; ix++) {
+      auto el = arr[ix];
+      bytes += el.CountBufBytes();
+    }
+    return bytes;
+  }
 }
 
 namespace _TotdMonth {
@@ -203,5 +243,32 @@ namespace _TotdMonth {
     if (sample != expected) {
       throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
     }
+  }
+  
+  /* Namespace // Mixin: ToFromBuffer */
+  shared TotdMonth@ ReadFromBuffer(Buffer@ &in buf) {
+    /* Parse field: year of type: uint */
+    uint year = buf.ReadUInt32();
+    /* Parse field: month of type: uint */
+    uint month = buf.ReadUInt32();
+    /* Parse field: lastDay of type: uint */
+    uint lastDay = buf.ReadUInt32();
+    /* Parse field: days of type: array<TrackOfTheDayEntry@> */
+    array<TrackOfTheDayEntry@> days = RFB_Array_TrackOfTheDayEntry(buf);
+    return TotdMonth(year, month, lastDay, days);
+  }
+  
+  shared const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
+  }
+  
+  shared const array<TrackOfTheDayEntry@>@ RFB_Array_TrackOfTheDayEntry(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    array<TrackOfTheDayEntry@> arr = array<TrackOfTheDayEntry@>(len);
+    for (uint i = 0; i < arr.Length; i++) {
+      @arr[i] = _TrackOfTheDayEntry::ReadFromBuffer(buf);
+    }
+    return arr;
   }
 }

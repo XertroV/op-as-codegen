@@ -271,5 +271,69 @@ namespace Test_MatchResults {
   }
   
   bool unitTestResults_MatchResults_RowSerialization = runAsync(Tests_RegisterAll_MatchResults_RowSerialization);
+  
+  /* Test // Mixin: ToFromBuffer */
+  void Tests_RegisterAll_MatchResults_ToFromBuffer() {
+    RegisterUnitTest('UnitTest_ToFromBuffer_MatchResults', UnitTest_ToFromBuffer_MatchResults);
+  }
+  
+  bool Test_ToFromBuffer_Check(uint roundPosition, const string &in matchLiveId, const string &in scoreUnit, const MatchResult@[] &in results) {
+    MatchResults@ tmp = MatchResults(roundPosition, matchLiveId, scoreUnit, results);
+    Buffer@ buf = Buffer();
+    print('buf size pre: ' + buf.GetSize());
+    tmp.WriteToBuffer(buf);
+    print('buf size post: ' + buf.GetSize());
+    buf.Seek(0, 0);
+    print('buf size post seek: ' + buf.GetSize());
+    assert(tmp == _MatchResults::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
+    return true;
+  }
+  
+  void UnitTest_ToFromBuffer_MatchResults() {
+    Test_ToFromBuffer_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", {MatchResult(MaybeOfUint(322150), MaybeOfUint(527623), "陏", "씠䪉Ꮢ榋"), MatchResult(MaybeOfUint(263354), MaybeOfUint(805858), "躗", "츰ꍆ๩ヂᶥ뾠粯ꣿ"), MatchResult(MaybeOfUint(605220), MaybeOfUint(415169), "ř챉鋱Ʞ爇⼺鐸䨒", "벃堝ᛟ㤔"), MatchResult(MaybeOfUint(661263), MaybeOfUint(840437), "錭鿩꤉䵚ࢂ浮翅쿕焫", "䃜")});
+    Test_ToFromBuffer_Check(705395, "圭徰藧퀕ᶏ", "쏦웺", {MatchResult(MaybeOfUint(479132), MaybeOfUint(973529), "㐚ꂖ摇䞰鄕", "勿掝䩸"), MatchResult(MaybeOfUint(694614), MaybeOfUint(), "⏂ꥏ꼼砍띑䗇", "踆⌾ꎳ㏰鉓켯τ㪔ﻊ"), MatchResult(MaybeOfUint(289231), MaybeOfUint(130027), "鉼竲㽥︠", "瞄")});
+    Test_ToFromBuffer_Check(970574, "牉᳔", "퍻䳥最徐㭾멭Პ䑰", {MatchResult(MaybeOfUint(79708), MaybeOfUint(976559), "簳鋒馑읊쾮", "Ԧ懁ㅲ砤㉾滑肜"), MatchResult(MaybeOfUint(), MaybeOfUint(312200), "ꐎ굻⛩㰣兵∋沴", "ᢂ䙏ຸ愵䗽"), MatchResult(MaybeOfUint(234787), MaybeOfUint(480710), "훃�폡䐂᰾홗", "柊麑囼"), MatchResult(MaybeOfUint(288796), MaybeOfUint(329026), "", "贅谌⼋牐")});
+    Test_ToFromBuffer_Check(788694, "ബ踳蝘䳡", "廕埒ꤵ쟹깴は", {MatchResult(MaybeOfUint(447567), MaybeOfUint(240382), "膕躯", "")});
+    Test_ToFromBuffer_Check(730997, "ී쨳ㄤ䒹ਮゴ", "沲", {MatchResult(MaybeOfUint(610030), MaybeOfUint(194647), "绹", "혘疿쑡蕭㩀꫏")});
+    Test_ToFromBuffer_Check(883773, "庚䛥嶿", "籫ᆄᆖ�", {MatchResult(MaybeOfUint(6692), MaybeOfUint(597747), "羔ﾧ鋣ꊌ멉녍ഩ਽", "憎"), MatchResult(MaybeOfUint(30265), MaybeOfUint(), "ꉁᏚ", ""), MatchResult(MaybeOfUint(31957), MaybeOfUint(300346), "ﲀ⧝�䄳凜嬚", "ྉ樦纍"), MatchResult(MaybeOfUint(116704), MaybeOfUint(613456), "殤掙얷ᐮጧ뎆", "ᓌﻸꚡ䯯桾뭎")});
+    Test_ToFromBuffer_Check(575382, "", "ⳃ㩄앪衚", {MatchResult(MaybeOfUint(767904), MaybeOfUint(), "肯䨏﻿ꓼ", "㶡앧�鸓㮝ႝ䖟哢"), MatchResult(MaybeOfUint(478495), MaybeOfUint(199047), "괇", "벑뀁矣₳迿ⵢ⎕곰✁"), MatchResult(MaybeOfUint(859526), MaybeOfUint(411907), "ƒ蠐前袊⬸", "ើ溥")});
+    Test_ToFromBuffer_Check(760086, "⚝霡༺�띩⏚暚鲃", "ﬗ炅⧬䥱ᔇ즾�⟸嚟挆", {MatchResult(MaybeOfUint(10462), MaybeOfUint(559916), "푔⼧巇麃", "斻ை牖Ⲋ䆮⊂农陣띰"), MatchResult(MaybeOfUint(462625), MaybeOfUint(360995), "⯟骙䁣豅琧뗇躏òꘄᷡ", "펽꩙负釺锼珟፩�埊쎆"), MatchResult(MaybeOfUint(668538), MaybeOfUint(252573), "", "ຶꔽﾜᵏ䒴풠氂ᔾ")});
+    Test_ToFromBuffer_Check(808646, "㪁▫윁벼寥ﴋᮝ臢", "鲑頸헳ᑭᷡƫ믅༐", {MatchResult(MaybeOfUint(745915), MaybeOfUint(), "뼖ቬ뫁귫", "ॄ綫鼂㦦턗"), MatchResult(MaybeOfUint(505384), MaybeOfUint(339013), "ᢜ锦먓쏜뙅", "瘞⺔셡")});
+    Test_ToFromBuffer_Check(7803, "", "㟧歒䉛笔ꦚ", {MatchResult(MaybeOfUint(487581), MaybeOfUint(123480), "쒿№妝", "�")});
+    Test_ToFromBuffer_Check(854263, "똣궆暱여군햛", "ﷺ⋏晆뗭", {MatchResult(MaybeOfUint(27512), MaybeOfUint(), "ᱰᆧᡒ희폿ざ綥", "�夛篢椞◌꽣⎄૧")});
+    Test_ToFromBuffer_Check(485481, "깊칀ﲦ琇剧敺᭺ꐷꠌ", "", {MatchResult(MaybeOfUint(399064), MaybeOfUint(), "扻ꋨ䳘쏡卋鳊鍽扐", "鞞㉪屹팑龚⿞䅰ꡉፀ"), MatchResult(MaybeOfUint(328156), MaybeOfUint(478307), "욜푭", "仚饩�Ꮚ혹霭䞓盅")});
+    Test_ToFromBuffer_Check(552448, "�韑튏ࡑ⪽", "�鯃嘐ኽੱ晤", {MatchResult(MaybeOfUint(), MaybeOfUint(), "赾衆", "꡽乕䛆㬾붙䃲"), MatchResult(MaybeOfUint(829491), MaybeOfUint(833655), "萱ᯋ錍჎됥", "⶚ꖿ鈳")});
+    Test_ToFromBuffer_Check(165515, "", "츭⅑뻌腂꟠䖓꺈", {MatchResult(MaybeOfUint(409249), MaybeOfUint(496546), "뇵쯷蕹", "ᶬ놲"), MatchResult(MaybeOfUint(), MaybeOfUint(717927), "忧ⷾ챲퉗", "㴗")});
+    Test_ToFromBuffer_Check(581686, "熪饍㨋", "ꇑﾷꃦ", {MatchResult(MaybeOfUint(953518), MaybeOfUint(127425), "룞ꖭ㸬♭吞", "")});
+    Test_ToFromBuffer_Check(316948, "떁㝬鲤ŗ岞⚀", "ᶮ苿퍎ᇏ伅", {MatchResult(MaybeOfUint(147839), MaybeOfUint(), "�悝ㅍ➵", "즍�狫"), MatchResult(MaybeOfUint(850901), MaybeOfUint(), "㒾ⴙ荡옄샔ዕ", ""), MatchResult(MaybeOfUint(), MaybeOfUint(409650), "븍닑ꪐ脹窕ૐ취ꨟ泒擵", "䲲옮伴ꁧⓚ紝쾲铃켴")});
+    Test_ToFromBuffer_Check(698385, "ಖⳡ忆悑", "臹⢺鏿ㆻ", {MatchResult(MaybeOfUint(), MaybeOfUint(48336), "", "鱴䐡낀飻㥾࿕烫偰⋇"), MatchResult(MaybeOfUint(524341), MaybeOfUint(897734), "臿陋㋫", ""), MatchResult(MaybeOfUint(194972), MaybeOfUint(514683), "⺃爛", "義겋㞔鲱˯"), MatchResult(MaybeOfUint(722283), MaybeOfUint(443949), "靅槴觰䮙ド", "�줖쵮ݯ滞觏퇌ⷧ")});
+    Test_ToFromBuffer_Check(478841, "ꠋ뽾緙퇄⯛婃", "豀備㵛䓤", {MatchResult(MaybeOfUint(235251), MaybeOfUint(897768), "ഀ옉龞꺌ꭎ", "茠칧瓖ᵽ"), MatchResult(MaybeOfUint(474286), MaybeOfUint(107095), "", "错"), MatchResult(MaybeOfUint(172777), MaybeOfUint(695590), "妓�鎐壤䬦ᕴ�鸬?", "葑氊듳쎴")});
+    Test_ToFromBuffer_Check(462891, "", "续盲碚", {MatchResult(MaybeOfUint(583690), MaybeOfUint(995570), "㵌⏭슒鷖ꩰ﵄", "혍뉻瘃⍴䇸ꍫ큑"), MatchResult(MaybeOfUint(432129), MaybeOfUint(284152), "࡞啈냢໚껃꽉೵", "䡬ٍ눘")});
+    Test_ToFromBuffer_Check(950657, "䖧骤㛦샚娄奾鴄", "紓뻽龋ᡣ䓌⤳烗", {MatchResult(MaybeOfUint(436718), MaybeOfUint(339274), "േ᥹뛼켄雝繗", "⼏歖맹훿웴⏪"), MatchResult(MaybeOfUint(21513), MaybeOfUint(), "甄☸⨝쭻䏤ᢠ䫖", "⑓킄읋溛"), MatchResult(MaybeOfUint(59102), MaybeOfUint(603237), "＊₅뿴", "ﵝ릣㐌㞃ă拻"), MatchResult(MaybeOfUint(190609), MaybeOfUint(692155), "쉭邀", "닺쿿ꉧ")});
+    Test_ToFromBuffer_Check(706611, "㯤㡆햽㸞뮸쉅", "ᨠ礇並並", {MatchResult(MaybeOfUint(396000), MaybeOfUint(), "蹢㏿༳�", "⌻"), MatchResult(MaybeOfUint(), MaybeOfUint(), "�॑覿畻鶩껳慅뎟", "䥖੥룧큎"), MatchResult(MaybeOfUint(425623), MaybeOfUint(869727), "㲡軖", "輐౟휐咒⣅꩹"), MatchResult(MaybeOfUint(293878), MaybeOfUint(297433), "", "")});
+    Test_ToFromBuffer_Check(626664, "噧䯪蛯뤔ྉኛ", "", {MatchResult(MaybeOfUint(38387), MaybeOfUint(862689), "宅⎰皎䊭匑⩶妗�Ț釄", "࿥ᖕὪＩᬶѣ"), MatchResult(MaybeOfUint(711048), MaybeOfUint(597302), "⧊", "銣콇ﲇ꽾᭔"), MatchResult(MaybeOfUint(605540), MaybeOfUint(32797), "", "⚷큙퐵儋䳆䦺謑膢֣ꤿ")});
+    Test_ToFromBuffer_Check(777534, "卤㵠휄Ｋ咱敏", "뿂⬔紘⅛䉠稯ꛬ焄－", {MatchResult(MaybeOfUint(9696), MaybeOfUint(268955), "ꔻ䪣续蹘", "ồ趌ݸﰙ囦鷎"), MatchResult(MaybeOfUint(), MaybeOfUint(758871), "䔋", "김则➦땲ꛠ")});
+    Test_ToFromBuffer_Check(552662, "耼⫰", "腙췍꽄꫻⪏", {MatchResult(MaybeOfUint(880950), MaybeOfUint(361747), "", "䀒䍊빇曁绀溜ⅅ࿿倴"), MatchResult(MaybeOfUint(968174), MaybeOfUint(916384), "㗫", "弮�옚䬟뮳ॾ�")});
+    Test_ToFromBuffer_Check(724134, "泘섆ۧꄕῗ੉諡畵", "쾽ಕ값﹊鴥묏⛿", {MatchResult(MaybeOfUint(811494), MaybeOfUint(806546), "ك", ""), MatchResult(MaybeOfUint(), MaybeOfUint(404141), "", "赩ﻔ㉇︢瀝턑"), MatchResult(MaybeOfUint(536175), MaybeOfUint(396617), "惯廤�ꑷ", "ꘁ﬩险檑�Ʋᤆ")});
+    Test_ToFromBuffer_Check(850352, "滤ၓ뛬乍拢줊∣폎", "꒭ɞ�斧晛昱썏%", {MatchResult(MaybeOfUint(735896), MaybeOfUint(759709), "欭愛쫿迩Ềᮺኛ�ꑞ", "圵"), MatchResult(MaybeOfUint(207043), MaybeOfUint(), "⿙鿁", "柫缾꫘")});
+    Test_ToFromBuffer_Check(264347, "�贲Ἴｃ鉃买㊜ꐶ塶", "䑐㸬", {MatchResult(MaybeOfUint(), MaybeOfUint(876539), "뭶ዘ�㷣䷐ꌂ䈀", "샛煶끮"), MatchResult(MaybeOfUint(222921), MaybeOfUint(313175), "㪒닢䳨⼨늾쏲⦜냍", ""), MatchResult(MaybeOfUint(26718), MaybeOfUint(), "본촄", "遚∻ꟛ⧐")});
+    Test_ToFromBuffer_Check(949509, "姩麟ᠺ", "鏅泌囯쐍", {MatchResult(MaybeOfUint(109577), MaybeOfUint(), "旒笟둀魟䡏鉕�", "팤넎춶堢쟔"), MatchResult(MaybeOfUint(), MaybeOfUint(762638), "糢쨶波ፑ", "㶔涠�淿"), MatchResult(MaybeOfUint(883046), MaybeOfUint(126019), "〗춙끬➒ᗽ}൳鸄", "봭썏곑釕쒮狛㩪㨹﹵锗"), MatchResult(MaybeOfUint(973625), MaybeOfUint(342155), "", "沛葄ད�ኈ椉ૻᔔ")});
+    Test_ToFromBuffer_Check(284960, "坤痒", "膋ᢒ罯髗ɸ鳠", {MatchResult(MaybeOfUint(658967), MaybeOfUint(985140), "ᩴ糺灮⸽", "ﭪ飂漬꒞浿"), MatchResult(MaybeOfUint(857474), MaybeOfUint(988462), "뢊�", "턣囬낌昒ጔꫨ妿⼖拚"), MatchResult(MaybeOfUint(798386), MaybeOfUint(849105), "⛦뚈組仕", "�")});
+    Test_ToFromBuffer_Check(525975, "", "享ኁ", {MatchResult(MaybeOfUint(427135), MaybeOfUint(701413), "祰䧈躺줘웎由짉ꤶ", "쮜먏"), MatchResult(MaybeOfUint(304563), MaybeOfUint(208431), "", ""), MatchResult(MaybeOfUint(286932), MaybeOfUint(668516), "蟣", "蘄㐌䂹꒷ꢫ⣬ﵻ耘ꊻመ"), MatchResult(MaybeOfUint(), MaybeOfUint(893571), "洵뜞", "뀈")});
+    Test_ToFromBuffer_Check(346112, "㠷픮똹₀㘞�メ", "漓Zᄥ녷ྕ嚨豯�쉾", {MatchResult(MaybeOfUint(276909), MaybeOfUint(181277), "ώ䔁", "鳈땼饠给㮊䔽샰녂愾"), MatchResult(MaybeOfUint(892843), MaybeOfUint(717017), "䨝䯵ᩗ瓮ໞ", ""), MatchResult(MaybeOfUint(815663), MaybeOfUint(371522), "㯪╴뽝䖥繕햗얪", "龞햣䩝↡밌ᇿ팑ퟞề"), MatchResult(MaybeOfUint(57286), MaybeOfUint(755672), "㡟襅ꆾ먍ꂥ㤠䗻", "�蠕謖䷅")});
+    Test_ToFromBuffer_Check(743513, "ݍ枍ꧫ", "彃쟝콧꩖沀躁䢆⥳ﺯ", {MatchResult(MaybeOfUint(155485), MaybeOfUint(608879), "鲒穪朆毢ᜋ", "撱賥뉳㻛骐图秈"), MatchResult(MaybeOfUint(65793), MaybeOfUint(629745), "Ꙫ揮ﹿ쿥⯓禁", "䭖౏꡽◱")});
+    Test_ToFromBuffer_Check(655784, "᧽�향醁줪Ф◩�雅", "ᅾ⇈䷫堧Ἶ", {MatchResult(MaybeOfUint(700683), MaybeOfUint(), "⃑狭貾ᯄ犠", "꽸倍"), MatchResult(MaybeOfUint(453732), MaybeOfUint(), "㰩힁谁پ细푣Ꙗꙵ", ""), MatchResult(MaybeOfUint(840347), MaybeOfUint(465804), "饍ผ蚫ㄥ", "謓턵圅䲻遀⫷㬺")});
+    Test_ToFromBuffer_Check(851164, "", "즯⨻藛箁ힻ앷绋ꗅ", {MatchResult(MaybeOfUint(464000), MaybeOfUint(977483), "썅", "宱"), MatchResult(MaybeOfUint(914442), MaybeOfUint(768459), "�꺧ﶺ螵", "�端牖콬菑ꝝ평洝"), MatchResult(MaybeOfUint(996429), MaybeOfUint(343231), "㻯䉼⩂㽌顸쌋ꀛ掤줆", "놴Ⲟ밈䘒䃨櫓⮨�")});
+    Test_ToFromBuffer_Check(107005, "귆㬈", "ᢣ⪭࠮틇溷", {MatchResult(MaybeOfUint(170614), MaybeOfUint(), "ޠﳻ됷躊", "惐唥躯"), MatchResult(MaybeOfUint(217026), MaybeOfUint(252476), "谩띋ࠚ䨀羴툟棃", "罾䧼蔓ᦺ㷍ଚ쐯␂ꛌ"), MatchResult(MaybeOfUint(471755), MaybeOfUint(649467), "枞䎘Ꝙ❬칟いu⮘꟭", "鰸祚ꪀ")});
+    Test_ToFromBuffer_Check(566754, "뉕镶쟶", "眤颒", {MatchResult(MaybeOfUint(659454), MaybeOfUint(86115), "䀰Ⱈ邋䡮凭칄ẓߖ鎱", "෸輠蚸쯖")});
+    Test_ToFromBuffer_Check(830748, "龑", "ꌢꀗ䊤ါꊯ黢ꍆ", {MatchResult(MaybeOfUint(646546), MaybeOfUint(264903), "豮", "ᘺ₃ꐫ"), MatchResult(MaybeOfUint(228966), MaybeOfUint(465989), "ꞁ屵펽", "醳麔弐鹺뵖թ⩾䁄掦"), MatchResult(MaybeOfUint(928008), MaybeOfUint(488168), "聙Ჵ浠똟遜⃎", ""), MatchResult(MaybeOfUint(702962), MaybeOfUint(190296), "硓莜௃牺㒢Њ", "꧷陵윗뼞㵊")});
+    Test_ToFromBuffer_Check(65777, "쪽閉俭", "﬍", {MatchResult(MaybeOfUint(), MaybeOfUint(577856), "Გ䅬", "伜㙏槉㵭㲗枝")});
+    Test_ToFromBuffer_Check(255327, "虪⨈ণ䵹隐ﶚ蕙ぬㄍ", "↰㻜靳镹", {MatchResult(MaybeOfUint(670203), MaybeOfUint(35081), "ꛟ癕屦贌�", ""), MatchResult(MaybeOfUint(402095), MaybeOfUint(), "絃㔕뜛䲶㑵黮㈹ⶤ놿", "ꋜ⹄ـ䋳妎䡞"), MatchResult(MaybeOfUint(623043), MaybeOfUint(183231), "䢗愦쥕凙፦闏⺃ʞ閈", "찖聘䋽ヽ鲋鄶蘄")});
+    Test_ToFromBuffer_Check(229017, "뻕쓇渢迍䛀켿窨", "寓㩢", {MatchResult(MaybeOfUint(973724), MaybeOfUint(268912), "싐쥀氹狦홉և䈞Ә", "륈쌬㣓蕏⛊"), MatchResult(MaybeOfUint(506479), MaybeOfUint(964883), "⹺购껎", "쬂匎藟轫⭏◿쳵ꐇ᳗"), MatchResult(MaybeOfUint(514208), MaybeOfUint(700986), "洃쳷裨쓸롴溂ႛ㰁똣", "觟"), MatchResult(MaybeOfUint(594708), MaybeOfUint(917483), "箤̏混뎶", "")});
+    Test_ToFromBuffer_Check(205337, "ꂝ", "䇻⦰", {MatchResult(MaybeOfUint(713596), MaybeOfUint(805122), "", ""), MatchResult(MaybeOfUint(125679), MaybeOfUint(450045), "윻俬忾", "焣ڲ訐胟烓⒏﫴ᢁ퍹"), MatchResult(MaybeOfUint(866653), MaybeOfUint(103390), "잷賑", "㙆錁઎꾒⫅俔"), MatchResult(MaybeOfUint(515832), MaybeOfUint(959465), "悙ⲩ", "☿퉁㻟�㈟竹욽")});
+    Test_ToFromBuffer_Check(641045, "ᾁ傅뀍욜೹罎", "�害嘶悂ᤈ㲣⾼", {MatchResult(MaybeOfUint(64193), MaybeOfUint(471247), "䡞エ鹨敳攝", "㈜쾹낁먛Ⅹ")});
+  }
+  
+  bool unitTestResults_MatchResults_ToFromBuffer = runAsync(Tests_RegisterAll_MatchResults_ToFromBuffer);
 }
 #endif

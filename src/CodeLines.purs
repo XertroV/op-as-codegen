@@ -117,6 +117,9 @@ wrapInitedScope preScopeInit lines = [ preScopeInit <> " {" ] <> indent 1 lines 
 wrapConstructor :: String -> JFields -> Lines -> AsFunction
 wrapConstructor = wrapFunction ""
 
+wrapConstructor' :: String -> Array String -> Lines -> AsFunction
+wrapConstructor' = wrapFunction' ""
+
 wrapFunction :: String -> String -> JFields -> Lines -> AsFunction
 wrapFunction ret name args lines = wrapFunction'' ret name (Just args) (jfieldToAsArg <$> args) false lines
 
@@ -189,13 +192,16 @@ wrapIfElse c = wrapTwoScopes ("if (" <> c <> ")") "else"
 wrapTryCatch :: Lines -> Lines -> Lines
 wrapTryCatch = wrapTwoScopes "try" "catch"
 
+wrapTryCatchFake :: Lines -> Lines -> Lines
+wrapTryCatchFake a _b = a
+
 wrapSQuotes :: String -> String
 wrapSQuotes s = "'" <> s <> "'"
 
 wrapDQuotes :: String -> String
 wrapDQuotes s = "\"" <> s <> "\""
 
--- | A nicer for loop api
+-- | A nicer for loop api -- `forLoopArray "i" "arr" []`
 forLoopArray :: String -> String -> Lines -> Lines
 forLoopArray ixName arrName = wrapForLoop ("uint " <> ixName <> " = 0; " <> ixName <> " < " <> arrName <> ".Length; " <> ixName <> "++")
 
@@ -204,3 +210,7 @@ setV :: JField -> String -> String
 setV (JField n t) v = ref <> n <> " = " <> v <> ";"
   where
   ref = if jTySetAsRef t then "@" else ""
+
+-- | declare and set a variable
+declSetV :: JField -> String -> String
+declSetV (JField n t) v = jTyToAsTy t <> " " <> n <> " = " <> v <> ";"
