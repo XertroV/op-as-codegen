@@ -97,7 +97,6 @@ shared class CompRounds {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     WTB_Array_CompRound(buf, _rounds);
   }
   

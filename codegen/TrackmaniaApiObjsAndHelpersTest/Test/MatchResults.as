@@ -280,11 +280,8 @@ namespace Test_MatchResults {
   bool Test_ToFromBuffer_Check(uint roundPosition, const string &in matchLiveId, const string &in scoreUnit, const MatchResult@[] &in results) {
     MatchResults@ tmp = MatchResults(roundPosition, matchLiveId, scoreUnit, results);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _MatchResults::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

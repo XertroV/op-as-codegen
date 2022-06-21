@@ -119,7 +119,6 @@ shared class TotdResp {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     WTB_Array_TotdMonth(buf, _monthList);
     buf.Write(_itemCount);
     buf.Write(_nextRequestTimestamp);

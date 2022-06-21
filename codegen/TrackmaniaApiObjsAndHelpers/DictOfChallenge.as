@@ -138,7 +138,6 @@ namespace _DictOfChallenge {
     
     /* Methods // Mixin: ToFromBuffer */
     void WriteToBuffer(Buffer@ &in buf) {
-      print('Bytes required: ' + CountBufBytes());
       WTB_LP_String(buf, _key);
       _val.WriteToBuffer(buf);
     }

@@ -97,7 +97,6 @@ shared class Challenges {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     WTB_Array_Challenge(buf, _challenges);
   }
   

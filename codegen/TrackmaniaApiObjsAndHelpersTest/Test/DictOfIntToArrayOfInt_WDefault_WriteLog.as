@@ -58,9 +58,6 @@ namespace Test_DictOfIntToArrayOfInt_WDefault_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfIntToArrayOfInt_WDefault_WriteLog() {
-    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfIntToArrayOfInt_WDefault_WriteLog.txt')) {
-      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfIntToArrayOfInt_WDefault_WriteLog.txt');
-    }
     DictOfIntToArrayOfInt_WDefault_WriteLog@ testDict = DictOfIntToArrayOfInt_WDefault_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfIntToArrayOfInt_WDefault_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -107,7 +104,6 @@ namespace Test_DictOfIntToArrayOfInt_WDefault_WriteLog {
     Test_ProxyFns_DictOfIntToArrayOfInt_WDefault_WriteLog(testDict, 40, -694148, {-336690, 528516, 304899, -268162});
     Test_ProxyFns_DictOfIntToArrayOfInt_WDefault_WriteLog(testDict, 41, -488050, {-953345});
     Test_ProxyFns_DictOfIntToArrayOfInt_WDefault_WriteLog(testDict, 42, 927485, {425713, 809863, 95873});
-    sleep(50);
     assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfIntToArrayOfInt_WDefault_WriteLog.txt')), "Should have written exactly 42*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfIntToArrayOfInt_WDefault_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();

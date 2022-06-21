@@ -107,7 +107,6 @@ shared class CompRoundMatch {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_id);
     buf.Write(_position);
     buf.Write(uint8(_isCompleted ? 1 : 0));

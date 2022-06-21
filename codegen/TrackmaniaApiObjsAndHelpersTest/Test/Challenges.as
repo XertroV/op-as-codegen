@@ -277,11 +277,8 @@ namespace Test_Challenges {
   bool Test_ToFromBuffer_Check(const Challenge@[] &in challenges) {
     Challenges@ tmp = Challenges(challenges);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _Challenges::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

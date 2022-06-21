@@ -177,7 +177,6 @@ shared class Competition {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_id);
     buf.Write(_startDate);
     buf.Write(_endDate);

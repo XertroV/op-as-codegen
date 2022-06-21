@@ -58,9 +58,6 @@ namespace Test_DictOfChallenge {
   }
   
   void UnitTest_DictBacking_DictOfChallenge() {
-    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfChallenge.txt')) {
-      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfChallenge.txt');
-    }
     DictOfChallenge@ testDict = DictOfChallenge();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -106,7 +103,6 @@ namespace Test_DictOfChallenge {
     Test_ProxyFns_DictOfChallenge(testDict, 39, "폁趗婆引兘뛮�", Challenge(80948, "Ꜯ謃꛼", "", 124520, 749383, 922529));
     Test_ProxyFns_DictOfChallenge(testDict, 40, "�Ⱦ燷⑅", Challenge(500571, "", "쨙肮⇭�ራ䀄", 982822, 330394, 52025));
     Test_ProxyFns_DictOfChallenge(testDict, 41, "⏱霅眾讅䃻齁긒⟵俬", Challenge(281354, "㶂㲺ㄖઃ롘ẕᶯ", "虰", 597830, 741691, 8385));
-    sleep(50);
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
   }

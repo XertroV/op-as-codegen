@@ -287,11 +287,8 @@ namespace Test_CompRound {
   bool Test_ToFromBuffer_Check(uint id, uint qualifierChallengeId, uint position, uint nbMatches, uint startDate, uint endDate, const string &in name, const string &in status, const string &in leaderboardComputeType, MaybeOfString@ teamLeaderboardComputeType, const string &in matchScoreDirection) {
     CompRound@ tmp = CompRound(id, qualifierChallengeId, position, nbMatches, startDate, endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _CompRound::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

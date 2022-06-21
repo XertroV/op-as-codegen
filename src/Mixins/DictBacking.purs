@@ -169,7 +169,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       , "f.Write(Text::Format('%08d', s.Length));"
       , "f.WriteLine(s);"
       -- , "print('write line of length: ' + uint(s.Length));"
-      , "f.Flush();"
+      -- , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -177,7 +177,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     wrapFunction "private void" "WriteLogOnResetAll" []
       [ "IO::File f(_logPath, IO::FileMode::Write);"
       , "f.Write('');"
-      , "f.Flush();"
+      -- , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -187,7 +187,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
           ( [ "uint start = Time::Now;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
             , "MemoryBuffer fb = f.Read(f.Size());"
-            , "print('buffer getsize: ' + fb.GetSize());"
+            -- , "print('buffer getsize: ' + fb.GetSize());"
             , "f.Close();"
             , "uint lineNum = 0;"
             , "string line;"
@@ -330,14 +330,13 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   mainFn =
     wrapMainTest fnName
-      $ wrapIf ("IO::FileExists(" <> logPath <> ")")
-          [ "IO::Delete(" <> logPath <> ");" ]
-      <> [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
+      $ [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
       <> wrapIf "testDict.GetSize() > 0" [ "testDict.DeleteAll();" ]
       <> ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
             allTestArgs
         )
-      <> [ "sleep(50);" ]
+      -- <> [ "sleep(50);" ]
+      
       <> preDeleteAllTestExtra
       <> assertIfLoadFromDisk
       <> [ "testDict.DeleteAll();"

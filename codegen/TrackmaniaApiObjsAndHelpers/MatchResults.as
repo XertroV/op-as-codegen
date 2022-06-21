@@ -129,7 +129,6 @@ shared class MatchResults {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_roundPosition);
     WTB_LP_String(buf, _matchLiveId);
     WTB_LP_String(buf, _scoreUnit);

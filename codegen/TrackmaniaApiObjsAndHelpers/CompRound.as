@@ -167,7 +167,6 @@ shared class CompRound {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_id);
     buf.Write(_qualifierChallengeId);
     buf.Write(_position);

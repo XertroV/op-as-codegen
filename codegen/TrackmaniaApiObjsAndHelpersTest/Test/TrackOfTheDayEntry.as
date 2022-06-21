@@ -283,11 +283,8 @@ namespace Test_TrackOfTheDayEntry {
   bool Test_ToFromBuffer_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
     TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _TrackOfTheDayEntry::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

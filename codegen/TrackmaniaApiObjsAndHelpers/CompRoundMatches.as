@@ -97,7 +97,6 @@ shared class CompRoundMatches {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     WTB_Array_CompRoundMatch(buf, _matches);
   }
   

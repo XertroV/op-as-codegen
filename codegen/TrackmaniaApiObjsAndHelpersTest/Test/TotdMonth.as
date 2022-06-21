@@ -280,11 +280,8 @@ namespace Test_TotdMonth {
   bool Test_ToFromBuffer_Check(uint year, uint month, uint lastDay, const TrackOfTheDayEntry@[] &in days) {
     TotdMonth@ tmp = TotdMonth(year, month, lastDay, days);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _TotdMonth::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

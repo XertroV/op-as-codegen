@@ -282,11 +282,8 @@ namespace Test_Challenge {
   bool Test_ToFromBuffer_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _Challenge::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

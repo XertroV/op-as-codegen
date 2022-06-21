@@ -237,7 +237,6 @@ shared class TmMap {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     WTB_LP_String(buf, _Id);
     WTB_LP_String(buf, _Uid);
     WTB_LP_String(buf, _Name);

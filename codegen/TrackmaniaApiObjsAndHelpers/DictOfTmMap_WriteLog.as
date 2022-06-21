@@ -101,7 +101,6 @@ shared class DictOfTmMap_WriteLog {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
       MemoryBuffer fb = f.Read(f.Size());
-      print('buffer getsize: ' + fb.GetSize());
       f.Close();
       uint lineNum = 0;
       string line;
@@ -142,14 +141,12 @@ shared class DictOfTmMap_WriteLog {
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(Text::Format('%08d', s.Length));
     f.WriteLine(s);
-    f.Flush();
     f.Close();
   }
   
   private void WriteLogOnResetAll() {
     IO::File f(_logPath, IO::FileMode::Write);
     f.Write('');
-    f.Flush();
     f.Close();
   }
 }
@@ -213,7 +210,6 @@ namespace _DictOfTmMap_WriteLog {
     
     /* Methods // Mixin: ToFromBuffer */
     void WriteToBuffer(Buffer@ &in buf) {
-      print('Bytes required: ' + CountBufBytes());
       WTB_LP_String(buf, _key);
       _val.WriteToBuffer(buf);
     }

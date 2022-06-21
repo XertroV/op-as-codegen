@@ -58,9 +58,6 @@ namespace Test_DictOfUintToCompRoundMatch_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfUintToCompRoundMatch_WriteLog() {
-    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToCompRoundMatch_WriteLog.txt')) {
-      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToCompRoundMatch_WriteLog.txt');
-    }
     DictOfUintToCompRoundMatch_WriteLog@ testDict = DictOfUintToCompRoundMatch_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToCompRoundMatch_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -107,7 +104,6 @@ namespace Test_DictOfUintToCompRoundMatch_WriteLog {
     Test_ProxyFns_DictOfUintToCompRoundMatch_WriteLog(testDict, 40, 572579, CompRoundMatch(866730, 656797, true, "", "슁⾵蛆"));
     Test_ProxyFns_DictOfUintToCompRoundMatch_WriteLog(testDict, 41, 501966, CompRoundMatch(481364, 487701, true, "炾闂ၠ岶﹊ᘀ", "䥴녊璄殲麖"));
     Test_ProxyFns_DictOfUintToCompRoundMatch_WriteLog(testDict, 42, 943607, CompRoundMatch(773439, 31342, true, "�悅蝽", "䔟펼藹嶦巯ฐ"));
-    sleep(50);
     assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToCompRoundMatch_WriteLog.txt')), "Should have written exactly 42*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToCompRoundMatch_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();

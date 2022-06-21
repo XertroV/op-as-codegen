@@ -279,11 +279,8 @@ namespace Test_TotdResp {
   bool Test_ToFromBuffer_Check(const TotdMonth@[] &in monthList, uint itemCount, uint nextRequestTimestamp) {
     TotdResp@ tmp = TotdResp(monthList, itemCount, nextRequestTimestamp);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _TotdResp::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

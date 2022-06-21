@@ -97,7 +97,6 @@ shared class MatchResult {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     _rank.WriteToBuffer(buf);
     _score.WriteToBuffer(buf);
     WTB_LP_String(buf, _participant);

@@ -58,9 +58,6 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_DictBacking_DictOfInt() {
-    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfInt.txt')) {
-      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfInt.txt');
-    }
     DictOfInt@ testDict = DictOfInt();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -103,7 +100,6 @@ namespace Test_DictOfInt {
     Test_ProxyFns_DictOfInt(testDict, 36, "ᣃ刖ꛥ", 975376);
     Test_ProxyFns_DictOfInt(testDict, 37, "椾", 502637);
     Test_ProxyFns_DictOfInt(testDict, 38, "ﱋ⌎媑", -878784);
-    sleep(50);
     testDict.DeleteAll();
     assert(0 == testDict.GetSize(), '.DeleteAll');
   }

@@ -129,7 +129,6 @@ shared class TotdMonth {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_year);
     buf.Write(_month);
     buf.Write(_lastDay);

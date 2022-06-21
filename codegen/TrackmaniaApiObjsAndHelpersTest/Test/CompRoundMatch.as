@@ -281,11 +281,8 @@ namespace Test_CompRoundMatch {
   bool Test_ToFromBuffer_Check(uint id, uint position, bool isCompleted, const string &in name, const string &in clubMatchLiveId) {
     CompRoundMatch@ tmp = CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
     Buffer@ buf = Buffer();
-    print('buf size pre: ' + buf.GetSize());
     tmp.WriteToBuffer(buf);
-    print('buf size post: ' + buf.GetSize());
     buf.Seek(0, 0);
-    print('buf size post seek: ' + buf.GetSize());
     assert(tmp == _CompRoundMatch::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());
     return true;
   }

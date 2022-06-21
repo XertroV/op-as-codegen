@@ -127,7 +127,6 @@ shared class TrackOfTheDayEntry {
   
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
-    print('Bytes required: ' + CountBufBytes());
     buf.Write(_campaignId);
     WTB_LP_String(buf, _mapUid);
     buf.Write(_day);
