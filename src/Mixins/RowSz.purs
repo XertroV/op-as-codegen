@@ -86,8 +86,11 @@ trs_wrapStringFn :: AsFunction
 trs_wrapStringFn =
   wrapFunction "private const string" "TRS_WrapString" [ JField "s" JString ]
     $ [ "string _s = s.Replace('\\n', '\\\\n').Replace('\\r', '\\\\r');"
-      , "return '(' + _s.Length + ':' + _s + ')';"
+      , "string ret = '(' + _s.Length + ':' + _s + ')';"
       ]
+    <> wrapIf "ret.Length != (3 + _s.Length + ('' + _s.Length).Length)"
+        [ "throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);" ]
+    <> [ "return ret;" ]
 
 trs_arrayFn :: JType -> AsFunction
 trs_arrayFn arrTy =
@@ -115,7 +118,7 @@ fromRowString name fields =
   wrapFunction' ("shared " <> name <> "@") "FromRowString" [ "const string &in str" ]
     $ [ "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
-      , "uint chunkLen;"
+      , "uint chunkLen = 0;"
       -- , "trace('FRS input: \"' + str + '\"');"
       ]
     <> intercalate [] (frs_getNext <$> fields)
@@ -135,7 +138,7 @@ frs_arrayDefn arrTy =
     $ [ arrayTypeAs <> " ret = " <> arrayTypeAs <> "(0);"
       , "string chunk = '', remainder = str;"
       , "array<string> tmp = array<string>(2);"
-      , "uint chunkLen;"
+      , "uint chunkLen = 0;"
       ]
     <> ( wrapWhileLoop "remainder.Length > 0"
           -- for simple values
@@ -150,7 +153,11 @@ frs_arrayDefn arrTy =
   mkFunction = wrapFunction ("shared const " <> arrayTypeAs <> "@") (frs_arrayFnName arrTy) [ JField "str" JString ]
 
 setChunkAndRemainderForTy :: JType -> Lines
-setChunkAndRemainderForTy t = if isJTypeStrWrapped t then setChunkRemUnwrap else setChunkRemSimple
+setChunkAndRemainderForTy t =
+  wrapTryCatch (if isJTypeStrWrapped t then setChunkRemUnwrap else setChunkRemSimple)
+    [ "warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\\nException info: ' + getExceptionInfo());"
+    , "throw(getExceptionInfo());"
+    ]
 
 setChunkRemSimple :: Lines
 setChunkRemSimple =
@@ -164,8 +171,8 @@ setChunkRemUnwrap =
   , "tmp = remainder.SubStr(1).Split(':', 2);"
   , "chunkLen = Text::ParseInt(tmp[0]);"
   , "chunk = tmp[1].SubStr(0, chunkLen);"
-  , "FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');"
   , "remainder = tmp[1].SubStr(chunkLen + 2);"
+  , "FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');"
   ]
 
 allArrayFrsFuncs :: JFields -> CodeBlocks

@@ -143,7 +143,7 @@ namespace Test_Challenge {
     Test_CheckProps_Challenge(349405, "啞婓菨뻟௎餵긽榈", "溊䷡꬈फ़Ը㌲狊⵪诨⥇", 684845, 571451, 914746);
     Test_CheckProps_Challenge(375598, "밃괦㮜䔐炒悄௶揸ꥒ叵", "贙殺뱆ᩖ彐", 490417, 744440, 498609);
     Test_CheckProps_Challenge(237947, "", "⿳훿☸꤫睊", 605257, 915086, 489560);
-    Test_CheckProps_Challenge(284881, "㗻壺旻", "ದ鴆䟎他�", 412232, 772864, 760754);
+    Test_CheckProps_Challenge(284881, "㗻壺旻", "ದ鴆䟎他�", 412232, 772864, 760754);
     Test_CheckProps_Challenge(963563, "�䅴", "阊额禱鍾齪床὏勐", 437881, 957451, 439545);
     Test_CheckProps_Challenge(819074, "헽⇐춻嶻㐙㷀뵌慔", "⃙㾥괶", 516520, 961253, 905806);
     Test_CheckProps_Challenge(387647, "쩢姽ἆ奨", "ꌗ枚逳剭ﺏ柙", 282186, 400614, 951189);
@@ -211,7 +211,7 @@ namespace Test_Challenge {
     OpEqSimple_Check(38712, "綒搅聍Ꟑᨎﳌ祊⠤❮뙡", "쎙竗硨ɯ䃟偶", 406292, 109178, 333940);
     OpEqSimple_Check(20634, "ᬣ뾩ᨶ␫祡扁拚ꑧ", "䮕", 24041, 47111, 957356);
     OpEqSimple_Check(796492, "⏏᧎䫁詵䯻", "뀁م", 55892, 967496, 74974);
-    OpEqSimple_Check(504468, "✜ྦྷ", "낤햳釽⛧옩炰၃鉝", 471983, 508026, 929051);
+    OpEqSimple_Check(504468, "✜ྦྷ", "낤햳釽⛧옩炰၃鉝", 471983, 508026, 929051);
   }
   
   bool unitTestResults_Challenge_OpEq = runAsync(Tests_RegisterAll_Challenge_OpEq);

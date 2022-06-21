@@ -112,7 +112,11 @@ shared class MatchResults {
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
   
   private const string TRS_Array_MatchResult(const array<MatchResult@> &in arr) {
@@ -129,34 +133,54 @@ namespace _MatchResults {
   shared MatchResults@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     /* Parse field: roundPosition of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint roundPosition = Text::ParseInt(chunk);
     /* Parse field: matchLiveId of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string matchLiveId = chunk;
     /* Parse field: scoreUnit of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string scoreUnit = chunk;
     /* Parse field: results of type: array<MatchResult@> */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     array<MatchResult@> results = FRS_Array_MatchResult(chunk);
     return MatchResults(roundPosition, matchLiveId, scoreUnit, results);
   }
@@ -165,14 +189,19 @@ namespace _MatchResults {
     array<MatchResult@> ret = array<MatchResult@>(0);
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     while (remainder.Length > 0) {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       ret.InsertLast(_MatchResult::FromRowString(chunk));
     }
     return ret;

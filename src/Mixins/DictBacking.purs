@@ -2,10 +2,10 @@ module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
 import AsTypes (castOrWrap, jTyIsPrim, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
-import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapWhileLoop)
+import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), fromMaybe)
 import Data.String (joinWith)
 import Data.String as S
 import Gen.Class (AsClass, jsonObjToClass)
@@ -63,9 +63,11 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     $ [ constructorFn.decl
       , keyToStrFn.decl
       , getFn.decl
-      , getWDefaultFn.decl
+      , getManyFn.decl
+      , (getWDefaultFn <#> \f -> f.decl) # fromMaybe []
       , setFn.decl
       , existsFn.decl
+      , countExistsFn.decl
       , getKeysFn.decl
       , getItemFn.decl
       , getItemsFn.decl
@@ -104,13 +106,28 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     wrapConstFunction valAsRetType "Get" [ keyF ]
       [ "return " <> castOrWrap valType (d <> "[K(key)]") <> ";" ]
 
-  getWDefaultFn = wrapFunction valAsRetType "GetOrDefault" [ keyF ] innerLs
-    where
-    innerLs = case defaultDictVal of
-      Nothing -> [ "throw('GetOrDefault called on a dict that has no default set.');", "return Get('');" ]
-      Just dv ->
-        wrapIf "!Exists(key)" [ "Set(key, " <> dv <> ");" ]
-          <> [ "return Get(key);" ]
+  getManyFn =
+    wrapConstFunction (jTyToFuncRes $ JArray valType) "GetMany" [ JField "keys" (JArray keyType) ]
+      $ [ jTyToAsTy (JArray valType) <> " ret = {};" ]
+      <> mapArray_For { arr: "keys", ix: "i", el: "key" }
+          [ "ret.InsertLast(Get(key));" ]
+      <> [ "return ret;" ]
+
+  getWDefaultFn = do
+    dv <- defaultDictVal
+    pure
+      $ wrapFunction valAsRetType "GetOrDefault" [ keyF ]
+      $ wrapIf "!Exists(key)" [ "Set(key, " <> dv <> ");" ]
+      <> [ "return Get(key);" ]
+
+  existsFn = proxyFnKeyRet "bool" "Exists"
+
+  countExistsFn =
+    wrapFunction "uint" "CountExists" [ JField "keys" (JArray keyType) ]
+      $ [ "uint ret = 0;" ]
+      <> mapArray_For { arr: "keys", ix: "i", el: "key" }
+          [ "if (Exists(key)) ret++;" ]
+      <> [ "return ret;" ]
 
   {-
   -- doens't seem to work when valAsRetType is to complex class types like Challenge.
@@ -146,8 +163,11 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   writeOnSetFn =
     wrapFunction "private void" "WriteOnSet" [ keyF, valF ]
       [ kvPair <> "@ p = " <> mkKvPair "key" "value" <> ";"
+      , "string s = p.ToRowString();"
       , "IO::File f(_logPath, IO::FileMode::Append);"
-      , "f.WriteLine(p.ToRowString());"
+      , "f.Write(Text::Format('%08d', s.Length));"
+      , "f.WriteLine(s);"
+      -- , "print('write line of length: ' + uint(s.Length));"
       , "f.Close();"
       ]
 
@@ -162,19 +182,30 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     wrapFunction "private void" "LoadWriteLogFromDisk" []
       $ wrapIfElse "IO::FileExists(_logPath)"
           ( [ "uint start = Time::Now;"
-            , "string line;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
+            , "MemoryBuffer fb = f.Read(f.Size());"
+            , "f.Close();"
+            , "uint lineNum = 0;"
+            , "string line;"
+            -- , "string allLines = f.ReadToEnd();"
+            -- , "auto lines = allLines.Split('\\n');"
             ]
-              <> wrapWhileLoop "!f.EOF()"
-                  ( [ "line = f.ReadLine();" ]
-                      <> wrapIf "line.Length > 0"
-                          [ "auto kv = " <> kvPairNs <> "::FromRowString(line);"
-                          -- , "_d[kv.key] = kv.val;" -- set directly to avoid triggering logging action from Set function.
-                          , setV (JField (d <> "[kv.key]") valType) "kv.val"
-                          ]
-                  )
-              <> [ "f.Close();"
-                , "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
+              <> ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
+                    "!fb.AtEnd()"
+                    $ [ "uint len = Text::ParseUInt(fb.ReadString(8));"
+                      -- , "print('reading line of length: ' + len);"
+                      , "line = fb.ReadString(len);"
+                      , "lineNum++;"
+                      , "fb.Seek(1, 1);"
+                      ]
+                    <> wrapTryCatch
+                        [ "auto kv = " <> kvPairNs <> "::FromRowString(line);"
+                        , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
+                        ]
+                        [ "throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\\nException info: ' + getExceptionInfo());" ]
+                )
+              <> [ "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
+                , "f.Close();"
                 ]
           )
           [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
@@ -185,8 +216,6 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   awaitInit =
     wrapFunction "void" "AwaitInitialized" []
       $ wrapWhileLoop "!_initialized" [ "yield();" ]
-
-  existsFn = proxyFnKeyRet "bool" "Exists"
 
   delFn = proxyFnKeyRet "bool" "Delete"
 

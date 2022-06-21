@@ -139,7 +139,7 @@ namespace Test_TrackOfTheDayEntry {
     Test_CheckProps_TrackOfTheDayEntry(449432, "긽榈俍埯퐥ঠ἗넾ᅳ", 710061, 517511, "फ़Ը㌲狊⵪诨⥇Ш啞", 594259, 142735);
     Test_CheckProps_TrackOfTheDayEntry(684845, "馸", 914746, 375598, "밃괦㮜䔐炒悄௶揸ꥒ叵", 802517, 603343);
     Test_CheckProps_TrackOfTheDayEntry(642519, "⏾齫ﾌ䳙䇶Ν曶됚简", 498609, 237947, "", 541083, 185861);
-    Test_CheckProps_TrackOfTheDayEntry(605257, "铟Ꙓ鐻ų", 284881, 92853, "ದ鴆䟎他�", 412232, 772864);
+    Test_CheckProps_TrackOfTheDayEntry(605257, "铟Ꙓ鐻ų", 284881, 92853, "ದ鴆䟎他�", 412232, 772864);
     Test_CheckProps_TrackOfTheDayEntry(760754, "齪床὏勐Ⰶ�䅴抭", 80069, 437881, "嶻㐙㷀뵌慔駐윳陑镉", 237337, 427811);
     Test_CheckProps_TrackOfTheDayEntry(56836, "⛳唏⃙㾥", 905806, 387647, "쩢姽ἆ奨", 218247, 380243);
     Test_CheckProps_TrackOfTheDayEntry(958478, "솱挂ꁪ쥫�쭑뒱㵉", 549837, 982839, "⶯弸", 751600, 82673);
@@ -208,7 +208,7 @@ namespace Test_TrackOfTheDayEntry {
     OpEqSimple_Check(15682, "鍮幘滆旌Ⳮ禾ﾫ䅖", 38712, 95772, "ﳌ祊⠤❮", 598605, 571849);
     OpEqSimple_Check(480850, "ɯ䃟偶텒", 498402, 637479, "�암䢢갎穯쎙", 20634, 443493);
     OpEqSimple_Check(24041, "", 957356, 796492, "⏏᧎䫁詵䯻", 704430, 55892);
-    OpEqSimple_Check(967496, "炰၃鉝✜ྦྷ擊㣙㾯", 558349, 380025, "", 544275, 930556);
+    OpEqSimple_Check(967496, "炰၃鉝✜ྦྷ擊㣙㾯", 558349, 380025, "", 544275, 930556);
     OpEqSimple_Check(471983, "沁", 287102, 274962, "休ￏ", 354149, 951957);
     OpEqSimple_Check(385338, "﷤枲ꩀ옲죥魍镠", 28598, 546073, "꼡姐䊂⤭�Ჺⅶ엱ǫ", 40492, 262430);
     OpEqSimple_Check(839490, "ꖙ∴簾", 407040, 674434, "摓릺칻", 210923, 189775);

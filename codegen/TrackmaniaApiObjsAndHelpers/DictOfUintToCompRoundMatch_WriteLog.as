@@ -1,4 +1,4 @@
-shared class DictOfTrackOfTheDayEntry_WriteLog {
+shared class DictOfUintToCompRoundMatch_WriteLog {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
@@ -7,21 +7,21 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   private bool _initialized = false;
   
   /* Methods // Mixin: Dict Backing */
-  DictOfTrackOfTheDayEntry_WriteLog(const string &in logDir, const string &in logFile) {
+  DictOfUintToCompRoundMatch_WriteLog(const string &in logDir, const string &in logFile) {
     @_d = dictionary();
     InitLog(logDir, logFile);
   }
   
-  private const string K(const string &in key) const {
-    return key;
+  private const string K(uint key) const {
+    return '' + key;
   }
   
-  TrackOfTheDayEntry@ Get(const string &in key) const {
-    return cast<TrackOfTheDayEntry@>(_d[K(key)]);
+  CompRoundMatch@ Get(uint key) const {
+    return cast<CompRoundMatch@>(_d[K(key)]);
   }
   
-  const TrackOfTheDayEntry@[]@ GetMany(const string[] &in keys) const {
-    array<TrackOfTheDayEntry@> ret = {};
+  const CompRoundMatch@[]@ GetMany(const uint[] &in keys) const {
+    array<CompRoundMatch@> ret = {};
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
       ret.InsertLast(Get(key));
@@ -30,16 +30,16 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   }
   
   
-  void Set(const string &in key, TrackOfTheDayEntry@ value) {
+  void Set(uint key, CompRoundMatch@ value) {
     @_d[K(key)] = value;
     WriteOnSet(key, value);
   }
   
-  bool Exists(const string &in key) {
+  bool Exists(uint key) {
     return _d.Exists(K(key));
   }
   
-  uint CountExists(const string[] &in keys) {
+  uint CountExists(const uint[] &in keys) {
     uint ret = 0;
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
@@ -48,17 +48,23 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
-  array<string>@ GetKeys() const {
-    return _d.GetKeys();
+  const uint[]@ GetKeys() const {
+    array<uint> ret = {};
+    auto _keys = _d.GetKeys();
+    for (uint i = 0; i < _keys.Length; i++) {
+      auto _k = _keys[i];
+      ret.InsertLast(Text::ParseInt(_k));
+    }
+    return ret;
   }
   
-  _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ GetItem(const string &in key) const {
-    return _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, Get(key));
+  _DictOfUintToCompRoundMatch_WriteLog::KvPair@ GetItem(uint key) const {
+    return _DictOfUintToCompRoundMatch_WriteLog::KvPair(key, Get(key));
   }
   
-  array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>@ GetItems() const {
-    array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@> ret = array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>(GetSize());
-    array<string> keys = GetKeys();
+  array<_DictOfUintToCompRoundMatch_WriteLog::KvPair@>@ GetItems() const {
+    array<_DictOfUintToCompRoundMatch_WriteLog::KvPair@> ret = array<_DictOfUintToCompRoundMatch_WriteLog::KvPair@>(GetSize());
+    array<uint> keys = GetKeys();
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
       @ret[i] = GetItem(key);
@@ -66,7 +72,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
-  TrackOfTheDayEntry@ opIndex(const string &in key) {
+  CompRoundMatch@ opIndex(uint key) {
     return Get(key);
   }
   
@@ -74,7 +80,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return _d.GetSize();
   }
   
-  bool Delete(const string &in key) {
+  bool Delete(uint key) {
     return _d.Delete(K(key));
   }
   
@@ -86,7 +92,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   /* Dict Optional: Write Log = True */
   private void InitLog(const string &in logDir, const string &in logFile) {
     _logPath = logDir + '/' + logFile;
-    trace('DictOfTrackOfTheDayEntry_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
+    trace('DictOfUintToCompRoundMatch_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
     if (logDir.Length == 0) {
       throw('Invalid path: ' + _logPath);
     }
@@ -110,13 +116,13 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
         lineNum++;
         fb.Seek(1, 1);
         try {
-          auto kv = _DictOfTrackOfTheDayEntry_WriteLog::_KvPair::FromRowString(line);
+          auto kv = _DictOfUintToCompRoundMatch_WriteLog::_KvPair::FromRowString(line);
           @_d[K(kv.key)] = kv.val;
         } catch {
           throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\nException info: ' + getExceptionInfo());
         }
       }
-      trace('\\$a4fDictOfTrackOfTheDayEntry_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+      trace('\\$a4fDictOfUintToCompRoundMatch_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
       f.Close();
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
@@ -135,8 +141,8 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     }
   }
   
-  private void WriteOnSet(const string &in key, TrackOfTheDayEntry@ value) {
-    _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ p = _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, value);
+  private void WriteOnSet(uint key, CompRoundMatch@ value) {
+    _DictOfUintToCompRoundMatch_WriteLog::KvPair@ p = _DictOfUintToCompRoundMatch_WriteLog::KvPair(key, value);
     string s = p.ToRowString();
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(Text::Format('%08d', s.Length));
@@ -151,32 +157,32 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   }
 }
 
-namespace _DictOfTrackOfTheDayEntry_WriteLog {
+namespace _DictOfUintToCompRoundMatch_WriteLog {
   /* Namespace // Mixin: Dict Backing */
   shared class KvPair {
     /* Properties // Mixin: Default Properties */
-    private string _key;
-    private TrackOfTheDayEntry@ _val;
+    private uint _key;
+    private CompRoundMatch@ _val;
     
     /* Methods // Mixin: Default Constructor */
-    KvPair(const string &in key, TrackOfTheDayEntry@ val) {
+    KvPair(uint key, CompRoundMatch@ val) {
       this._key = key;
       @this._val = val;
     }
     
     /* Methods // Mixin: Getters */
-    const string get_key() const {
+    uint get_key() const {
       return this._key;
     }
     
-    TrackOfTheDayEntry@ get_val() const {
+    CompRoundMatch@ get_val() const {
       return this._val;
     }
     
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + key, 'val=' + val.ToString()}, ', ')
+        + string::Join({'key=' + '' + key, 'val=' + val.ToString()}, ', ')
         + ')';
     }
     
@@ -194,7 +200,7 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
     /* Methods // Mixin: Row Serialization */
     const string ToRowString() {
       string ret = "";
-      ret += TRS_WrapString(_key) + ",";
+      ret += '' + _key + ",";
       ret += TRS_WrapString(_val.ToRowString()) + ",";
       return ret;
     }
@@ -215,7 +221,16 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       string chunk = '', remainder = str;
       array<string> tmp = array<string>(2);
       uint chunkLen = 0;
-      /* Parse field: key of type: string */
+      /* Parse field: key of type: uint */
+      try {
+        tmp = remainder.Split(',', 2);
+        chunk = tmp[0]; remainder = tmp[1];
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
+      uint key = Text::ParseInt(chunk);
+      /* Parse field: val of type: CompRoundMatch@ */
       try {
         FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
         tmp = remainder.SubStr(1).Split(':', 2);
@@ -227,20 +242,7 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
         warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
         throw(getExceptionInfo());
       }
-      string key = chunk;
-      /* Parse field: val of type: TrackOfTheDayEntry@ */
-      try {
-        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-        tmp = remainder.SubStr(1).Split(':', 2);
-        chunkLen = Text::ParseInt(tmp[0]);
-        chunk = tmp[1].SubStr(0, chunkLen);
-        remainder = tmp[1].SubStr(chunkLen + 2);
-        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      } catch {
-        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-        throw(getExceptionInfo());
-      }
-      TrackOfTheDayEntry@ val = _TrackOfTheDayEntry::FromRowString(chunk);
+      CompRoundMatch@ val = _CompRoundMatch::FromRowString(chunk);
       return KvPair(key, val);
     }
     

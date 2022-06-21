@@ -112,7 +112,11 @@ shared class TotdMonth {
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
   
   private const string TRS_Array_TrackOfTheDayEntry(const array<TrackOfTheDayEntry@> &in arr) {
@@ -129,26 +133,46 @@ namespace _TotdMonth {
   shared TotdMonth@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     /* Parse field: year of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint year = Text::ParseInt(chunk);
     /* Parse field: month of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint month = Text::ParseInt(chunk);
     /* Parse field: lastDay of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint lastDay = Text::ParseInt(chunk);
     /* Parse field: days of type: array<TrackOfTheDayEntry@> */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     array<TrackOfTheDayEntry@> days = FRS_Array_TrackOfTheDayEntry(chunk);
     return TotdMonth(year, month, lastDay, days);
   }
@@ -157,14 +181,19 @@ namespace _TotdMonth {
     array<TrackOfTheDayEntry@> ret = array<TrackOfTheDayEntry@>(0);
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     while (remainder.Length > 0) {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       ret.InsertLast(_TrackOfTheDayEntry::FromRowString(chunk));
     }
     return ret;

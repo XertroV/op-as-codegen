@@ -4,5 +4,5 @@ author = 'op-as-codegen'
 
 [script]
 defines = [ 'RELEASE' ]
-shared_exports = [ 'DictOfString.as', 'Challenge.as', 'Challenges.as', 'DictOfInt.as', 'DictOfArrayOfInt.as', 'DictOfChallenge.as', 'DictOfChallenge_WriteLog.as', 'Competition.as', 'Competitions.as', 'DictOfCompetition_WriteLog.as', 'CompRound.as', 'CompRounds.as', 'DictOfCompRound_WriteLog.as', 'CompRoundMatch.as', 'CompRoundMatches.as', 'DictOfCompRoundMatch_WriteLog.as', 'MatchResult.as', 'MatchResults.as', 'TrackOfTheDayEntry.as', 'TotdMonth.as', 'TotdResp.as', 'DictOfTrackOfTheDayEntry_WriteLog.as', 'TmMap.as', 'DictOfTmMap_WriteLog.as', 'MaybeOfUint.as', 'MaybeOfString.as' ]
+shared_exports = [ 'DictOfString.as', 'Challenge.as', 'Challenges.as', 'DictOfInt.as', 'DictOfIntToArrayOfInt_WDefault_WriteLog.as', 'DictOfUintToArrayOfUint_WDefault_WriteLog.as', 'DictOfChallenge.as', 'DictOfChallenge_WriteLog.as', 'Competition.as', 'Competitions.as', 'DictOfCompetition_WriteLog.as', 'CompRound.as', 'CompRounds.as', 'DictOfUintToCompRound_WriteLog.as', 'CompRoundMatch.as', 'CompRoundMatches.as', 'DictOfUintToCompRoundMatch_WriteLog.as', 'MatchResult.as', 'MatchResults.as', 'DictOfUintToMatchResults_WriteLog.as', 'TrackOfTheDayEntry.as', 'TotdMonth.as', 'TotdResp.as', 'DictOfTrackOfTheDayEntry_WriteLog.as', 'TmMap.as', 'DictOfTmMap_WriteLog.as', 'MaybeOfUint.as', 'MaybeOfString.as' ]
 # No deps

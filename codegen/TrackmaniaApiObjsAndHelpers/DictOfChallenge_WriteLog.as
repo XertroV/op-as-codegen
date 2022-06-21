@@ -20,10 +20,15 @@ shared class DictOfChallenge_WriteLog {
     return cast<Challenge@>(_d[K(key)]);
   }
   
-  Challenge@ GetOrDefault(const string &in key) {
-    throw('GetOrDefault called on a dict that has no default set.');
-    return Get('');
+  const Challenge@[]@ GetMany(const string[] &in keys) const {
+    array<Challenge@> ret = {};
+    for (uint i = 0; i < keys.Length; i++) {
+      auto key = keys[i];
+      ret.InsertLast(Get(key));
+    }
+    return ret;
   }
+  
   
   void Set(const string &in key, Challenge@ value) {
     @_d[K(key)] = value;
@@ -32,6 +37,15 @@ shared class DictOfChallenge_WriteLog {
   
   bool Exists(const string &in key) {
     return _d.Exists(K(key));
+  }
+  
+  uint CountExists(const string[] &in keys) {
+    uint ret = 0;
+    for (uint i = 0; i < keys.Length; i++) {
+      auto key = keys[i];
+      if (Exists(key)) ret++;
+    }
+    return ret;
   }
   
   array<string>@ GetKeys() const {
@@ -85,17 +99,25 @@ shared class DictOfChallenge_WriteLog {
   private void LoadWriteLogFromDisk() {
     if (IO::FileExists(_logPath)) {
       uint start = Time::Now;
-      string line;
       IO::File f(_logPath, IO::FileMode::Read);
-      while (!f.EOF()) {
-        line = f.ReadLine();
-        if (line.Length > 0) {
+      MemoryBuffer fb = f.Read(f.Size());
+      f.Close();
+      uint lineNum = 0;
+      string line;
+      while (!fb.AtEnd()) {
+        uint len = Text::ParseUInt(fb.ReadString(8));
+        line = fb.ReadString(len);
+        lineNum++;
+        fb.Seek(1, 1);
+        try {
           auto kv = _DictOfChallenge_WriteLog::_KvPair::FromRowString(line);
-          @_d[kv.key] = kv.val;
+          @_d[K(kv.key)] = kv.val;
+        } catch {
+          throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\nException info: ' + getExceptionInfo());
         }
       }
-      f.Close();
       trace('\\$a4fDictOfChallenge_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+      f.Close();
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
       f.Close();
@@ -115,8 +137,10 @@ shared class DictOfChallenge_WriteLog {
   
   private void WriteOnSet(const string &in key, Challenge@ value) {
     _DictOfChallenge_WriteLog::KvPair@ p = _DictOfChallenge_WriteLog::KvPair(key, value);
+    string s = p.ToRowString();
     IO::File f(_logPath, IO::FileMode::Append);
-    f.WriteLine(p.ToRowString());
+    f.Write(Text::Format('%08d', s.Length));
+    f.WriteLine(s);
     f.Close();
   }
   
@@ -177,7 +201,11 @@ namespace _DictOfChallenge_WriteLog {
     
     private const string TRS_WrapString(const string &in s) {
       string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-      return '(' + _s.Length + ':' + _s + ')';
+      string ret = '(' + _s.Length + ':' + _s + ')';
+      if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+        throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+      }
+      return ret;
     }
   }
   
@@ -186,22 +214,32 @@ namespace _DictOfChallenge_WriteLog {
     shared KvPair@ FromRowString(const string &in str) {
       string chunk = '', remainder = str;
       array<string> tmp = array<string>(2);
-      uint chunkLen;
+      uint chunkLen = 0;
       /* Parse field: key of type: string */
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       string key = chunk;
       /* Parse field: val of type: Challenge@ */
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       Challenge@ val = _Challenge::FromRowString(chunk);
       return KvPair(key, val);
     }

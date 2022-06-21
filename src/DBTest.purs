@@ -9,7 +9,7 @@ import Mixins
 import Mixins.Types
 import Prelude
 import Types
-import Data.Maybe (Maybe(..))
+import Data.Maybe (Maybe(..), isJust)
 import Mixins.ArrayProxy (mxArrayProxy)
 import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
@@ -60,7 +60,9 @@ dictGen opts@{ valType } = { cls, obj }
   obj = object ("DictOf" <> objNameSfx) # field "d" (JDict valType)
 
   objNameSfx =
-    jTyPascalCase valType
+    (if opts.keyType /= JString then jTyPascalCase opts.keyType <> "To" else "")
+      <> jTyPascalCase valType
+      <> (if isJust opts.defaultDictVal then "_WDefault" else "")
       <> (if opts.writeLog then "_WriteLog" else "")
 
   cls =
@@ -81,7 +83,10 @@ dWlChallenge :: { cls :: AsClass, obj :: JsonObj }
 dWlChallenge = dictGen $ (mkDO $ JObject codecChallenge) { writeLog = true }
 
 dictIndex :: ClsWithObj
-dictIndex = dictGen $ (mkDO $ JArray JInt) { defaultDictVal = Just "{}", keyType = JInt }
+dictIndex = dictGen $ (mkDO $ JArray JInt) { defaultDictVal = Just "{}", keyType = JInt, writeLog = true }
+
+dictUintIndex :: ClsWithObj
+dictUintIndex = dictGen $ (mkDO $ JArray JUint) { defaultDictVal = Just "{}", keyType = JUint, writeLog = true }
 
 -- indexDict :: ClsWithObj
 -- indexDict = dictGen $ mkDO (JArray JUint) { writeLog = true, isIndex = true }
@@ -131,14 +136,14 @@ compRound = { cls, obj }
       # field "name" JString
       # field "status" JString
       # field "leaderboardComputeType" JString
-      # field "teamLeaderboardComputeType" JString
+      # field "teamLeaderboardComputeType" (JMaybe JString)
       # field "matchScoreDirection" JString
 
 compRounds :: ClsWithObj
 compRounds = mkArrayProxy { n: "CompRounds", f: "rounds", o: compRound }
 
 compRoundsDb :: ClsWithObj
-compRoundsDb = dictGen $ (mkDO $ JObject compRound.obj) { writeLog = true }
+compRoundsDb = dictGen $ (mkDO $ JObject compRound.obj) { keyType = JUint, writeLog = true }
 
 compRoundMatch :: ClsWithObj
 compRoundMatch = { cls, obj }
@@ -158,7 +163,7 @@ compRoundMatches :: ClsWithObj
 compRoundMatches = mkArrayProxy { n: "CompRoundMatches", f: "matches", o: compRoundMatch }
 
 compRoundMatchesDb :: ClsWithObj
-compRoundMatchesDb = dictGen $ (mkDO $ JObject compRoundMatch.obj) { writeLog = true }
+compRoundMatchesDb = dictGen $ (mkDO $ JObject compRoundMatch.obj) { keyType = JUint, writeLog = true }
 
 matchResult :: ClsWithObj
 matchResult = { cls, obj }
@@ -170,6 +175,7 @@ matchResult = { cls, obj }
       # field "rank" (JMaybe JUint)
       # field "score" (JMaybe JUint)
       # field "participant" JString
+      # field "zone" JString
 
 matchResults :: ClsWithObj
 matchResults = { cls, obj }
@@ -182,6 +188,9 @@ matchResults = { cls, obj }
       # field "matchLiveId" JString
       # field "scoreUnit" JString
       # field "results" (JArray (JObject matchResult.obj))
+
+matchResultsDb :: ClsWithObj
+matchResultsDb = dictGen $ (mkDO $ JObject matchResults.obj) { keyType = JUint, writeLog = true }
 
 totdEntry :: ClsWithObj
 totdEntry = { cls, obj }
@@ -265,6 +274,7 @@ everything =
   , challenges.cls
   , dictInt.cls
   , dictIndex.cls
+  , dictUintIndex.cls
   , dictChallenge.cls
   , dWlChallenge.cls
   -- , challengeDb2.cls
@@ -280,6 +290,7 @@ everything =
   , compRoundMatchesDb.cls
   , matchResult.cls
   , matchResults.cls
+  , matchResultsDb.cls
   , totdEntry.cls
   , totdMonth.cls
   , totdResp.cls

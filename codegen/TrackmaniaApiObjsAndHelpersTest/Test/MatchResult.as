@@ -37,55 +37,55 @@ namespace Test_MatchResult {
     RegisterUnitTest('UnitTest_ToJsonFromJson_MatchResult', UnitTest_ToJsonFromJson_MatchResult);
   }
   
-  bool Test_ToJsonFromJson_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
-    MatchResult@ tmp = MatchResult(rank, score, participant);
+  bool Test_ToJsonFromJson_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant, const string &in zone) {
+    MatchResult@ tmp = MatchResult(rank, score, participant, zone);
     assert(tmp == MatchResult(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
     return true;
   }
   
   void UnitTest_ToJsonFromJson_MatchResult() {
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "ꠂ쮰");
-    Test_ToJsonFromJson_Check(MaybeOfUint(712811), MaybeOfUint(126408), "罐");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(191439), "ᱶ");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(883496), "澯�჌江䚏꼸");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(181454), "汯粌鉅");
-    Test_ToJsonFromJson_Check(MaybeOfUint(695394), MaybeOfUint(), "䢕颒饣ퟶ䳟框雱");
-    Test_ToJsonFromJson_Check(MaybeOfUint(84558), MaybeOfUint(), "ᲊ̇॑䎞ꦻ땬黿救");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "㕿ｓ褨");
-    Test_ToJsonFromJson_Check(MaybeOfUint(573604), MaybeOfUint(880999), "遐鬱峝뻴");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(414406), "z懇�客㒞");
-    Test_ToJsonFromJson_Check(MaybeOfUint(936174), MaybeOfUint(857256), "ࣅ䞚㌴⦱扬껰朣");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "旰蓡柿");
-    Test_ToJsonFromJson_Check(MaybeOfUint(914935), MaybeOfUint(), "彺য়");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(748773), "炤䩦ᛥ婫囼▏");
-    Test_ToJsonFromJson_Check(MaybeOfUint(797698), MaybeOfUint(125510), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(28857), MaybeOfUint(700350), "ᵒ㪗羘렷뵫");
-    Test_ToJsonFromJson_Check(MaybeOfUint(107276), MaybeOfUint(158796), "鞙栥唃徭ྈ佛ͽ");
-    Test_ToJsonFromJson_Check(MaybeOfUint(947632), MaybeOfUint(), "鹌ﲒ咧놪☼앇");
-    Test_ToJsonFromJson_Check(MaybeOfUint(918181), MaybeOfUint(493396), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(115425), MaybeOfUint(307977), "銗䔜῏");
-    Test_ToJsonFromJson_Check(MaybeOfUint(694964), MaybeOfUint(275663), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(203400), "褢鶳ᄶ窐踎윉懜");
-    Test_ToJsonFromJson_Check(MaybeOfUint(38750), MaybeOfUint(419346), "㳇୭");
-    Test_ToJsonFromJson_Check(MaybeOfUint(45802), MaybeOfUint(304545), "�ꧾ큽ⷾ뮁d更");
-    Test_ToJsonFromJson_Check(MaybeOfUint(547273), MaybeOfUint(757477), "ᣙ욗");
-    Test_ToJsonFromJson_Check(MaybeOfUint(108410), MaybeOfUint(61424), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(123025), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(6572), MaybeOfUint(609511), "⼸៯ꭍڑ쀈ⵗ㏬蠑");
-    Test_ToJsonFromJson_Check(MaybeOfUint(305575), MaybeOfUint(48539), "䴾퍂蘇賻ᜳ벛");
-    Test_ToJsonFromJson_Check(MaybeOfUint(468916), MaybeOfUint(959377), "ꒋ符䭭澀");
-    Test_ToJsonFromJson_Check(MaybeOfUint(40651), MaybeOfUint(), "䡼淣럸튦蘥");
-    Test_ToJsonFromJson_Check(MaybeOfUint(658855), MaybeOfUint(936231), "ᨘ퉁濑੉Ⱬꖗ႘");
-    Test_ToJsonFromJson_Check(MaybeOfUint(821576), MaybeOfUint(554346), "엽뷗뢑");
-    Test_ToJsonFromJson_Check(MaybeOfUint(47391), MaybeOfUint(227340), "");
-    Test_ToJsonFromJson_Check(MaybeOfUint(160751), MaybeOfUint(881761), "㢝蔹");
-    Test_ToJsonFromJson_Check(MaybeOfUint(560953), MaybeOfUint(781291), "≁隵ꄻ�ঽ㎒�郁❨鲶");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(23152), "再섚ᘭ☖");
-    Test_ToJsonFromJson_Check(MaybeOfUint(236918), MaybeOfUint(74150), "ᬁ籕ￌ龎쬩ꨝ");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(235631), "豣閑㏲ᔲ逥좣㉒");
-    Test_ToJsonFromJson_Check(MaybeOfUint(212735), MaybeOfUint(811960), "꺒Ｅ澮");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(610207), "⧼馣谱蘄딙授");
-    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "ꠂ쮰", "ᮔ﵇獣");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(126408), "罐", "");
+    Test_ToJsonFromJson_Check(MaybeOfUint(286985), MaybeOfUint(191439), "ᱶ", "䚏꼸䃧쁐");
+    Test_ToJsonFromJson_Check(MaybeOfUint(884255), MaybeOfUint(116343), "�", "汯粌鉅");
+    Test_ToJsonFromJson_Check(MaybeOfUint(695394), MaybeOfUint(), "䢕颒饣ퟶ䳟框雱", "救솳棈");
+    Test_ToJsonFromJson_Check(MaybeOfUint(681748), MaybeOfUint(331925), "ᲊ̇॑", "堉");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(606311), "摂ꖶ鍁紙", "遐鬱峝뻴");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(414406), "z懇�客㒞", "윷窋");
+    Test_ToJsonFromJson_Check(MaybeOfUint(391029), MaybeOfUint(67966), "䞚㌴⦱扬", "旰蓡柿ஷ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(914935), MaybeOfUint(), "彺য়", "▏᯿쨄");
+    Test_ToJsonFromJson_Check(MaybeOfUint(228090), MaybeOfUint(8357), "䦋쁗缧ⱊﱻ狀ꆟ", "");
+    Test_ToJsonFromJson_Check(MaybeOfUint(77932), MaybeOfUint(291599), "ͽ텫", "唃徭ྈ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(507044), MaybeOfUint(562436), "엣ᩁ㟅ഽᒽ罆鹌ﲒ咧놪", "⻖蚇ங⨗萃쎉뮏");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(), "坯켫ꗥ쟭銗", "懜翊신꨻በ↥鿊");
+    Test_ToJsonFromJson_Check(MaybeOfUint(361950), MaybeOfUint(555417), "躀퓹ꔴ㳇୭鹥灦㣋충왦", "ꧾ큽ⷾ뮁d更든Η");
+    Test_ToJsonFromJson_Check(MaybeOfUint(239551), MaybeOfUint(442122), "鬋", "ᣙ욗");
+    Test_ToJsonFromJson_Check(MaybeOfUint(108410), MaybeOfUint(61424), "", "뗃㷦⏓箝썷");
+    Test_ToJsonFromJson_Check(MaybeOfUint(6572), MaybeOfUint(609511), "⼸៯ꭍڑ쀈ⵗ㏬蠑", "벛ﳾ啃둸");
+    Test_ToJsonFromJson_Check(MaybeOfUint(342727), MaybeOfUint(625858), "饤浏", "䭭澀⽹ᱶ爅螝⬣홭ᢻ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(986174), MaybeOfUint(489123), "䡼淣럸튦蘥", "Ⱬꖗ႘ᖦﭭ见");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(468463), "쑋쎧ᨘ", "裳엽뷗뢑㖄瑁캳");
+    Test_ToJsonFromJson_Check(MaybeOfUint(3110), MaybeOfUint(227340), "", "쐤얪㵁㢝蔹ｽ≨⢮舊");
+    Test_ToJsonFromJson_Check(MaybeOfUint(188934), MaybeOfUint(235494), "욉쒜≁隵", "☖甩");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(496393), "轓᧦㗭", "ᬁ籕ￌ龎쬩ꨝ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(235631), "豣閑㏲ᔲ逥좣㉒", "");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(811960), "꺒Ｅ澮", "馣谱蘄딙授↳웡꫎");
+    Test_ToJsonFromJson_Check(MaybeOfUint(604406), MaybeOfUint(743344), "鈧䴨餶갯", "ᯕᔺ痯겶");
+    Test_ToJsonFromJson_Check(MaybeOfUint(605906), MaybeOfUint(285613), "漻拹ⓨ", "恮뺪");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(526475), "䜋歹☰�ꢶ嗲聅䄳", "䐪䈞");
+    Test_ToJsonFromJson_Check(MaybeOfUint(456094), MaybeOfUint(771523), "몖괩", "来");
+    Test_ToJsonFromJson_Check(MaybeOfUint(615200), MaybeOfUint(256248), "ཎ؏쀯㖩ꅽ딚", "絠촊枤");
+    Test_ToJsonFromJson_Check(MaybeOfUint(775867), MaybeOfUint(674608), "穏뫤࡙攴쑋㵗髍澇", "뾋뿰秮");
+    Test_ToJsonFromJson_Check(MaybeOfUint(197441), MaybeOfUint(958172), "Ԍ", "䗺");
+    Test_ToJsonFromJson_Check(MaybeOfUint(733371), MaybeOfUint(817303), "ᴼ馿ꞑ漆霋枒৹聸ᒢ", "咷㟞曘靳ԝ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(120250), MaybeOfUint(669151), "밥�틭姻韷ሸ", "꺗⯒ꊑ䐁ߠ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(), MaybeOfUint(470409), "㙵覆ೕ멨靮垆规", "㚨줫");
+    Test_ToJsonFromJson_Check(MaybeOfUint(522388), MaybeOfUint(195672), "", "轔렫炙띤䮔췬鼋탐");
+    Test_ToJsonFromJson_Check(MaybeOfUint(382427), MaybeOfUint(448613), "⍗ꦘ疁", "ᖀ㨎乕紇答㺳萵ꊕᑑ");
+    Test_ToJsonFromJson_Check(MaybeOfUint(947821), MaybeOfUint(935419), "剈授䎫쉑ᢰ靡", "맆晝劬");
+    Test_ToJsonFromJson_Check(MaybeOfUint(744885), MaybeOfUint(), "᥌⇝䱓䎸帍곔", "釄");
+    Test_ToJsonFromJson_Check(MaybeOfUint(123526), MaybeOfUint(283554), "䥮䒸", "秇⋽吢ↈ種祶");
+    Test_ToJsonFromJson_Check(MaybeOfUint(10972), MaybeOfUint(992645), "ꨁ딣⍣�浥ԈǶ봒❖", "ꇈ퉿ማ鰜㞡吂");
   }
   
   bool unitTestResults_MatchResult_ToFromJSONObject = runAsync(Tests_RegisterAll_MatchResult_ToFromJSONObject);
@@ -95,57 +95,58 @@ namespace Test_MatchResult {
     RegisterUnitTest('UnitTest_MatchResult_Getters', UnitTest_MatchResult_Getters);
   }
   
-  bool Test_CheckProps_MatchResult(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
-    MatchResult@ tmp = MatchResult(rank, score, participant);
+  bool Test_CheckProps_MatchResult(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant, const string &in zone) {
+    MatchResult@ tmp = MatchResult(rank, score, participant, zone);
     assert(rank == tmp.rank, 'field rank');
     assert(score == tmp.score, 'field score');
     assert(participant == tmp.participant, 'field participant with value `' + participant + '`');
+    assert(zone == tmp.zone, 'field zone with value `' + zone + '`');
     return true;
   }
   
   void UnitTest_MatchResult_Getters() {
-    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(), "㎜৏렊빬�￿躮䮠馩�");
-    Test_CheckProps_MatchResult(MaybeOfUint(780361), MaybeOfUint(378662), "╝㸌鐁");
-    Test_CheckProps_MatchResult(MaybeOfUint(397204), MaybeOfUint(230597), "旱疍");
-    Test_CheckProps_MatchResult(MaybeOfUint(868175), MaybeOfUint(402441), "㘇힞");
-    Test_CheckProps_MatchResult(MaybeOfUint(87722), MaybeOfUint(490383), "覧﶑䙢꺰ꦞᩘ鳔");
-    Test_CheckProps_MatchResult(MaybeOfUint(990278), MaybeOfUint(694306), "㬪●");
-    Test_CheckProps_MatchResult(MaybeOfUint(260232), MaybeOfUint(12605), "윰蘆콬⨸۫芁≲彲⏈먳");
-    Test_CheckProps_MatchResult(MaybeOfUint(763812), MaybeOfUint(149817), "那");
-    Test_CheckProps_MatchResult(MaybeOfUint(409053), MaybeOfUint(425498), "");
-    Test_CheckProps_MatchResult(MaybeOfUint(813369), MaybeOfUint(224303), "徲㼏嘿");
-    Test_CheckProps_MatchResult(MaybeOfUint(55266), MaybeOfUint(719653), "�拣䵱䌏");
-    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(433840), "ᇡ");
-    Test_CheckProps_MatchResult(MaybeOfUint(672021), MaybeOfUint(), "儞祹㚏풓鏓윃");
-    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(302501), "쿽騍큋");
-    Test_CheckProps_MatchResult(MaybeOfUint(614011), MaybeOfUint(544625), "鈤ꦀ");
-    Test_CheckProps_MatchResult(MaybeOfUint(271115), MaybeOfUint(791515), "ꦽ㎀꿈�");
-    Test_CheckProps_MatchResult(MaybeOfUint(380281), MaybeOfUint(680656), "皌撏랭즫ᇁ﹀");
-    Test_CheckProps_MatchResult(MaybeOfUint(789243), MaybeOfUint(381002), "珐瀮㍿웦쭜䢝䃙");
-    Test_CheckProps_MatchResult(MaybeOfUint(951829), MaybeOfUint(), "弊䮷⃷쨗蝢ᳳ");
-    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(816997), "㩾껫墰菌㶑ꔘₜ齬");
-    Test_CheckProps_MatchResult(MaybeOfUint(631796), MaybeOfUint(153273), "륦홰떌䱇盰");
-    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(428390), "滇�ꒉ");
-    Test_CheckProps_MatchResult(MaybeOfUint(296569), MaybeOfUint(773342), "枦");
-    Test_CheckProps_MatchResult(MaybeOfUint(251911), MaybeOfUint(215862), "ୣ筃痒胊의䉶杻�죝");
-    Test_CheckProps_MatchResult(MaybeOfUint(591760), MaybeOfUint(395859), "秉ⵑ᠟Ꮍ⁭豹理癙⤊");
-    Test_CheckProps_MatchResult(MaybeOfUint(927020), MaybeOfUint(116042), "㆒刱❕騐헵�䉨⏋릈䨕");
-    Test_CheckProps_MatchResult(MaybeOfUint(906029), MaybeOfUint(978653), "벷쨭욢璞");
-    Test_CheckProps_MatchResult(MaybeOfUint(588647), MaybeOfUint(406688), "퍑ꗸ鶧ㆌ痒㇌⋛䨗");
-    Test_CheckProps_MatchResult(MaybeOfUint(807284), MaybeOfUint(35581), "ᓮₙ묇森ⶍභ");
-    Test_CheckProps_MatchResult(MaybeOfUint(363094), MaybeOfUint(850420), "㦟茍沕К߄");
-    Test_CheckProps_MatchResult(MaybeOfUint(294837), MaybeOfUint(920471), "崤颦蚕蔟Ι龲ꇗ⡔");
-    Test_CheckProps_MatchResult(MaybeOfUint(581447), MaybeOfUint(124133), "院崢ꊵ쐭ғ㒴퟽ᗦ");
-    Test_CheckProps_MatchResult(MaybeOfUint(876047), MaybeOfUint(153623), "䃹눭쯺");
-    Test_CheckProps_MatchResult(MaybeOfUint(917537), MaybeOfUint(633088), "耢鬗⁴炆ᔻ");
-    Test_CheckProps_MatchResult(MaybeOfUint(823384), MaybeOfUint(903157), "༏큝㫓");
-    Test_CheckProps_MatchResult(MaybeOfUint(23260), MaybeOfUint(772472), "工");
-    Test_CheckProps_MatchResult(MaybeOfUint(285594), MaybeOfUint(431245), "ಟ");
-    Test_CheckProps_MatchResult(MaybeOfUint(27157), MaybeOfUint(878595), "็۟弜쌘㙛핺﫽㑪");
-    Test_CheckProps_MatchResult(MaybeOfUint(229639), MaybeOfUint(913764), "Ҹꃈ䮣ᬬ컵嶐");
-    Test_CheckProps_MatchResult(MaybeOfUint(520163), MaybeOfUint(850147), "扚듍꩐瘁쪟怢瞱");
-    Test_CheckProps_MatchResult(MaybeOfUint(61779), MaybeOfUint(), "");
-    Test_CheckProps_MatchResult(MaybeOfUint(302773), MaybeOfUint(623932), "ȟ薲ꭉ");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(), "㎜৏렊빬�￿躮䮠馩�", "⢢羋");
+    Test_CheckProps_MatchResult(MaybeOfUint(450822), MaybeOfUint(886792), "韋", "�싺콠旱疍鰉橿");
+    Test_CheckProps_MatchResult(MaybeOfUint(87722), MaybeOfUint(490383), "覧﶑䙢꺰ꦞᩘ鳔", "枵ⴾ㬪●ꜛ귦翮漽똮");
+    Test_CheckProps_MatchResult(MaybeOfUint(290772), MaybeOfUint(622511), "윰蘆콬⨸۫芁≲", "虝䰒ஷ握�");
+    Test_CheckProps_MatchResult(MaybeOfUint(686837), MaybeOfUint(149817), "那", "젮훇懓奲쮄⸔옯듡");
+    Test_CheckProps_MatchResult(MaybeOfUint(868476), MaybeOfUint(224303), "徲㼏嘿", "ᓭ褾");
+    Test_CheckProps_MatchResult(MaybeOfUint(429159), MaybeOfUint(433840), "ᇡ", "�뽥뤎");
+    Test_CheckProps_MatchResult(MaybeOfUint(672021), MaybeOfUint(), "儞祹㚏풓鏓윃", "揘");
+    Test_CheckProps_MatchResult(MaybeOfUint(583000), MaybeOfUint(984066), "㔭묹", "缲䁏뤥蹪鈤");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(791515), "ꦽ㎀꿈�", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(585173), MaybeOfUint(), "撏랭즫ᇁ", "�׭駭겯ƴ");
+    Test_CheckProps_MatchResult(MaybeOfUint(23362), MaybeOfUint(361241), "䵙", "阚⦈郶炼");
+    Test_CheckProps_MatchResult(MaybeOfUint(32083), MaybeOfUint(702564), "ₜ齬聎雄攩澴䶩弊", "菌㶑");
+    Test_CheckProps_MatchResult(MaybeOfUint(785867), MaybeOfUint(785817), "ଚ㩕ၪ", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(779184), MaybeOfUint(853065), "�ꒉ㳀䈾뙱䕂륦홰", "鐷痚ꄻ");
+    Test_CheckProps_MatchResult(MaybeOfUint(397794), MaybeOfUint(), "䉶杻�죝ᝫ᥾鼾㮦窘ᤲ", "ୣ筃痒胊");
+    Test_CheckProps_MatchResult(MaybeOfUint(591760), MaybeOfUint(395859), "秉ⵑ᠟Ꮍ⁭豹理癙⤊", "＠߇₹");
+    Test_CheckProps_MatchResult(MaybeOfUint(401776), MaybeOfUint(982620), "㆒", "℃벷쨭욢璞�ᐡ赪읝");
+    Test_CheckProps_MatchResult(MaybeOfUint(735119), MaybeOfUint(27558), "⑧䩦뽼퍑ꗸ鶧", "ᓮₙ묇森ⶍභ");
+    Test_CheckProps_MatchResult(MaybeOfUint(363094), MaybeOfUint(850420), "㦟茍沕К߄", "ソ⿈鄠");
+    Test_CheckProps_MatchResult(MaybeOfUint(742358), MaybeOfUint(402801), "Ι龲", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(), "ￔ쥲兆崤颦", "쐭ғ㒴퟽ᗦ㴟봨");
+    Test_CheckProps_MatchResult(MaybeOfUint(653215), MaybeOfUint(), "꣰䃹눭쯺튯㱷ဥ", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(402613), MaybeOfUint(133172), "⁴", "嶹堠鷦耢");
+    Test_CheckProps_MatchResult(MaybeOfUint(566942), MaybeOfUint(793887), "", "鉚枛칸ힼ㼓럮");
+    Test_CheckProps_MatchResult(MaybeOfUint(877881), MaybeOfUint(973039), "뼊谥缃ಟ킐", "็۟弜쌘㙛핺﫽㑪");
+    Test_CheckProps_MatchResult(MaybeOfUint(229639), MaybeOfUint(913764), "Ҹꃈ䮣ᬬ컵嶐", "㻗﬽팊�슍郫홟㕤");
+    Test_CheckProps_MatchResult(MaybeOfUint(698153), MaybeOfUint(), "듍꩐瘁", "狥Ü매剟䝛튟뿎ວ");
+    Test_CheckProps_MatchResult(MaybeOfUint(924696), MaybeOfUint(521868), "먔᫣읈聹匂", "㧯䦴귏毥᥃嗯䵌‱");
+    Test_CheckProps_MatchResult(MaybeOfUint(272553), MaybeOfUint(480081), "㈾នﯸ滣轁竁怒ৈ", "酁଱");
+    Test_CheckProps_MatchResult(MaybeOfUint(733567), MaybeOfUint(143921), "淲ﺆ", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(753018), MaybeOfUint(357901), "", "妐檣袿칉谜訷໰胖");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(180139), "䬹칭烈罽췜", "䨣뉐㕋퇪㷗");
+    Test_CheckProps_MatchResult(MaybeOfUint(917384), MaybeOfUint(323729), "쯰㗟豺", "ꁄ枙꥞琷᯵テ䪮䅎");
+    Test_CheckProps_MatchResult(MaybeOfUint(457180), MaybeOfUint(), "瀓", "复䚃ᖓ嵐");
+    Test_CheckProps_MatchResult(MaybeOfUint(677985), MaybeOfUint(965014), "㼘ⵏ骗", "⋵隸꫍痈");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(666968), "绽ᅧ猣�嚖", "v鬕");
+    Test_CheckProps_MatchResult(MaybeOfUint(755458), MaybeOfUint(534398), "ꏛ", "犌郉鷪䈥⏀淓둬ਈ");
+    Test_CheckProps_MatchResult(MaybeOfUint(508154), MaybeOfUint(684210), "䃿fྔ㐔ᡄ鷂", "섎");
+    Test_CheckProps_MatchResult(MaybeOfUint(794190), MaybeOfUint(847881), "䮖揉筢㲸肅", "");
+    Test_CheckProps_MatchResult(MaybeOfUint(557301), MaybeOfUint(491704), "Ꙭꇰ⦥๤즿ㄨ穂Hᡶ⛥", "俍埯퐥ঠ἗넾");
+    Test_CheckProps_MatchResult(MaybeOfUint(), MaybeOfUint(300778), "婓菨뻟௎", "诨⥇Ш");
   }
   
   bool unitTestResults_MatchResult_Getters = runAsync(Tests_RegisterAll_MatchResult_Getters);
@@ -157,9 +158,9 @@ namespace Test_MatchResult {
   
   MatchResult@ lastChecked = null;
   
-  bool OpEqSimple_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
-    MatchResult@ o1 = MatchResult(rank, score, participant);
-    MatchResult@ o2 = MatchResult(rank, score, participant);
+  bool OpEqSimple_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant, const string &in zone) {
+    MatchResult@ o1 = MatchResult(rank, score, participant, zone);
+    MatchResult@ o2 = MatchResult(rank, score, participant, zone);
     assert(o1 == o2, 'OpEqSimple_Check fail for obj: ' + o1.ToString());
     assert(o1 != lastChecked, 'OpEqSimple_Check failed comparing to last obj');
     @lastChecked = o1;
@@ -167,48 +168,48 @@ namespace Test_MatchResult {
   }
   
   void UnitTest_OpEqSimple_MatchResult() {
-    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(393455), "ﷰ눵뭩㵷衟춗䵩");
-    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(217809), "蝔ᔁ䀓⃩쭶퍉첯");
-    OpEqSimple_Check(MaybeOfUint(665920), MaybeOfUint(535487), "਀ꩣ釪�麑遬徨탏");
-    OpEqSimple_Check(MaybeOfUint(618336), MaybeOfUint(693970), "㵣䎵甄壝玃勑");
-    OpEqSimple_Check(MaybeOfUint(332990), MaybeOfUint(591080), "璊诛퇟鯚핦壉");
-    OpEqSimple_Check(MaybeOfUint(776509), MaybeOfUint(645285), "כֿ鐄ℛݙᚬ");
-    OpEqSimple_Check(MaybeOfUint(260320), MaybeOfUint(222008), "");
-    OpEqSimple_Check(MaybeOfUint(631652), MaybeOfUint(480461), "윲冥㶶밑幖許");
-    OpEqSimple_Check(MaybeOfUint(833738), MaybeOfUint(), "ʊ冿�Ⓢꖠ⋳䝅攨鑽烆");
-    OpEqSimple_Check(MaybeOfUint(32507), MaybeOfUint(310378), "뭀ꃲ썵㞫");
-    OpEqSimple_Check(MaybeOfUint(358019), MaybeOfUint(288195), "");
-    OpEqSimple_Check(MaybeOfUint(43208), MaybeOfUint(471876), "␜῰蹎쟳횱宙홧㉜는");
-    OpEqSimple_Check(MaybeOfUint(139088), MaybeOfUint(541699), "");
-    OpEqSimple_Check(MaybeOfUint(554651), MaybeOfUint(179642), "뮱");
-    OpEqSimple_Check(MaybeOfUint(716312), MaybeOfUint(606939), "ʱᯜ鱦ࠡ");
-    OpEqSimple_Check(MaybeOfUint(821821), MaybeOfUint(), "燵㪆汀");
-    OpEqSimple_Check(MaybeOfUint(834349), MaybeOfUint(208909), "䀐硩钗쏥䁏");
-    OpEqSimple_Check(MaybeOfUint(705322), MaybeOfUint(68708), "픽鳐ꈉ");
-    OpEqSimple_Check(MaybeOfUint(885000), MaybeOfUint(909595), "쬟칁껁");
-    OpEqSimple_Check(MaybeOfUint(876624), MaybeOfUint(82116), "뻹");
-    OpEqSimple_Check(MaybeOfUint(375289), MaybeOfUint(), "糓岁ꮸ㏧㽤᪮壐");
-    OpEqSimple_Check(MaybeOfUint(785418), MaybeOfUint(766369), "⃠嚅");
-    OpEqSimple_Check(MaybeOfUint(106739), MaybeOfUint(689395), "櫇");
-    OpEqSimple_Check(MaybeOfUint(153090), MaybeOfUint(897339), "ឰ墐こꅯ");
-    OpEqSimple_Check(MaybeOfUint(539265), MaybeOfUint(12795), "㤬꾷ټ໿ꍱ꟤��");
-    OpEqSimple_Check(MaybeOfUint(544378), MaybeOfUint(263), "館胄ા");
-    OpEqSimple_Check(MaybeOfUint(786095), MaybeOfUint(997818), "");
-    OpEqSimple_Check(MaybeOfUint(681787), MaybeOfUint(), "통�ﭝ豲氹");
-    OpEqSimple_Check(MaybeOfUint(610221), MaybeOfUint(853751), "뛰");
-    OpEqSimple_Check(MaybeOfUint(777120), MaybeOfUint(814326), "⩮�ώ꒏퓂䉰ꋗ嗳ರ");
-    OpEqSimple_Check(MaybeOfUint(925392), MaybeOfUint(747775), "");
-    OpEqSimple_Check(MaybeOfUint(819938), MaybeOfUint(758489), "ⱬ褑");
-    OpEqSimple_Check(MaybeOfUint(177035), MaybeOfUint(909926), "⧙곢歒");
-    OpEqSimple_Check(MaybeOfUint(854291), MaybeOfUint(432666), "ꃢ｡뫇묯");
-    OpEqSimple_Check(MaybeOfUint(243032), MaybeOfUint(636291), "墨큽咪઼側똶뙈");
-    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(601038), "䥓佴ꛬ苵䎥�쭲鄻");
-    OpEqSimple_Check(MaybeOfUint(929569), MaybeOfUint(759681), "粄⅝挝㠊");
-    OpEqSimple_Check(MaybeOfUint(697224), MaybeOfUint(131924), "䳶넊");
-    OpEqSimple_Check(MaybeOfUint(183287), MaybeOfUint(475985), "뱜悶ꂋ鰲");
-    OpEqSimple_Check(MaybeOfUint(39828), MaybeOfUint(667191), "篱鬻피䌱踀뤅");
-    OpEqSimple_Check(MaybeOfUint(300093), MaybeOfUint(992454), "ⓟ娣ዯ﷤賚�");
-    OpEqSimple_Check(MaybeOfUint(627673), MaybeOfUint(356165), "硬");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(393455), "ﷰ눵뭩㵷衟춗䵩", "쭶퍉첯㚥涬");
+    OpEqSimple_Check(MaybeOfUint(26686), MaybeOfUint(535487), "਀ꩣ釪�麑遬徨탏", "壝玃勑뤋펍캒ᨶ");
+    OpEqSimple_Check(MaybeOfUint(511262), MaybeOfUint(489079), "", "킅�叴뢦");
+    OpEqSimple_Check(MaybeOfUint(601448), MaybeOfUint(591080), "璊诛퇟鯚핦壉", "獔");
+    OpEqSimple_Check(MaybeOfUint(479941), MaybeOfUint(112534), "垛峵כֿ鐄ℛݙᚬ", "︐좙");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(749954), "ᬤ쿊", "ﶇ䚱윲冥㶶밑幖");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(26440), "䫆ើ鹆ʊ冿�Ⓢꖠ⋳", "뭀ꃲ썵㞫");
+    OpEqSimple_Check(MaybeOfUint(358019), MaybeOfUint(288195), "", "는ꒋ㑶");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(690858), "", "蹎쟳");
+    OpEqSimple_Check(MaybeOfUint(241597), MaybeOfUint(541699), "", "");
+    OpEqSimple_Check(MaybeOfUint(12172), MaybeOfUint(145172), "", "똮ꨕ");
+    OpEqSimple_Check(MaybeOfUint(999207), MaybeOfUint(222332), "娣", "汀ᆣ");
+    OpEqSimple_Check(MaybeOfUint(391329), MaybeOfUint(840953), "", "쏥䁏ਮ虴");
+    OpEqSimple_Check(MaybeOfUint(5573), MaybeOfUint(), "䀿虿砍", "픽鳐ꈉ");
+    OpEqSimple_Check(MaybeOfUint(885000), MaybeOfUint(909595), "쬟칁껁", "㽤᪮壐辡�㏊뻹媋痰碩");
+    OpEqSimple_Check(MaybeOfUint(785418), MaybeOfUint(766369), "⃠嚅", "栥鏡");
+    OpEqSimple_Check(MaybeOfUint(172033), MaybeOfUint(303381), "ꅯ껳ሌ", "耽裮ዖ锲釹ឰ墐");
+    OpEqSimple_Check(MaybeOfUint(884234), MaybeOfUint(457344), "ᨣ㤬꾷ټ໿", "汢ꏠ⮶䋧館胄ા즣傪");
+    OpEqSimple_Check(MaybeOfUint(880649), MaybeOfUint(997818), "", "�ﭝ豲氹φ䚧");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(780762), "�둕껅汆", "玹桗喐橀");
+    OpEqSimple_Check(MaybeOfUint(521754), MaybeOfUint(332229), "ᔃ㣛צ츷⩮�ώ꒏퓂", "");
+    OpEqSimple_Check(MaybeOfUint(819938), MaybeOfUint(758489), "ⱬ褑", "");
+    OpEqSimple_Check(MaybeOfUint(32483), MaybeOfUint(457029), "묯릕⛲㕤�⧙", "瓪ﲥ疬᳢䩶㩒홌ꃢ｡");
+    OpEqSimple_Check(MaybeOfUint(539939), MaybeOfUint(909840), "콨�赭墨큽咪઼", "蛕䥓佴ꛬ苵䎥�쭲");
+    OpEqSimple_Check(MaybeOfUint(929569), MaybeOfUint(759681), "粄⅝挝㠊", "共䳶넊ᙓࡀ컒");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(475985), "뱜悶ꂋ鰲", "");
+    OpEqSimple_Check(MaybeOfUint(481138), MaybeOfUint(), "䚨篱鬻피䌱踀", "챀");
+    OpEqSimple_Check(MaybeOfUint(575611), MaybeOfUint(141600), "⟹驵盲ⓟ娣ዯ", "賥硬⭷혀ⴿ㓶ࣛﬣ");
+    OpEqSimple_Check(MaybeOfUint(129575), MaybeOfUint(690603), "螥㗓", "ᚭࣳ�﨑ğ");
+    OpEqSimple_Check(MaybeOfUint(800263), MaybeOfUint(417084), "띟璦Ⴗ婑遚㌌⻄㕹", "䨾㶜☭ෳ");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(284057), "", "庈");
+    OpEqSimple_Check(MaybeOfUint(378032), MaybeOfUint(296593), "멖�", "녮ง");
+    OpEqSimple_Check(MaybeOfUint(410731), MaybeOfUint(68111), "瞐奺", "㎭啷⨍揉");
+    OpEqSimple_Check(MaybeOfUint(171082), MaybeOfUint(395321), "㝳䵉貟↟ڹ錠쟓쎭뗧", "罚");
+    OpEqSimple_Check(MaybeOfUint(69729), MaybeOfUint(543714), "냖럢쩪媭", "鼗䘚秱ᗱ閯ﺸ娂ᑠ");
+    OpEqSimple_Check(MaybeOfUint(291997), MaybeOfUint(463120), "磃헮躁潿鬐", "̉韺輨浉ㆠ㌔Ú");
+    OpEqSimple_Check(MaybeOfUint(888785), MaybeOfUint(574276), "", "ꊈ껿譍扆䡖図罛⢲Ȃ");
+    OpEqSimple_Check(MaybeOfUint(), MaybeOfUint(607334), "ﻯ機", "龕ຽҷ䋰ꭔ䧂脑");
+    OpEqSimple_Check(MaybeOfUint(213556), MaybeOfUint(958667), "숬勯ﵜ쳮쬤", "䷗넱�㙫姦䟧ఊꪫ");
+    OpEqSimple_Check(MaybeOfUint(265296), MaybeOfUint(703199), "奋豮ⴈ֑", "일ٸ顚辑죹⪱濱놿");
+    OpEqSimple_Check(MaybeOfUint(640546), MaybeOfUint(796197), "膞坫窀훱Ⅺ", "씅煍尪읒쪭剈");
+    OpEqSimple_Check(MaybeOfUint(665073), MaybeOfUint(), "੿퉛꿪⹳ꈰ뗵丷ө㩣", "艌");
   }
   
   bool unitTestResults_MatchResult_OpEq = runAsync(Tests_RegisterAll_MatchResult_OpEq);
@@ -218,55 +219,55 @@ namespace Test_MatchResult {
     RegisterUnitTest('UnitTest_SzThenUnSz_MatchResult', UnitTest_SzThenUnSz_MatchResult);
   }
   
-  bool Test_SzThenUnSz_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant) {
-    MatchResult@ tmp = MatchResult(rank, score, participant);
+  bool Test_SzThenUnSz_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant, const string &in zone) {
+    MatchResult@ tmp = MatchResult(rank, score, participant, zone);
     assert(tmp == _MatchResult::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
     return true;
   }
   
   void UnitTest_SzThenUnSz_MatchResult() {
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "ﳙ㻲翾鵜靀㍒㋪");
-    Test_SzThenUnSz_Check(MaybeOfUint(730596), MaybeOfUint(530766), "编");
-    Test_SzThenUnSz_Check(MaybeOfUint(47355), MaybeOfUint(325863), "藴킅Ề쯣欚엻렒哾๺⾖");
-    Test_SzThenUnSz_Check(MaybeOfUint(43228), MaybeOfUint(300954), "");
-    Test_SzThenUnSz_Check(MaybeOfUint(822238), MaybeOfUint(), "");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(605220), "섌");
-    Test_SzThenUnSz_Check(MaybeOfUint(208676), MaybeOfUint(144555), "幻汛瀹ፎﬡ賄");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "䮞丵");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(263354), "푲෗蔃䓥㻥");
-    Test_SzThenUnSz_Check(MaybeOfUint(131261), MaybeOfUint(7008), "");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(322150), "潔箯㉽");
-    Test_SzThenUnSz_Check(MaybeOfUint(418698), MaybeOfUint(334487), "㯠쬙ꅇ");
-    Test_SzThenUnSz_Check(MaybeOfUint(852959), MaybeOfUint(629002), "㠵ᢐၛⶍ쎦");
-    Test_SzThenUnSz_Check(MaybeOfUint(178321), MaybeOfUint(67877), "瞄");
-    Test_SzThenUnSz_Check(MaybeOfUint(694614), MaybeOfUint(), "⏂ꥏ꼼砍띑䗇");
-    Test_SzThenUnSz_Check(MaybeOfUint(833324), MaybeOfUint(552233), "㏰鉓켯");
-    Test_SzThenUnSz_Check(MaybeOfUint(479132), MaybeOfUint(973529), "㐚ꂖ摇䞰鄕");
-    Test_SzThenUnSz_Check(MaybeOfUint(294888), MaybeOfUint(606676), "᳔䬳⑇勿掝");
-    Test_SzThenUnSz_Check(MaybeOfUint(577083), MaybeOfUint(101415), "퍻䳥最徐㭾멭Პ");
-    Test_SzThenUnSz_Check(MaybeOfUint(687772), MaybeOfUint(), "奞ͩ줞䟥ፕ⎃");
-    Test_SzThenUnSz_Check(MaybeOfUint(977757), MaybeOfUint(700902), "෌ᚸᄺ");
-    Test_SzThenUnSz_Check(MaybeOfUint(28064), MaybeOfUint(), "剼᪲");
-    Test_SzThenUnSz_Check(MaybeOfUint(49662), MaybeOfUint(485401), "");
-    Test_SzThenUnSz_Check(MaybeOfUint(312200), MaybeOfUint(314974), "䩓�魓쬣");
-    Test_SzThenUnSz_Check(MaybeOfUint(598275), MaybeOfUint(571633), "ు盡ₜ阵璫⃔煡");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(979997), "뙸줒女ѽ泡誄狋撧곟");
-    Test_SzThenUnSz_Check(MaybeOfUint(357453), MaybeOfUint(356559), "㋽빽睍뉥៦佌Țꡮ");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(344084), "殤膕躯蓬");
-    Test_SzThenUnSz_Check(MaybeOfUint(54809), MaybeOfUint(647392), "�〿Ꝼ샛ᣱ沲툕ී쨳");
-    Test_SzThenUnSz_Check(MaybeOfUint(539543), MaybeOfUint(266937), "㐟ꯩ㹎ӑ䞖猏鐪");
-    Test_SzThenUnSz_Check(MaybeOfUint(223813), MaybeOfUint(558576), "ꡃ");
-    Test_SzThenUnSz_Check(MaybeOfUint(876146), MaybeOfUint(12322), "뭎挘殤掙얷ᐮጧ뎆⸕숈");
-    Test_SzThenUnSz_Check(MaybeOfUint(501045), MaybeOfUint(), "");
-    Test_SzThenUnSz_Check(MaybeOfUint(31957), MaybeOfUint(300346), "ﲀ⧝�䄳凜嬚");
-    Test_SzThenUnSz_Check(MaybeOfUint(554352), MaybeOfUint(759025), "Ꮪ猾ؙ太");
-    Test_SzThenUnSz_Check(MaybeOfUint(724579), MaybeOfUint(), "傩Ἂ嚓");
-    Test_SzThenUnSz_Check(MaybeOfUint(718544), MaybeOfUint(283451), "ꊌ멉녍ഩ");
-    Test_SzThenUnSz_Check(MaybeOfUint(162893), MaybeOfUint(652149), "⁋컱ⳃ㩄앪衚ध⿺");
-    Test_SzThenUnSz_Check(MaybeOfUint(142829), MaybeOfUint(830203), "꩸㸵");
-    Test_SzThenUnSz_Check(MaybeOfUint(332985), MaybeOfUint(478495), "䗶");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(806313), "濜ḟ₺洉疧");
-    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "㌲㯊䂁∐⒳伷鳯");
+    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "ﳙ㻲翾鵜靀㍒㋪", "텆编�朹鎟");
+    Test_SzThenUnSz_Check(MaybeOfUint(419070), MaybeOfUint(325863), "藴킅Ề쯣欚엻렒哾๺⾖", "밄ꊦ⊼⿕氎꼻");
+    Test_SzThenUnSz_Check(MaybeOfUint(415169), MaybeOfUint(179363), "汛瀹ፎﬡ賄�匼", "䮞丵�￝");
+    Test_SzThenUnSz_Check(MaybeOfUint(555317), MaybeOfUint(263354), "푲෗蔃䓥㻥", "䟃넲䗵蹟牪");
+    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(322150), "潔箯㉽", "ꅇ᭧봅≹䎢");
+    Test_SzThenUnSz_Check(MaybeOfUint(18764), MaybeOfUint(394778), "㠵ᢐၛⶍ쎦㋥霈", "좳");
+    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(), "", "髣蘟먝瞄⧛鉼竲");
+    Test_SzThenUnSz_Check(MaybeOfUint(274766), MaybeOfUint(966343), "踆⌾ꎳ㏰鉓켯τ㪔ﻊ", "Ὼ㐚ꂖ摇䞰鄕ꈽ洞⤦");
+    Test_SzThenUnSz_Check(MaybeOfUint(255911), MaybeOfUint(964248), "繤牉᳔䬳⑇勿", "퍻䳥最徐㭾멭Პ");
+    Test_SzThenUnSz_Check(MaybeOfUint(687772), MaybeOfUint(), "奞ͩ줞䟥ፕ⎃", "ᚸᄺ膲㑅诜돚");
+    Test_SzThenUnSz_Check(MaybeOfUint(37562), MaybeOfUint(761537), "", "剼᪲");
+    Test_SzThenUnSz_Check(MaybeOfUint(49662), MaybeOfUint(485401), "", "鐮軅㧦胷");
+    Test_SzThenUnSz_Check(MaybeOfUint(227617), MaybeOfUint(129142), "ㅡ螘笣䨯䄸", "璫⃔煡욣");
+    Test_SzThenUnSz_Check(MaybeOfUint(150994), MaybeOfUint(471390), "곟ᢏ淡钡೾", "줒女ѽ泡誄狋");
+    Test_SzThenUnSz_Check(MaybeOfUint(357453), MaybeOfUint(356559), "㋽빽睍뉥៦佌Țꡮ", "殤膕躯蓬㥊ᆺ");
+    Test_SzThenUnSz_Check(MaybeOfUint(54809), MaybeOfUint(647392), "�〿Ꝼ샛ᣱ沲툕ී쨳", "ӑ䞖猏鐪﹀ྏ䅳税");
+    Test_SzThenUnSz_Check(MaybeOfUint(883773), MaybeOfUint(), "䰑挤③享", "ൃ䶀椼ズꡃ᫔");
+    Test_SzThenUnSz_Check(MaybeOfUint(116704), MaybeOfUint(613456), "殤掙얷ᐮጧ뎆", "ᓌﻸꚡ䯯桾뭎");
+    Test_SzThenUnSz_Check(MaybeOfUint(31957), MaybeOfUint(300346), "ﲀ⧝�䄳凜嬚", "ྉ樦纍");
+    Test_SzThenUnSz_Check(MaybeOfUint(30265), MaybeOfUint(), "ꉁᏚ", "");
+    Test_SzThenUnSz_Check(MaybeOfUint(6692), MaybeOfUint(597747), "羔ﾧ鋣ꊌ멉녍ഩ਽", "憎");
+    Test_SzThenUnSz_Check(MaybeOfUint(63243), MaybeOfUint(209790), "៳╝⁋컱ⳃ", "刪ᖑ᭬퇠");
+    Test_SzThenUnSz_Check(MaybeOfUint(681227), MaybeOfUint(606450), "₺洉疧ꅦ뭲끀䗶찀믌", "㌲㯊䂁∐⒳伷鳯⽸︧濜");
+    Test_SzThenUnSz_Check(MaybeOfUint(921699), MaybeOfUint(247650), "︆᤾℟", "沶ꫴ痺ﾖ︔");
+    Test_SzThenUnSz_Check(MaybeOfUint(694611), MaybeOfUint(), "䶂簜饋᲏඿", "䷗鷪묡拠銢᜼錢");
+    Test_SzThenUnSz_Check(MaybeOfUint(629219), MaybeOfUint(380426), "ԙꇖⲽ櫉疷", "ꘓ");
+    Test_SzThenUnSz_Check(MaybeOfUint(623212), MaybeOfUint(449721), "풠氂", "ຶꔽﾜᵏ");
+    Test_SzThenUnSz_Check(MaybeOfUint(462625), MaybeOfUint(360995), "⯟骙䁣豅琧뗇躏òꘄᷡ", "펽꩙负釺锼珟፩�埊쎆");
+    Test_SzThenUnSz_Check(MaybeOfUint(10462), MaybeOfUint(559916), "푔⼧巇麃", "斻ை牖Ⲋ䆮⊂农陣띰");
+    Test_SzThenUnSz_Check(MaybeOfUint(), MaybeOfUint(808646), "㪁▫윁벼寥ﴋᮝ臢", "鲑頸헳ᑭᷡƫ믅༐");
+    Test_SzThenUnSz_Check(MaybeOfUint(810641), MaybeOfUint(505384), "箯浔陳᳚乹ﻺ鮷囫я", "䮋");
+    Test_SzThenUnSz_Check(MaybeOfUint(661744), MaybeOfUint(315247), "쎡韠ᣳ翠�", "삈켳劻�桮럫憍ᕝ");
+    Test_SzThenUnSz_Check(MaybeOfUint(949213), MaybeOfUint(), "觰�", "�並㈛贆�⬧");
+    Test_SzThenUnSz_Check(MaybeOfUint(826967), MaybeOfUint(), "", "縰�㔭");
+    Test_SzThenUnSz_Check(MaybeOfUint(877839), MaybeOfUint(), "暱", "ﷺ⋏晆뗭⴬똣");
+    Test_SzThenUnSz_Check(MaybeOfUint(132572), MaybeOfUint(27512), "ы䞀�ᐑꖢ䞶ꡡ훅꼦", "႙趹攘ꆓ");
+    Test_SzThenUnSz_Check(MaybeOfUint(143075), MaybeOfUint(47427), "䚦럕ț頛臾ÍἩ", "託鱫댫");
+    Test_SzThenUnSz_Check(MaybeOfUint(328156), MaybeOfUint(478307), "욜푭", "仚饩�Ꮚ혹霭䞓盅");
+    Test_SzThenUnSz_Check(MaybeOfUint(399064), MaybeOfUint(), "扻ꋨ䳘쏡卋鳊鍽扐", "鞞㉪屹팑龚⿞䅰ꡉፀ");
+    Test_SzThenUnSz_Check(MaybeOfUint(412880), MaybeOfUint(416887), "㕋�鯃嘐ኽੱ晤斔�", "튤⟫砚乸̛瀎ᭆ㍰");
+    Test_SzThenUnSz_Check(MaybeOfUint(680518), MaybeOfUint(999603), "뒭㺡࣊砅婌ਠ", "");
+    Test_SzThenUnSz_Check(MaybeOfUint(108423), MaybeOfUint(159725), "ᦲ", "왓꿨᳁ْଠ墻ἰ쟽뻗");
   }
   
   bool unitTestResults_MatchResult_RowSerialization = runAsync(Tests_RegisterAll_MatchResult_RowSerialization);

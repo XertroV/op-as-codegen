@@ -108,7 +108,11 @@ shared class Challenge {
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
 }
 
@@ -117,38 +121,68 @@ namespace _Challenge {
   shared Challenge@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     /* Parse field: id of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint id = Text::ParseInt(chunk);
     /* Parse field: uid of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string uid = chunk;
     /* Parse field: name of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string name = chunk;
     /* Parse field: startDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint startDate = Text::ParseInt(chunk);
     /* Parse field: endDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint endDate = Text::ParseInt(chunk);
     /* Parse field: leaderboardId of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint leaderboardId = Text::ParseInt(chunk);
     return Challenge(id, uid, name, startDate, endDate, leaderboardId);
   }

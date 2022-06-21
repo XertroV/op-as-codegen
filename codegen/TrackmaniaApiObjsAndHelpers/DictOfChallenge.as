@@ -17,10 +17,15 @@ shared class DictOfChallenge {
     return cast<Challenge@>(_d[K(key)]);
   }
   
-  Challenge@ GetOrDefault(const string &in key) {
-    throw('GetOrDefault called on a dict that has no default set.');
-    return Get('');
+  const Challenge@[]@ GetMany(const string[] &in keys) const {
+    array<Challenge@> ret = {};
+    for (uint i = 0; i < keys.Length; i++) {
+      auto key = keys[i];
+      ret.InsertLast(Get(key));
+    }
+    return ret;
   }
+  
   
   void Set(const string &in key, Challenge@ value) {
     @_d[K(key)] = value;
@@ -28,6 +33,15 @@ shared class DictOfChallenge {
   
   bool Exists(const string &in key) {
     return _d.Exists(K(key));
+  }
+  
+  uint CountExists(const string[] &in keys) {
+    uint ret = 0;
+    for (uint i = 0; i < keys.Length; i++) {
+      auto key = keys[i];
+      if (Exists(key)) ret++;
+    }
+    return ret;
   }
   
   array<string>@ GetKeys() const {
@@ -115,7 +129,11 @@ namespace _DictOfChallenge {
     
     private const string TRS_WrapString(const string &in s) {
       string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-      return '(' + _s.Length + ':' + _s + ')';
+      string ret = '(' + _s.Length + ':' + _s + ')';
+      if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+        throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+      }
+      return ret;
     }
   }
   
@@ -124,22 +142,32 @@ namespace _DictOfChallenge {
     shared KvPair@ FromRowString(const string &in str) {
       string chunk = '', remainder = str;
       array<string> tmp = array<string>(2);
-      uint chunkLen;
+      uint chunkLen = 0;
       /* Parse field: key of type: string */
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       string key = chunk;
       /* Parse field: val of type: Challenge@ */
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      remainder = tmp[1].SubStr(chunkLen + 2);
+      try {
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
       Challenge@ val = _Challenge::FromRowString(chunk);
       return KvPair(key, val);
     }

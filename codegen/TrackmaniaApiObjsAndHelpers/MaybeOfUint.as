@@ -46,7 +46,11 @@ shared class MaybeOfUint {
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
   
   Json::Value ToJson() {
@@ -94,8 +98,13 @@ namespace _MaybeOfUint {
       return MaybeOfUint();
     }
     /* Parse field: val of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint val = Text::ParseInt(chunk);
     return MaybeOfUint(Text::ParseInt(chunk));
   }

@@ -9,11 +9,11 @@ shared class CompRound {
   private string _name;
   private string _status;
   private string _leaderboardComputeType;
-  private string _teamLeaderboardComputeType;
+  private MaybeOfString@ _teamLeaderboardComputeType;
   private string _matchScoreDirection;
   
   /* Methods // Mixin: Default Constructor */
-  CompRound(uint id, uint qualifierChallengeId, uint position, uint nbMatches, uint startDate, uint endDate, const string &in name, const string &in status, const string &in leaderboardComputeType, const string &in teamLeaderboardComputeType, const string &in matchScoreDirection) {
+  CompRound(uint id, uint qualifierChallengeId, uint position, uint nbMatches, uint startDate, uint endDate, const string &in name, const string &in status, const string &in leaderboardComputeType, MaybeOfString@ teamLeaderboardComputeType, const string &in matchScoreDirection) {
     this._id = id;
     this._qualifierChallengeId = qualifierChallengeId;
     this._position = position;
@@ -23,7 +23,7 @@ shared class CompRound {
     this._name = name;
     this._status = status;
     this._leaderboardComputeType = leaderboardComputeType;
-    this._teamLeaderboardComputeType = teamLeaderboardComputeType;
+    @this._teamLeaderboardComputeType = teamLeaderboardComputeType;
     this._matchScoreDirection = matchScoreDirection;
   }
   
@@ -39,7 +39,7 @@ shared class CompRound {
       this._name = j["name"];
       this._status = j["status"];
       this._leaderboardComputeType = j["leaderboardComputeType"];
-      this._teamLeaderboardComputeType = j["teamLeaderboardComputeType"];
+      @this._teamLeaderboardComputeType = MaybeOfString(j["teamLeaderboardComputeType"]);
       this._matchScoreDirection = j["matchScoreDirection"];
     } catch {
       OnFromJsonError(j);
@@ -57,7 +57,7 @@ shared class CompRound {
     j["name"] = _name;
     j["status"] = _status;
     j["leaderboardComputeType"] = _leaderboardComputeType;
-    j["teamLeaderboardComputeType"] = _teamLeaderboardComputeType;
+    j["teamLeaderboardComputeType"] = _teamLeaderboardComputeType.ToJson();
     j["matchScoreDirection"] = _matchScoreDirection;
     return j;
   }
@@ -104,7 +104,7 @@ shared class CompRound {
     return this._leaderboardComputeType;
   }
   
-  const string get_teamLeaderboardComputeType() const {
+  MaybeOfString@ get_teamLeaderboardComputeType() const {
     return this._teamLeaderboardComputeType;
   }
   
@@ -115,7 +115,7 @@ shared class CompRound {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRound('
-      + string::Join({'id=' + '' + id, 'qualifierChallengeId=' + '' + qualifierChallengeId, 'position=' + '' + position, 'nbMatches=' + '' + nbMatches, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'name=' + name, 'status=' + status, 'leaderboardComputeType=' + leaderboardComputeType, 'teamLeaderboardComputeType=' + teamLeaderboardComputeType, 'matchScoreDirection=' + matchScoreDirection}, ', ')
+      + string::Join({'id=' + '' + id, 'qualifierChallengeId=' + '' + qualifierChallengeId, 'position=' + '' + position, 'nbMatches=' + '' + nbMatches, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'name=' + name, 'status=' + status, 'leaderboardComputeType=' + leaderboardComputeType, 'teamLeaderboardComputeType=' + teamLeaderboardComputeType.ToString(), 'matchScoreDirection=' + matchScoreDirection}, ', ')
       + ')';
   }
   
@@ -151,14 +151,18 @@ shared class CompRound {
     ret += TRS_WrapString(_name) + ",";
     ret += TRS_WrapString(_status) + ",";
     ret += TRS_WrapString(_leaderboardComputeType) + ",";
-    ret += TRS_WrapString(_teamLeaderboardComputeType) + ",";
+    ret += TRS_WrapString(_teamLeaderboardComputeType.ToRowString()) + ",";
     ret += TRS_WrapString(_matchScoreDirection) + ",";
     return ret;
   }
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
 }
 
@@ -167,70 +171,125 @@ namespace _CompRound {
   shared CompRound@ FromRowString(const string &in str) {
     string chunk = '', remainder = str;
     array<string> tmp = array<string>(2);
-    uint chunkLen;
+    uint chunkLen = 0;
     /* Parse field: id of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint id = Text::ParseInt(chunk);
     /* Parse field: qualifierChallengeId of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint qualifierChallengeId = Text::ParseInt(chunk);
     /* Parse field: position of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint position = Text::ParseInt(chunk);
     /* Parse field: nbMatches of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint nbMatches = Text::ParseInt(chunk);
     /* Parse field: startDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint startDate = Text::ParseInt(chunk);
     /* Parse field: endDate of type: uint */
-    tmp = remainder.Split(',', 2);
-    chunk = tmp[0]; remainder = tmp[1];
+    try {
+      tmp = remainder.Split(',', 2);
+      chunk = tmp[0]; remainder = tmp[1];
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     uint endDate = Text::ParseInt(chunk);
     /* Parse field: name of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string name = chunk;
     /* Parse field: status of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string status = chunk;
     /* Parse field: leaderboardComputeType of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string leaderboardComputeType = chunk;
-    /* Parse field: teamLeaderboardComputeType of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
-    string teamLeaderboardComputeType = chunk;
+    /* Parse field: teamLeaderboardComputeType of type: MaybeOfString@ */
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
+    MaybeOfString@ teamLeaderboardComputeType = _MaybeOfString::FromRowString(chunk);
     /* Parse field: matchScoreDirection of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string matchScoreDirection = chunk;
     return CompRound(id, qualifierChallengeId, position, nbMatches, startDate, endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection);
   }

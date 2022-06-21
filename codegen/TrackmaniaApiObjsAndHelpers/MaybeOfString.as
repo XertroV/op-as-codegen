@@ -46,7 +46,11 @@ shared class MaybeOfString {
   
   private const string TRS_WrapString(const string &in s) {
     string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    return '(' + _s.Length + ':' + _s + ')';
+    string ret = '(' + _s.Length + ':' + _s + ')';
+    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
+      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
+    }
+    return ret;
   }
   
   Json::Value ToJson() {
@@ -94,12 +98,17 @@ namespace _MaybeOfString {
       return MaybeOfString();
     }
     /* Parse field: val of type: string */
-    FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-    tmp = remainder.SubStr(1).Split(':', 2);
-    chunkLen = Text::ParseInt(tmp[0]);
-    chunk = tmp[1].SubStr(0, chunkLen);
-    FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    remainder = tmp[1].SubStr(chunkLen + 2);
+    try {
+      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+      tmp = remainder.SubStr(1).Split(':', 2);
+      chunkLen = Text::ParseInt(tmp[0]);
+      chunk = tmp[1].SubStr(0, chunkLen);
+      remainder = tmp[1].SubStr(chunkLen + 2);
+      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
+    } catch {
+      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+      throw(getExceptionInfo());
+    }
     string val = chunk;
     return MaybeOfString(chunk);
   }

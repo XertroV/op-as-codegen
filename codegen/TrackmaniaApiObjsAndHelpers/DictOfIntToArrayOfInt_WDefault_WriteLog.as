@@ -1,4 +1,4 @@
-shared class DictOfTrackOfTheDayEntry_WriteLog {
+shared class DictOfIntToArrayOfInt_WDefault_WriteLog {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
@@ -7,21 +7,21 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   private bool _initialized = false;
   
   /* Methods // Mixin: Dict Backing */
-  DictOfTrackOfTheDayEntry_WriteLog(const string &in logDir, const string &in logFile) {
+  DictOfIntToArrayOfInt_WDefault_WriteLog(const string &in logDir, const string &in logFile) {
     @_d = dictionary();
     InitLog(logDir, logFile);
   }
   
-  private const string K(const string &in key) const {
-    return key;
+  private const string K(int key) const {
+    return '' + key;
   }
   
-  TrackOfTheDayEntry@ Get(const string &in key) const {
-    return cast<TrackOfTheDayEntry@>(_d[K(key)]);
+  const int[]@ Get(int key) const {
+    return cast<array<int>>(_d[K(key)]);
   }
   
-  const TrackOfTheDayEntry@[]@ GetMany(const string[] &in keys) const {
-    array<TrackOfTheDayEntry@> ret = {};
+  const array<int>[]@ GetMany(const int[] &in keys) const {
+    array<array<int>> ret = {};
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
       ret.InsertLast(Get(key));
@@ -29,17 +29,23 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
+  const int[]@ GetOrDefault(int key) {
+    if (!Exists(key)) {
+      Set(key, {});
+    }
+    return Get(key);
+  }
   
-  void Set(const string &in key, TrackOfTheDayEntry@ value) {
-    @_d[K(key)] = value;
+  void Set(int key, const int[] &in value) {
+    _d[K(key)] = value;
     WriteOnSet(key, value);
   }
   
-  bool Exists(const string &in key) {
+  bool Exists(int key) {
     return _d.Exists(K(key));
   }
   
-  uint CountExists(const string[] &in keys) {
+  uint CountExists(const int[] &in keys) {
     uint ret = 0;
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
@@ -48,17 +54,23 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
-  array<string>@ GetKeys() const {
-    return _d.GetKeys();
+  const int[]@ GetKeys() const {
+    array<int> ret = {};
+    auto _keys = _d.GetKeys();
+    for (uint i = 0; i < _keys.Length; i++) {
+      auto _k = _keys[i];
+      ret.InsertLast(Text::ParseInt(_k));
+    }
+    return ret;
   }
   
-  _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ GetItem(const string &in key) const {
-    return _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, Get(key));
+  _DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair@ GetItem(int key) const {
+    return _DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair(key, Get(key));
   }
   
-  array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>@ GetItems() const {
-    array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@> ret = array<_DictOfTrackOfTheDayEntry_WriteLog::KvPair@>(GetSize());
-    array<string> keys = GetKeys();
+  array<_DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair@>@ GetItems() const {
+    array<_DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair@> ret = array<_DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair@>(GetSize());
+    array<int> keys = GetKeys();
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
       @ret[i] = GetItem(key);
@@ -66,7 +78,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return ret;
   }
   
-  TrackOfTheDayEntry@ opIndex(const string &in key) {
+  const int[]@ opIndex(int key) {
     return Get(key);
   }
   
@@ -74,7 +86,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     return _d.GetSize();
   }
   
-  bool Delete(const string &in key) {
+  bool Delete(int key) {
     return _d.Delete(K(key));
   }
   
@@ -86,7 +98,7 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   /* Dict Optional: Write Log = True */
   private void InitLog(const string &in logDir, const string &in logFile) {
     _logPath = logDir + '/' + logFile;
-    trace('DictOfTrackOfTheDayEntry_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
+    trace('DictOfIntToArrayOfInt_WDefault_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
     if (logDir.Length == 0) {
       throw('Invalid path: ' + _logPath);
     }
@@ -110,13 +122,13 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
         lineNum++;
         fb.Seek(1, 1);
         try {
-          auto kv = _DictOfTrackOfTheDayEntry_WriteLog::_KvPair::FromRowString(line);
-          @_d[K(kv.key)] = kv.val;
+          auto kv = _DictOfIntToArrayOfInt_WDefault_WriteLog::_KvPair::FromRowString(line);
+          _d[K(kv.key)] = kv.val;
         } catch {
           throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\nException info: ' + getExceptionInfo());
         }
       }
-      trace('\\$a4fDictOfTrackOfTheDayEntry_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+      trace('\\$a4fDictOfIntToArrayOfInt_WDefault_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
       f.Close();
     } else {
       IO::File f(_logPath, IO::FileMode::Write);
@@ -135,8 +147,8 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
     }
   }
   
-  private void WriteOnSet(const string &in key, TrackOfTheDayEntry@ value) {
-    _DictOfTrackOfTheDayEntry_WriteLog::KvPair@ p = _DictOfTrackOfTheDayEntry_WriteLog::KvPair(key, value);
+  private void WriteOnSet(int key, const int[] &in value) {
+    _DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair@ p = _DictOfIntToArrayOfInt_WDefault_WriteLog::KvPair(key, value);
     string s = p.ToRowString();
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(Text::Format('%08d', s.Length));
@@ -151,33 +163,42 @@ shared class DictOfTrackOfTheDayEntry_WriteLog {
   }
 }
 
-namespace _DictOfTrackOfTheDayEntry_WriteLog {
+namespace _DictOfIntToArrayOfInt_WDefault_WriteLog {
   /* Namespace // Mixin: Dict Backing */
   shared class KvPair {
     /* Properties // Mixin: Default Properties */
-    private string _key;
-    private TrackOfTheDayEntry@ _val;
+    private int _key;
+    private array<int> _val;
     
     /* Methods // Mixin: Default Constructor */
-    KvPair(const string &in key, TrackOfTheDayEntry@ val) {
+    KvPair(int key, const int[] &in val) {
       this._key = key;
-      @this._val = val;
+      this._val = val;
     }
     
     /* Methods // Mixin: Getters */
-    const string get_key() const {
+    int get_key() const {
       return this._key;
     }
     
-    TrackOfTheDayEntry@ get_val() const {
+    const int[]@ get_val() const {
       return this._val;
     }
     
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + key, 'val=' + val.ToString()}, ', ')
+        + string::Join({'key=' + '' + key, 'val=' + TS_Array_int(val)}, ', ')
         + ')';
+    }
+    
+    private const string TS_Array_int(const array<int> &in arr) {
+      string ret = '{';
+      for (uint i = 0; i < arr.Length; i++) {
+        if (i > 0) ret += ', ';
+        ret += '' + arr[i];
+      }
+      return ret + '}';
     }
     
     /* Methods // Mixin: Op Eq */
@@ -185,17 +206,24 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       if (other is null) {
         return false; // this obj can never be null.
       }
+      bool _tmp_arrEq_val = _val.Length == other.val.Length;
+      for (uint i = 0; i < _val.Length; i++) {
+        if (!_tmp_arrEq_val) {
+          break;
+        }
+        _tmp_arrEq_val = _tmp_arrEq_val && (_val[i] == other.val[i]);
+      }
       return true
         && _key == other.key
-        && _val == other.val
+        && _tmp_arrEq_val
         ;
     }
     
     /* Methods // Mixin: Row Serialization */
     const string ToRowString() {
       string ret = "";
-      ret += TRS_WrapString(_key) + ",";
-      ret += TRS_WrapString(_val.ToRowString()) + ",";
+      ret += '' + _key + ",";
+      ret += TRS_WrapString(TRS_Array_int(_val)) + ",";
       return ret;
     }
     
@@ -207,6 +235,14 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       }
       return ret;
     }
+    
+    private const string TRS_Array_int(const array<int> &in arr) {
+      string ret = '';
+      for (uint i = 0; i < arr.Length; i++) {
+        ret += '' + arr[i] + ',';
+      }
+      return ret;
+    }
   }
   
   namespace _KvPair {
@@ -215,7 +251,16 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
       string chunk = '', remainder = str;
       array<string> tmp = array<string>(2);
       uint chunkLen = 0;
-      /* Parse field: key of type: string */
+      /* Parse field: key of type: int */
+      try {
+        tmp = remainder.Split(',', 2);
+        chunk = tmp[0]; remainder = tmp[1];
+      } catch {
+        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+        throw(getExceptionInfo());
+      }
+      int key = Text::ParseInt(chunk);
+      /* Parse field: val of type: array<int> */
       try {
         FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
         tmp = remainder.SubStr(1).Split(':', 2);
@@ -227,21 +272,26 @@ namespace _DictOfTrackOfTheDayEntry_WriteLog {
         warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
         throw(getExceptionInfo());
       }
-      string key = chunk;
-      /* Parse field: val of type: TrackOfTheDayEntry@ */
-      try {
-        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-        tmp = remainder.SubStr(1).Split(':', 2);
-        chunkLen = Text::ParseInt(tmp[0]);
-        chunk = tmp[1].SubStr(0, chunkLen);
-        remainder = tmp[1].SubStr(chunkLen + 2);
-        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      } catch {
-        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-        throw(getExceptionInfo());
-      }
-      TrackOfTheDayEntry@ val = _TrackOfTheDayEntry::FromRowString(chunk);
+      array<int> val = FRS_Array_int(chunk);
       return KvPair(key, val);
+    }
+    
+    shared const array<int>@ FRS_Array_int(const string &in str) {
+      array<int> ret = array<int>(0);
+      string chunk = '', remainder = str;
+      array<string> tmp = array<string>(2);
+      uint chunkLen = 0;
+      while (remainder.Length > 0) {
+        try {
+          tmp = remainder.Split(',', 2);
+          chunk = tmp[0]; remainder = tmp[1];
+        } catch {
+          warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
+          throw(getExceptionInfo());
+        }
+        ret.InsertLast(Text::ParseInt(chunk));
+      }
+      return ret;
     }
     
     shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {

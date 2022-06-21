@@ -80,7 +80,7 @@ arbitraryFromJType JNull = (arbitrary :: Gen Unit) <#> (\_ -> "NULL")
 arbitraryFromJType JBool = (arbitrary :: Gen Boolean) <#> (\b -> if b then "true" else "false")
 
 -- helpful to add for debug mb: <#> B64.encode
-arbitraryFromJType JString = (stripChars "\"\n\\" <$> arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
+arbitraryFromJType JString = (stripChars "\"\n\r\x0b\x0c\x1c\x1d\x1e\x85\x2028\x2029\\" <$> arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
 
 arbitraryFromJType (JArray t) = genIntRarelyZero >>= (\i -> vectorOf i (arbitraryFromJType t)) <#> (\vs -> "{" <> joinWith ", " vs <> "}")
 
