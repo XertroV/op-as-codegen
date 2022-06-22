@@ -264,7 +264,6 @@ namespace _TotdMonth {
   
   shared const array<TrackOfTheDayEntry@>@ RFB_Array_TrackOfTheDayEntry(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
-    print('RFB array len: ' + len);
     array<TrackOfTheDayEntry@> arr = array<TrackOfTheDayEntry@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _TrackOfTheDayEntry::ReadFromBuffer(buf);

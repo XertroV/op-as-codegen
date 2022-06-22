@@ -42,9 +42,7 @@ bufArg = "Buffer@ &in buf"
 writeToBufFn :: Array JField -> AsFunction
 writeToBufFn fields =
   wrapFunction' "void" "WriteToBuffer" [ bufArg ]
-    $ [-- "print('Bytes required: ' + CountBufBytes());" -- , "buf.Resize(buf.GetSize() + CountBufBytes());"
-      ]
-    <> (_writeToBufFrom "buf" <$> propFields)
+    $ (_writeToBufFrom "buf" <$> propFields)
   where
   propFields = toPropFields fields
 
@@ -63,10 +61,6 @@ cbb_Fn fields =
 wtb_arrayFn :: JType -> AsFunction
 wtb_arrayFn arrTy =
   mkFunction
-    -- $ [ stmt $ "uint bytes = " <> (cbb_arrayFn arrTy).callRaw [ "arr" ] ]
-    
-    -- <> [ --  "buf.Resize(buf.GetSize() + bytes);", "buf.Write(uint(arr.Length));"]
-    
     $ [ "buf.Write(uint(arr.Length));" ]
     <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
         [ _writeToBufFrom "buf" (JField "el" arrTy) ]
@@ -87,7 +81,6 @@ rfb_arrayFn :: JType -> AsFunction
 rfb_arrayFn arrTy =
   wrapFunction' ("shared const " <> arrayTypeAs <> "@") (rfb_arrayFnName arrTy) [ bufArg ]
     $ [ "uint len = buf.ReadUInt32();"
-      , "print('RFB array len: ' + len);"
       , arrayTypeAs <> " arr = " <> arrayTypeAs <> "(len);"
       ]
     <> forLoopArray "i" "arr"
@@ -140,11 +133,8 @@ test_ToFromBuffer _ms o@(JsonObj objName fields) = { fnName, ls }
     wrapFunction "bool" checkerFnName fields
       $ [ objTy <> " tmp = " <> fnCall objName args <> ";"
         , "Buffer@ buf = Buffer();"
-        -- , "print('buf size pre: ' + buf.GetSize());"
         , "tmp.WriteToBuffer(buf);"
-        -- , "print('buf size post: ' + buf.GetSize());"
         , "buf.Seek(0, 0);"
-        -- , "print('buf size post seek: ' + buf.GetSize());"
         , "assert(tmp == " <> fnCall ("_" <> objName <> ns <> "ReadFromBuffer") [ "buf" ] <> ", 'ToFromBuffer fail: ' + tmp.ToString());"
         , "return true;"
         ]

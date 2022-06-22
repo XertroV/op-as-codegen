@@ -167,20 +167,9 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       -- , "string s = p.ToRowString();"
       , "Buffer@ buf = Buffer();"
       , "p.WriteToBuffer(buf);"
-      , "print('WriteOnSet buf.GetSize: ' + buf.GetSize());"
-      , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
       , "buf.Seek(0, 0);"
-      , "print('WriteOnSet buf.GetSize: ' + buf.GetSize());"
-      , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
-      -- , "string s = buf.ReadToBase64(buf.GetSize());"
-      -- , "print('WriteOnSet s.Length: ' + s.Length + ' ; s: ' + s);"
-      -- , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
       , "IO::File f(_logPath, IO::FileMode::Append);"
-      -- , "f.Write(Text::Format('%08d', s.Length));"
-      -- , "f.WriteLine(s);"
       , "f.Write(buf._buf);"
-      -- , "print('write line of length: ' + uint(s.Length));"
-      -- , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -188,7 +177,6 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     wrapFunction "private void" "WriteLogOnResetAll" []
       [ "IO::File f(_logPath, IO::FileMode::Write);"
       , "f.Write('');"
-      -- , "f.Flush();"
       , "f.Close();"
       ]
 
@@ -197,11 +185,9 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       $ wrapIfElse "IO::FileExists(_logPath)"
           ( [ "uint start = Time::Now;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
-            , "Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));"
-            -- , "Buffer@ fb = Buffer(f.Read(f.Size()));"
+            -- , "Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));"
+            , "Buffer@ fb = Buffer(f.Read(f.Size()));"
             , "f.Close();"
-            , "uint lineNum = 0;"
-            , "string line;"
             ]
               <> ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
                     "!fb.AtEnd()"

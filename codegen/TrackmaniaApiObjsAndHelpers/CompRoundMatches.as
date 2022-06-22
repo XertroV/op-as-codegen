@@ -210,7 +210,6 @@ namespace _CompRoundMatches {
   
   shared const array<CompRoundMatch@>@ RFB_Array_CompRoundMatch(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
-    print('RFB array len: ' + len);
     array<CompRoundMatch@> arr = array<CompRoundMatch@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _CompRoundMatch::ReadFromBuffer(buf);

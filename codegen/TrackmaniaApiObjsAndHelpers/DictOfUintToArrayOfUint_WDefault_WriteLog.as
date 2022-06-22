@@ -112,10 +112,8 @@ shared class DictOfUintToArrayOfUint_WDefault_WriteLog {
     if (IO::FileExists(_logPath)) {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
-      Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));
+      Buffer@ fb = Buffer(f.Read(f.Size()));
       f.Close();
-      uint lineNum = 0;
-      string line;
       while (!fb.AtEnd()) {
         auto kv = _DictOfUintToArrayOfUint_WDefault_WriteLog::_KvPair::ReadFromBuffer(fb);
         _d[K(kv.key)] = kv.val;
@@ -143,11 +141,7 @@ shared class DictOfUintToArrayOfUint_WDefault_WriteLog {
     _DictOfUintToArrayOfUint_WDefault_WriteLog::KvPair@ p = _DictOfUintToArrayOfUint_WDefault_WriteLog::KvPair(key, value);
     Buffer@ buf = Buffer();
     p.WriteToBuffer(buf);
-    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
-    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
     buf.Seek(0, 0);
-    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
-    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(buf._buf);
     f.Close();
@@ -348,7 +342,6 @@ namespace _DictOfUintToArrayOfUint_WDefault_WriteLog {
     
     shared const array<uint>@ RFB_Array_Uint(Buffer@ &in buf) {
       uint len = buf.ReadUInt32();
-      print('RFB array len: ' + len);
       array<uint> arr = array<uint>(len);
       for (uint i = 0; i < arr.Length; i++) {
         arr[i] = buf.ReadUInt32();

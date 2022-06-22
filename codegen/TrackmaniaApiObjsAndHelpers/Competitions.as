@@ -210,7 +210,6 @@ namespace _Competitions {
   
   shared const array<Competition@>@ RFB_Array_Competition(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
-    print('RFB array len: ' + len);
     array<Competition@> arr = array<Competition@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _Competition::ReadFromBuffer(buf);

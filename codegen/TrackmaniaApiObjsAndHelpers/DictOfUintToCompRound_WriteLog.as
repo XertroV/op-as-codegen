@@ -106,10 +106,8 @@ shared class DictOfUintToCompRound_WriteLog {
     if (IO::FileExists(_logPath)) {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
-      Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));
+      Buffer@ fb = Buffer(f.Read(f.Size()));
       f.Close();
-      uint lineNum = 0;
-      string line;
       while (!fb.AtEnd()) {
         auto kv = _DictOfUintToCompRound_WriteLog::_KvPair::ReadFromBuffer(fb);
         @_d[K(kv.key)] = kv.val;
@@ -137,11 +135,7 @@ shared class DictOfUintToCompRound_WriteLog {
     _DictOfUintToCompRound_WriteLog::KvPair@ p = _DictOfUintToCompRound_WriteLog::KvPair(key, value);
     Buffer@ buf = Buffer();
     p.WriteToBuffer(buf);
-    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
-    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
     buf.Seek(0, 0);
-    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
-    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
     IO::File f(_logPath, IO::FileMode::Append);
     f.Write(buf._buf);
     f.Close();

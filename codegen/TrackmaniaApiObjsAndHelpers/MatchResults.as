@@ -272,7 +272,6 @@ namespace _MatchResults {
   
   shared const array<MatchResult@>@ RFB_Array_MatchResult(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
-    print('RFB array len: ' + len);
     array<MatchResult@> arr = array<MatchResult@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _MatchResult::ReadFromBuffer(buf);

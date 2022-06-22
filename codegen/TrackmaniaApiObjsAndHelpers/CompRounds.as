@@ -210,7 +210,6 @@ namespace _CompRounds {
   
   shared const array<CompRound@>@ RFB_Array_CompRound(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
-    print('RFB array len: ' + len);
     array<CompRound@> arr = array<CompRound@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _CompRound::ReadFromBuffer(buf);
