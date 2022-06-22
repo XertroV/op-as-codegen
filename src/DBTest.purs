@@ -73,11 +73,14 @@ dictGen opts@{ valType } = { cls, obj }
       $ [ mxCommonTesting, mxDefaultProps, mxDictBacking opts ]
       <> opts.extraMixins
 
-dictStr :: { cls :: AsClass, obj :: JsonObj }
-dictStr = dictGen $ mkDO JString
+stdDictTypes = [ JBool, JUint, JInt, JString ]
 
-dictInt :: { cls :: AsClass, obj :: JsonObj }
-dictInt = dictGen $ mkDO JInt
+stdDictOpts t = [ mkDO t, (mkDO t) { writeLog = true } ]
+
+stdDicts = do
+  ty <- stdDictTypes
+  opts <- stdDictOpts ty
+  pure $ dictGen opts
 
 dictChallenge :: { cls :: AsClass, obj :: JsonObj }
 dictChallenge = dictGen $ mkDO $ JObject codecChallenge
@@ -272,16 +275,12 @@ tmMapDb = dictGen $ (mkDO $ JObject tmMap.obj) { writeLog = true }
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
-  [ dictStr.cls
-  , challengeCls
+  [ challengeCls
   , challenges.cls
-  , dictInt.cls
   , dictIndex.cls
   , dictUintIndex.cls
   , dictChallenge.cls
   , dWlChallenge.cls
-  -- , challengeDb2.cls
-  -- , codecChallengeDbCls
   , competition.cls
   , competitions.cls
   , compsDb.cls
@@ -301,3 +300,4 @@ everything =
   , tmMap.cls
   , tmMapDb.cls
   ]
+    <> (stdDicts <#> (_.cls))
