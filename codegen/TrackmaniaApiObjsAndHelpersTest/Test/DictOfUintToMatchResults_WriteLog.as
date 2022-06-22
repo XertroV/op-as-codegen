@@ -58,6 +58,9 @@ namespace Test_DictOfUintToMatchResults_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfUintToMatchResults_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToMatchResults_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfUintToMatchResults_WriteLog.txt');
+    }
     DictOfUintToMatchResults_WriteLog@ testDict = DictOfUintToMatchResults_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToMatchResults_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -104,7 +107,6 @@ namespace Test_DictOfUintToMatchResults_WriteLog {
     Test_ProxyFns_DictOfUintToMatchResults_WriteLog(testDict, 40, 868395, MatchResults(127433, "֬练䮋玴䁞鉟૆", "㒝蜓", {MatchResult(MaybeOfUint(), MaybeOfUint(870485), "䇁", ""), MatchResult(MaybeOfUint(457103), MaybeOfUint(757192), "쨧䗾遝", ""), MatchResult(MaybeOfUint(857488), MaybeOfUint(), "㟈턩ꎘ龎", "俨Ͱﮕ䜝隳")}));
     Test_ProxyFns_DictOfUintToMatchResults_WriteLog(testDict, 41, 463894, MatchResults(38565, "衮ॎ", "榗", {MatchResult(MaybeOfUint(360261), MaybeOfUint(801412), "置ခ㐄⒃Щ᳏", "ꖊ頪ဲ㷒繁鮬"), MatchResult(MaybeOfUint(821639), MaybeOfUint(130383), "ꔖ", "ﾠὦ螲�റ"), MatchResult(MaybeOfUint(876661), MaybeOfUint(574618), "ᶄ턧ꍬ㲲析ꝵ枠", "穏Åደ")}));
     Test_ProxyFns_DictOfUintToMatchResults_WriteLog(testDict, 42, 317488, MatchResults(713463, "䣯걯會�鑒鸐韼", "쟠觬攳賤ᧄ汏", {MatchResult(MaybeOfUint(), MaybeOfUint(873720), "ꑋ뉉⇜熔ᤥᖻ", "롊"), MatchResult(MaybeOfUint(10911), MaybeOfUint(392855), "溹ퟹኊ훬錱⼭", "躷")}));
-    assert(42*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToMatchResults_WriteLog.txt')), "Should have written exactly 42*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfUintToMatchResults_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfUintToMatchResults_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfUintToMatchResults_WriteLog.txt');

@@ -58,6 +58,9 @@ namespace Test_DictOfInt {
   }
   
   void UnitTest_DictBacking_DictOfInt() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfInt.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfInt.txt');
+    }
     DictOfInt@ testDict = DictOfInt();
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();

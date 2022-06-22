@@ -100,21 +100,13 @@ shared class DictOfCompetition_WriteLog {
     if (IO::FileExists(_logPath)) {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
-      MemoryBuffer fb = f.Read(f.Size());
+      Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));
       f.Close();
       uint lineNum = 0;
       string line;
       while (!fb.AtEnd()) {
-        uint len = Text::ParseUInt(fb.ReadString(8));
-        line = fb.ReadString(len);
-        lineNum++;
-        fb.Seek(1, 1);
-        try {
-          auto kv = _DictOfCompetition_WriteLog::_KvPair::FromRowString(line);
-          @_d[K(kv.key)] = kv.val;
-        } catch {
-          throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\nException info: ' + getExceptionInfo());
-        }
+        auto kv = _DictOfCompetition_WriteLog::_KvPair::ReadFromBuffer(fb);
+        @_d[K(kv.key)] = kv.val;
       }
       trace('\\$a4fDictOfCompetition_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
       f.Close();
@@ -137,10 +129,15 @@ shared class DictOfCompetition_WriteLog {
   
   private void WriteOnSet(const string &in key, Competition@ value) {
     _DictOfCompetition_WriteLog::KvPair@ p = _DictOfCompetition_WriteLog::KvPair(key, value);
-    string s = p.ToRowString();
+    Buffer@ buf = Buffer();
+    p.WriteToBuffer(buf);
+    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
+    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
+    buf.Seek(0, 0);
+    print('WriteOnSet buf.GetSize: ' + buf.GetSize());
+    print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());
     IO::File f(_logPath, IO::FileMode::Append);
-    f.Write(Text::Format('%08d', s.Length));
-    f.WriteLine(s);
+    f.Write(buf._buf);
     f.Close();
   }
   

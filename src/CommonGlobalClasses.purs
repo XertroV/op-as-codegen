@@ -64,6 +64,7 @@ bufferClass = { name, mixins, mainFile, testFile, obj }
           [ props
           , const.decl
           , constFromBuf.decl
+          , constFromStr.decl
           , pxGetSize.decl
           , pxAtEnd.decl
           , pxSeek.decl
@@ -90,15 +91,25 @@ bufferClass = { name, mixins, mainFile, testFile, obj }
           , pxWriteF.decl
           , pxWriteD.decl
           , pxWriteStr.decl
+          , pxReadToBase64.decl
+          , pxWriteFromBase64.decl
           ]
 
   props = [ "MemoryBuffer _buf = MemoryBuffer(0);" ]
 
   const = wrapConstructor "Buffer" [] []
 
-  constFromBuf =
+  constFromStr =
     wrapConstructor' "Buffer" [ "const string &in str" ]
-      [ "_buf.Write(str);" ]
+      [ "_buf.WriteFromBase64(str);"
+      , "_buf.Seek(0, 0);"
+      ]
+
+  constFromBuf =
+    wrapConstructor' "Buffer" [ "MemoryBuffer &in mb" ]
+      [ "_buf.WriteFromBase64(mb.ReadToBase64(mb.GetSize()));"
+      , "_buf.Seek(0, 0);"
+      ]
 
   pxGetSize = proxyFnRet "uint" "GetSize"
 
@@ -134,7 +145,6 @@ bufferClass = { name, mixins, mainFile, testFile, obj }
 
   pxReadStr = proxyFn1Ret "const string" "ReadString" (JField "l" JUint)
 
-  -- todo Write (and variants)
   pxWriteU = proxyFn1Ret' "void" "Write" "uint &in v"
 
   pxWriteU8 = proxyFn1Ret' "void" "Write" "uint8 &in v"
@@ -157,8 +167,10 @@ bufferClass = { name, mixins, mainFile, testFile, obj }
 
   pxWriteStr = proxyFn1Ret' "void" "Write" "const string &in v"
 
-  -- todo ReadToBase64(uint64 size)
-  -- todo WriteFromBase64(csi str)
+  pxReadToBase64 = proxyFn1Ret' "const string" "ReadToBase64" "uint64 v"
+
+  pxWriteFromBase64 = proxyFn1Ret' "void" "WriteFromBase64" "const string &in v"
+
   d = "_buf"
 
   proxyFnRet retTy fName = wrapFunction retTy fName [] [ retNotVoid retTy <> d <> "." <> fName <> "();" ]

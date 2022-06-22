@@ -97,8 +97,8 @@ mainLoop =
         -- check if we can start new tests
         -- if so, start the next one, otherwise wait
         ( [] -- "print('N Tests: ' + " <> nbUts <> " + ' | N Tests Running: ' + " <> nbUtsRunning <> " + ' | N Tests Done: ' + " <> nbUtsDone <> ");" ]
-            <> wrapIf (nbUtsRunning <> " < 10") [ "startnew(UnitTest_RunNext);" ]
-            <> [ "yield();" ]
+            <> wrapIf (nbUtsRunning <> " < 3") [ "startnew(UnitTest_RunNext);" ]
+            <> [ "yield(); yield();" ]
         )
     <> [ printResults.call [] <> ";"
       , "print('Completed ' + " <> nbUts <> " + ' unit tests.');"

@@ -42,10 +42,10 @@ void UnitTest_MainLoop() {
   }
   sleep(25);
   while (_unitTests_counter > _unitTests_nDone) {
-    if (_unitTests_nRunning < 10) {
+    if (_unitTests_nRunning < 3) {
       startnew(UnitTest_RunNext);
     }
-    yield();
+    yield(); yield();
   }
   UnitTest_SuiteComplete_PrintResults();
   print('Completed ' + _unitTests_counter + ' unit tests.');

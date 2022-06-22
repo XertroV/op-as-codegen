@@ -4,8 +4,14 @@ shared class Buffer {
   Buffer() {
   }
   
+  Buffer(MemoryBuffer &in mb) {
+    _buf.WriteFromBase64(mb.ReadToBase64(mb.GetSize()));
+    _buf.Seek(0, 0);
+  }
+  
   Buffer(const string &in str) {
-    _buf.Write(str);
+    _buf.WriteFromBase64(str);
+    _buf.Seek(0, 0);
   }
   
   uint GetSize() {
@@ -110,5 +116,13 @@ shared class Buffer {
   
   void Write(const string &in v) {
     _buf.Write(v);
+  }
+  
+  const string ReadToBase64(uint64 v) {
+    return _buf.ReadToBase64(v);
+  }
+  
+  void WriteFromBase64(const string &in v) {
+    _buf.WriteFromBase64(v);
   }
 }

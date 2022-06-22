@@ -241,6 +241,7 @@ namespace _TotdResp {
   
   shared const array<TotdMonth@>@ RFB_Array_TotdMonth(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
+    print('RFB array len: ' + len);
     array<TotdMonth@> arr = array<TotdMonth@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _TotdMonth::ReadFromBuffer(buf);

@@ -164,10 +164,21 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   writeOnSetFn =
     wrapFunction "private void" "WriteOnSet" [ keyF, valF ]
       [ kvPair <> "@ p = " <> mkKvPair "key" "value" <> ";"
-      , "string s = p.ToRowString();"
+      -- , "string s = p.ToRowString();"
+      , "Buffer@ buf = Buffer();"
+      , "p.WriteToBuffer(buf);"
+      , "print('WriteOnSet buf.GetSize: ' + buf.GetSize());"
+      , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
+      , "buf.Seek(0, 0);"
+      , "print('WriteOnSet buf.GetSize: ' + buf.GetSize());"
+      , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
+      -- , "string s = buf.ReadToBase64(buf.GetSize());"
+      -- , "print('WriteOnSet s.Length: ' + s.Length + ' ; s: ' + s);"
+      -- , "print('WriteOnSet buf.AtEnd: ' + buf.AtEnd());"
       , "IO::File f(_logPath, IO::FileMode::Append);"
-      , "f.Write(Text::Format('%08d', s.Length));"
-      , "f.WriteLine(s);"
+      -- , "f.Write(Text::Format('%08d', s.Length));"
+      -- , "f.WriteLine(s);"
+      , "f.Write(buf._buf);"
       -- , "print('write line of length: ' + uint(s.Length));"
       -- , "f.Flush();"
       , "f.Close();"
@@ -186,27 +197,17 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       $ wrapIfElse "IO::FileExists(_logPath)"
           ( [ "uint start = Time::Now;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
-            , "MemoryBuffer fb = f.Read(f.Size());"
-            -- , "print('buffer getsize: ' + fb.GetSize());"
+            , "Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));"
+            -- , "Buffer@ fb = Buffer(f.Read(f.Size()));"
             , "f.Close();"
             , "uint lineNum = 0;"
             , "string line;"
-            -- , "string allLines = f.ReadToEnd();"
-            -- , "auto lines = allLines.Split('\\n');"
             ]
               <> ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
                     "!fb.AtEnd()"
-                    $ [ "uint len = Text::ParseUInt(fb.ReadString(8));"
-                      -- , "print('reading line of length: ' + len);"
-                      , "line = fb.ReadString(len);"
-                      , "lineNum++;"
-                      , "fb.Seek(1, 1);"
+                    $ [ "auto kv = " <> kvPairNs <> "::ReadFromBuffer(fb);"
+                      , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
                       ]
-                    <> wrapTryCatch
-                        [ "auto kv = " <> kvPairNs <> "::FromRowString(line);"
-                        , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
-                        ]
-                        [ "throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\\nException info: ' + getExceptionInfo());" ]
                 )
               <> [ "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
                 , "f.Close();"
@@ -215,6 +216,39 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
           [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
       <> [ "_initialized = true;" ]
 
+  -- loadWriteLogFromDisk =
+  --   wrapFunction "private void" "LoadWriteLogFromDisk" []
+  --     $ wrapIfElse "IO::FileExists(_logPath)"
+  --         ( [ "uint start = Time::Now;"
+  --           , "IO::File f(_logPath, IO::FileMode::Read);"
+  --           , "Buffer@ fb = Buffer(f.ReadToEnd());"
+  --           -- , "print('buffer getsize: ' + fb.GetSize());"
+  --           , "f.Close();"
+  --           , "uint lineNum = 0;"
+  --           , "string line;"
+  --           -- , "string allLines = f.ReadToEnd();"
+  --           -- , "auto lines = allLines.Split('\\n');"
+  --           ]
+  --             <> ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
+  --                   "!fb.AtEnd()"
+  --                   $ [ "uint len = Text::ParseUInt(fb.ReadString(8));"
+  --                     -- , "print('reading line of length: ' + len);"
+  --                     , "line = fb.ReadString(len);"
+  --                     , "lineNum++;"
+  --                     , "fb.Seek(1, 1);"
+  --                     ]
+  --                   <> wrapTryCatch
+  --                       [ "auto kv = " <> kvPairNs <> "::FromRowString(line);"
+  --                       , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
+  --                       ]
+  --                       [ "throw('Error parsing ' + _logPath + ' on line ' + lineNum + ' via saved entry: ' + line + '.\\nException info: ' + getExceptionInfo());" ]
+  --               )
+  --             <> [ "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
+  --               , "f.Close();"
+  --               ]
+  --         )
+  --         [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
+  --     <> [ "_initialized = true;" ]
   getInit = wrapFunction "bool" "get_Initialized" [] [ "return _initialized;" ]
 
   awaitInit =
@@ -330,14 +364,16 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
 
   mainFn =
     wrapMainTest fnName
-      $ [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
+      $ []
+      <> wrapIf ("IO:" <> ":FileExists(" <> logPath <> ")")
+          [ "IO::Delete(" <> logPath <> ");" ]
+      <> [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
       <> wrapIf "testDict.GetSize() > 0" [ "testDict.DeleteAll();" ]
       <> ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
             allTestArgs
         )
-      -- <> [ "sleep(50);" ]
+      -- <> preDeleteAllTestExtra
       
-      <> preDeleteAllTestExtra
       <> assertIfLoadFromDisk
       <> [ "testDict.DeleteAll();"
         , "assert(0 == testDict.GetSize(), '.DeleteAll');"

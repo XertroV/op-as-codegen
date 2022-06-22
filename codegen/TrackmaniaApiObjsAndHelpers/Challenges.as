@@ -210,6 +210,7 @@ namespace _Challenges {
   
   shared const array<Challenge@>@ RFB_Array_Challenge(Buffer@ &in buf) {
     uint len = buf.ReadUInt32();
+    print('RFB array len: ' + len);
     array<Challenge@> arr = array<Challenge@>(len);
     for (uint i = 0; i < arr.Length; i++) {
       @arr[i] = _Challenge::ReadFromBuffer(buf);

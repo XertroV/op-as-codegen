@@ -58,6 +58,9 @@ namespace Test_DictOfCompetition_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfCompetition_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfCompetition_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfCompetition_WriteLog.txt');
+    }
     DictOfCompetition_WriteLog@ testDict = DictOfCompetition_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfCompetition_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -100,7 +103,6 @@ namespace Test_DictOfCompetition_WriteLog {
     Test_ProxyFns_DictOfCompetition_WriteLog(testDict, 36, "ꦣ謁ⵁ戻࿎霓얗㴼誏埤", Competition(168762, 971594, 10355, MaybeOfUint(598466), 322227, 825925, "瞬", "訯⽅涒", "뗧䲕봦㨾ᓅ▐", MaybeOfString(""), MaybeOfString(), MaybeOfUint(789461)));
     Test_ProxyFns_DictOfCompetition_WriteLog(testDict, 37, "ꋇ�", Competition(705421, 800636, 821017, MaybeOfUint(), 546496, 967954, "⌙鍧Ⴑ鍸삅銦", "规艿ᡖꑸ䫦䡄叺鼋논", "䕏ꐜ䘗", MaybeOfString("妄鶏悔嫨犃돋⪠斥怺"), MaybeOfString("如䐓ଃ뽘⾻ꀍ蘁㵮쎧"), MaybeOfUint(884044)));
     Test_ProxyFns_DictOfCompetition_WriteLog(testDict, 38, "ꛫĚ躻", Competition(337831, 31351, 504364, MaybeOfUint(966275), 924288, 775519, "�鼒串☂", "뺯퐐", "嗢ỽ突࠱⦣뚮", MaybeOfString(), MaybeOfString(), MaybeOfUint(102356)));
-    assert(38*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfCompetition_WriteLog.txt')), "Should have written exactly 38*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfCompetition_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfCompetition_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfCompetition_WriteLog.txt');

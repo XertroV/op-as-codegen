@@ -58,6 +58,9 @@ namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
   }
   
   void UnitTest_DictBacking_DictOfTrackOfTheDayEntry_WriteLog() {
+    if (IO::FileExists(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfTrackOfTheDayEntry_WriteLog.txt')) {
+      IO::Delete(IO::FromDataFolder('Storage/codegenTest/test') + '/' + 'DictOfTrackOfTheDayEntry_WriteLog.txt');
+    }
     DictOfTrackOfTheDayEntry_WriteLog@ testDict = DictOfTrackOfTheDayEntry_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTrackOfTheDayEntry_WriteLog.txt');
     if (testDict.GetSize() > 0) {
       testDict.DeleteAll();
@@ -101,7 +104,6 @@ namespace Test_DictOfTrackOfTheDayEntry_WriteLog {
     Test_ProxyFns_DictOfTrackOfTheDayEntry_WriteLog(testDict, 37, "燷⑅┠◚〥鑨釅艵", TrackOfTheDayEntry(865567, "肮⇭�ራ䀄乡웪ǿ", 982822, 330394, "ꓻ親꬈䂺", 106838, 614309));
     Test_ProxyFns_DictOfTrackOfTheDayEntry_WriteLog(testDict, 38, "ẕᶯ낪辸⏱霅眾讅䃻", TrackOfTheDayEntry(934603, "虰ҭ㶂㲺ㄖઃ", 597830, 741691, "툩晍睵A雖ᖦ", 395476, 306396));
     Test_ProxyFns_DictOfTrackOfTheDayEntry_WriteLog(testDict, 39, "흱病磙", TrackOfTheDayEntry(911765, "꧈ົͥ瓩ᦽ�∠၌", 539335, 984252, "", 957359, 742441));
-    assert(39*2 == countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfTrackOfTheDayEntry_WriteLog.txt')), "Should have written exactly 39*2 lines to the log, but wrote: " + countFileLines(IO::FromDataFolder('Storage/codegenTest/test/DictOfTrackOfTheDayEntry_WriteLog.txt')));
     // del testDict; // todo: destroy obj but not data.
     auto kvs = testDict.GetItems();
     @testDict = DictOfTrackOfTheDayEntry_WriteLog(IO::FromDataFolder('Storage/codegenTest/test'), 'DictOfTrackOfTheDayEntry_WriteLog.txt');
