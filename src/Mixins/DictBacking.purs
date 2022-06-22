@@ -1,7 +1,7 @@
 module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
-import AsTypes (castOrWrap, jTyIsPrim, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
+import AsTypes (castOrWrap, jTyIsPrim, jTyPascalCase, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
 import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
@@ -425,8 +425,6 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
   thisTy = JObject this
 
   thisF = JField "testDict" thisTy
-
-  this2F = JField "testDict2" thisTy
 
   nonemptyKey ∷ Array String → Boolean
   nonemptyKey [ k, _v ] = S.length k > 2

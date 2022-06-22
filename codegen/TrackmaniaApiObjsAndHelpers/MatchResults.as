@@ -278,4 +278,98 @@ namespace _MatchResults {
     }
     return arr;
   }
+  
+  /* Namespace // Mixin: DirOf */
+  shared class DirOf {
+    /* Properties // Mixin: Default Properties */
+    private dictionary@ _objs;
+    
+    /* Properties // Mixin: DirOfMatchResults */
+    private string _dir;
+    private bool _initialized = false;
+    
+    /* Methods // Mixin: DirOfMatchResults */
+    DirOf(const string &in dir) {
+      @_objs = dictionary();
+      _dir = dir;
+      if (!IO::FolderExists(_dir)) {
+        IO::CreateFolder(_dir, true);
+      }
+      RunInit();
+    }
+    
+    bool get_Initialized() {
+      return _initialized;
+    }
+    
+    void AwaitInitialized() {
+      while (!_initialized) {
+        yield();
+      }
+    }
+    
+    private void RunInit() {
+      auto keys = IO::IndexFolder(_dir, false);
+      for (uint i = 0; i < keys.Length; i++) {
+        auto key = keys[i];
+        if (key.EndsWith('.bin')) {
+          Get(UnK(key.SubStr(0, key.Length - 4)));
+        }
+      }
+      _initialized = true;
+    }
+    
+    private dictionary@ get_objs() {
+      return _objs;
+    }
+    
+    const string K(uint key) {
+      return '' + key;
+    }
+    
+    uint UnK(const string &in keyStr) {
+      return Text::ParseInt(keyStr);
+    }
+    
+    const string GetFileName(uint key) {
+      return K(key) + '.bin';
+    }
+    
+    const string GetFilePath(uint key) {
+      return _dir + '/' + GetFileName(key);
+    }
+    
+    MatchResults@ ReadFileToObj(const string &in path) {
+      IO::File f(path, IO::FileMode::Read);
+      Buffer@ buf = Buffer(f.Read(f.Size()));
+      f.Close();
+      return ReadFromBuffer(buf);
+    }
+    
+    bool Exists(uint key) {
+      return objs.Exists(K(key)) || IO::FileExists(GetFilePath(key));
+    }
+    
+    MatchResults@ Get(uint key) {
+      if (objs.Exists(K(key))) {
+        return cast<MatchResults@>(objs[K(key)]);
+      }
+      MatchResults@ obj;
+      if (IO::FileExists(GetFilePath(key))) {
+        @obj = ReadFileToObj(GetFilePath(key));
+        @objs[K(key)] = obj;
+      }
+      return obj;
+    }
+    
+    void Set(uint key, MatchResults@ val) {
+      IO::File f(GetFilePath(key), IO::FileMode::Write);
+      Buffer@ buf = Buffer();
+      val.WriteToBuffer(buf);
+      buf.Seek(0);
+      f.Write(buf._buf);
+      f.Close();
+    }
+  }
+  
 }

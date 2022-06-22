@@ -275,4 +275,89 @@ namespace _DictOfUintToMatchResults_WriteLog {
       return buf.ReadString(len);
     }
   }
+  
+  /* Namespace // Mixin: DirOf */
+  shared class DirOf {
+    /* Properties // Mixin: Default Properties */
+    private dictionary@ _objs;
+    
+    /* Properties // Mixin: DirOfDictOfUintToMatchResults_WriteLog */
+    private string _dir;
+    private bool _initialized = false;
+    
+    /* Methods // Mixin: DirOfDictOfUintToMatchResults_WriteLog */
+    DirOf(const string &in dir) {
+      @_objs = dictionary();
+      _dir = dir;
+      if (!IO::FolderExists(_dir)) {
+        IO::CreateFolder(_dir, true);
+      }
+      RunInit();
+    }
+    
+    bool get_Initialized() {
+      return _initialized;
+    }
+    
+    void AwaitInitialized() {
+      while (!_initialized) {
+        yield();
+      }
+    }
+    
+    private void RunInit() {
+      auto keys = IO::IndexFolder(_dir, false);
+      for (uint i = 0; i < keys.Length; i++) {
+        auto key = keys[i];
+        if (key.EndsWith('.bin')) {
+          Get(UnK(key.SubStr(0, key.Length - 4)));
+        }
+      }
+      _initialized = true;
+    }
+    
+    private dictionary@ get_objs() {
+      return _objs;
+    }
+    
+    const string K(uint key) {
+      return '' + key;
+    }
+    
+    uint UnK(const string &in keyStr) {
+      return Text::ParseInt(keyStr);
+    }
+    
+    const string GetFileName(uint key) {
+      return K(key) + '.bin';
+    }
+    
+    const string GetFilePath(uint key) {
+      return _dir + '/' + GetFileName(key);
+    }
+    
+    DictOfUintToMatchResults_WriteLog@ ReadFileToObj(const string &in path) {
+      throw('do not call ReadFileToObj for dict');
+      return null;
+    }
+    
+    bool Exists(uint key) {
+      return objs.Exists(K(key)) || IO::FileExists(GetFilePath(key));
+    }
+    
+    DictOfUintToMatchResults_WriteLog@ Get(uint key) {
+      if (objs.Exists(K(key))) {
+        return cast<DictOfUintToMatchResults_WriteLog@>(objs[K(key)]);
+      }
+      DictOfUintToMatchResults_WriteLog@ obj;
+      @obj = DictOfUintToMatchResults_WriteLog(_dir, GetFileName(key));
+      @objs[K(key)] = obj;
+      return obj;
+    }
+    
+    void Set(uint key, DictOfUintToMatchResults_WriteLog@ val) {
+      throw('Do not call .Set on DirOfDict');
+    }
+  }
+  
 }

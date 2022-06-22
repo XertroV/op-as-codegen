@@ -15,6 +15,7 @@ import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultCons (mxDefaultCons, mxEmptyCons, mxEmptyConsWDefaults)
 import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.DictBacking (DictOpts, mkDO, mxDictBacking)
+import Mixins.DirOf (mxDirOf)
 import Mixins.FromGameObj (mxFromGameObj)
 import Mixins.Getters (mxGetters)
 import Mixins.OpEq (mxOpEq)
@@ -182,7 +183,7 @@ matchResult = { cls, obj }
 matchResults :: ClsWithObj
 matchResults = { cls, obj }
   where
-  cls = jsonObjToClass obj [ matchResult.cls ] typicalMixins
+  cls = jsonObjToClass obj [ matchResult.cls ] (typicalMixins <> [ mxDirOf { keyType: JUint } ])
 
   obj =
     object "MatchResults"
@@ -192,7 +193,7 @@ matchResults = { cls, obj }
       # field "results" (JArray (JObject matchResult.obj))
 
 matchResultsDb :: ClsWithObj
-matchResultsDb = dictGen $ (mkDO $ JObject matchResults.obj) { keyType = JUint, writeLog = true }
+matchResultsDb = dictGen $ (mkDO $ JObject matchResults.obj) { keyType = JUint, writeLog = true, extraMixins = [ mxDirOf { keyType: JUint } ] }
 
 totdEntry :: ClsWithObj
 totdEntry = { cls, obj }

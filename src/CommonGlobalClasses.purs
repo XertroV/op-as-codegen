@@ -24,6 +24,7 @@ getCommonClasses cs = requiredCommonClasses
     [ bufferClass ]
       <> _getReqJMaybeClasses cs
 
+{- MAYBES -}
 _getReqJMaybeClasses ∷ Array AsClass → Array AsClass
 _getReqJMaybeClasses cs = getMaybeClassFor <$> (nubEq jMaybeFs)
   where
@@ -47,6 +48,7 @@ getMaybeClassFor t = cls
 
   cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxJMaybes ]
 
+{- BUFFER -}
 bufferClass :: AsClass
 bufferClass = { name, mixins, mainFile, testFile, obj }
   where

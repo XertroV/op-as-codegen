@@ -1,7 +1,7 @@
 module Testing where
 
 import Prelude
-import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapInitedScope, wrapTryCatch, wrapTryCatchFake, wrapWhileLoop)
+import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapInitedScope, wrapTryCatch, wrapTryCatchFake, wrapWhileLoop)
 import ManiaColors (c_green_700, c_orange_600)
 import Types (Lines, AsFunction)
 
@@ -97,8 +97,9 @@ mainLoop =
         -- check if we can start new tests
         -- if so, start the next one, otherwise wait
         ( [] -- "print('N Tests: ' + " <> nbUts <> " + ' | N Tests Running: ' + " <> nbUtsRunning <> " + ' | N Tests Done: ' + " <> nbUtsDone <> ");" ]
-            <> wrapIf (nbUtsRunning <> " < 3") [ "startnew(UnitTest_RunNext);" ]
-            <> [ "yield(); yield();" ]
+            <> wrapIf (nbUtsRunning <> " < 10")
+                [ "startnew(UnitTest_RunNext);" ]
+            <> [ "yield();" ]
         )
     <> [ printResults.call [] <> ";"
       , "print('Completed ' + " <> nbUts <> " + ' unit tests.');"
