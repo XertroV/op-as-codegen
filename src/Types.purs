@@ -68,6 +68,16 @@ isJMaybe j = case j of
   (JMaybe _) -> true
   _ -> false
 
+isJUint ∷ JType → Boolean
+isJUint j = case j of
+  JUint -> true
+  _ -> false
+
+isJInt ∷ JType → Boolean
+isJInt j = case j of
+  JInt -> true
+  _ -> false
+
 object ∷ String → JsonObj
 object name = JsonObj name []
 

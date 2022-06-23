@@ -12,6 +12,7 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Getters (mxGetters)
 import Mixins.JMaybes (mxJMaybes)
 import Mixins.OpEq (mxOpEq)
+import Mixins.OpenplanetFuncs (ioCreateFolder, ioFolderExists)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToFromBuffer (rfbLpStringFn, wtbLpStringFn)
 import Types (JField(..), JType(..), JsonObj(..), Lines, field, getFName, getFTy, object)
@@ -66,20 +67,30 @@ storageLoc = { name, mixins, mainFile, testFile: [], obj }
   mainFile =
     wrapInitedScope ("shared class " <> name)
       $ intercalate ln
-          [ [ "private string _path;" ]
+          [ [ "private string _path;", "private string _dir;" ]
           , constructorFn.decl
           , getPath.decl
+          , getDir.decl
+          , ensureDir.decl
           ]
 
   constructorFn =
     wrapConstructor' name [ "const string &in fileName", "const string &in subDir = ''" ]
-      $ [ "string[] dirs = {'Storage', Meta::ExecutingPlugin()};" ]
+      $ [ "string[] dirs = {'Storage', Meta::ExecutingPlugin().ID};" ]
       <> wrapIf "subDir.Length > 0" [ "dirs.InsertLast(subDir);" ]
-      <> [ "dirs.InsertLast(fileName);"
+      <> [ "_dir = IO::FromDataFolder(string::Join(dirs, '/'));"
+        , "dirs.InsertLast(fileName);"
         , "_path = IO::FromDataFolder(string::Join(dirs, '/'));"
         ]
 
   getPath = wrapFunction "const string" "get_Path" [] [ "return _path;" ]
+
+  getDir = wrapFunction "const string" "get_Dir" [] [ "return _dir;" ]
+
+  ensureDir =
+    wrapFunction "void" "EnsureDirExists" []
+      $ wrapIf ("!" <> ioFolderExists "_dir")
+          [ ioCreateFolder "_dir" <> ";" ]
 
 {- BUFFER -}
 bufferClass :: AsClass

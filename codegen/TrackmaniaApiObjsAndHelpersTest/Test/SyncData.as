@@ -285,48 +285,48 @@ namespace Test_SyncData {
   }
   
   void UnitTest_ToFromBuffer_SyncData() {
-    Test_ToFromBuffer_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒");
-    Test_ToFromBuffer_Check(141231, "엻렒哾๺⾖㻄쪼ﰙ⠁玭");
-    Test_ToFromBuffer_Check(437979, "킅Ề");
-    Test_ToFromBuffer_Check(789556, "밄ꊦ⊼⿕氎꼻");
-    Test_ToFromBuffer_Check(605220, "섌");
-    Test_ToFromBuffer_Check(179363, "汛瀹ፎﬡ賄�匼");
-    Test_ToFromBuffer_Check(906038, "佪�䮞");
-    Test_ToFromBuffer_Check(263354, "푲෗蔃䓥㻥");
-    Test_ToFromBuffer_Check(365118, "䟃넲䗵");
-    Test_ToFromBuffer_Check(322150, "潔箯㉽");
-    Test_ToFromBuffer_Check(547338, "쬙ꅇ᭧봅≹");
-    Test_ToFromBuffer_Check(337261, "ၛⶍ쎦㋥霈�");
-    Test_ToFromBuffer_Check(4946, "︠걿좳樁㠵");
-    Test_ToFromBuffer_Check(67877, "瞄");
-    Test_ToFromBuffer_Check(207150, "ﻊ爛⏂ꥏ꼼砍띑");
-    Test_ToFromBuffer_Check(552233, "㏰鉓켯");
-    Test_ToFromBuffer_Check(675803, "踆");
-    Test_ToFromBuffer_Check(564566, "䩸Ὼ㐚ꂖ摇䞰鄕ꈽ");
-    Test_ToFromBuffer_Check(606676, "᳔䬳⑇勿掝");
-    Test_ToFromBuffer_Check(467845, "㭾멭Პ䑰繤");
-    Test_ToFromBuffer_Check(951853, "퍻䳥");
-    Test_ToFromBuffer_Check(592141, "솛");
-    Test_ToFromBuffer_Check(288796, "奞ͩ줞䟥ፕ⎃");
-    Test_ToFromBuffer_Check(234787, "᪲ꮚ෌ᚸᄺ膲㑅");
-    Test_ToFromBuffer_Check(45702, "ⰳ팑ꇬ䋶");
-    Test_ToFromBuffer_Check(405127, "궈䩓�魓쬣㸕");
-    Test_ToFromBuffer_Check(227499, "巖ㅡ螘笣䨯");
-    Test_ToFromBuffer_Check(571633, "ు盡ₜ阵璫⃔煡");
-    Test_ToFromBuffer_Check(341399, "淡");
-    Test_ToFromBuffer_Check(258409, "ѽ泡誄狋撧곟");
-    Test_ToFromBuffer_Check(925854, "佌Țꡮ殴䉵庨嶏");
-    Test_ToFromBuffer_Check(809993, "㥊ᆺ⻖㋽빽睍");
-    Test_ToFromBuffer_Check(126840, "䒹ਮゴ虻雈皇殤膕");
-    Test_ToFromBuffer_Check(868449, "�〿Ꝼ샛ᣱ");
-    Test_ToFromBuffer_Check(881016, "");
-    Test_ToFromBuffer_Check(266937, "㐟ꯩ㹎ӑ䞖猏鐪");
-    Test_ToFromBuffer_Check(92, "挤");
-    Test_ToFromBuffer_Check(558576, "ꡃ");
-    Test_ToFromBuffer_Check(297578, "⸕숈祭鑚ൃ");
-    Test_ToFromBuffer_Check(848229, "桾뭎挘殤掙얷ᐮ");
-    Test_ToFromBuffer_Check(147932, "");
-    Test_ToFromBuffer_Check(493491, "�䄳凜嬚魯ᄍ");
+    Test_ToFromBuffer_Check(490366, "");
+    Test_ToFromBuffer_Check(426468, "壩괛�㸝赳粢");
+    Test_ToFromBuffer_Check(546426, "");
+    Test_ToFromBuffer_Check(184950, "㑽沒皔�");
+    Test_ToFromBuffer_Check(275544, "ⶭ灁ᏹ㑚ᄟ텻");
+    Test_ToFromBuffer_Check(123656, "ﯹ윶ㅸ꓍咽糥");
+    Test_ToFromBuffer_Check(16729, "䧂攤룷ꠅꊹ뿭");
+    Test_ToFromBuffer_Check(394003, "㍅");
+    Test_ToFromBuffer_Check(542064, "�䓂ൗ㬬䱿학");
+    Test_ToFromBuffer_Check(760473, "进疎崟뺥⁔啉");
+    Test_ToFromBuffer_Check(1464, "ț븶餦ਗ਼玵⌂玍뱑ự");
+    Test_ToFromBuffer_Check(500830, "ꏅ㜔庯쎿命⒯");
+    Test_ToFromBuffer_Check(493127, "䃩벋⛩");
+    Test_ToFromBuffer_Check(668089, "圍㳷ᘙ");
+    Test_ToFromBuffer_Check(966690, "銥롘⣎녿썳");
+    Test_ToFromBuffer_Check(956474, "겧徕");
+    Test_ToFromBuffer_Check(871047, "婗�嗇웖峔䞠");
+    Test_ToFromBuffer_Check(254406, "࡟记Ⴒ늴㐆醁递");
+    Test_ToFromBuffer_Check(499243, "䲏Ȥ");
+    Test_ToFromBuffer_Check(318603, "䴊芺➞ᷟᦊ");
+    Test_ToFromBuffer_Check(379446, "扠排蛬�卻恀墿䌣�癓");
+    Test_ToFromBuffer_Check(193423, "缆罙푅인Ӽ");
+    Test_ToFromBuffer_Check(330939, "⿧�ⷨ㴑縅 弋裚똠綗");
+    Test_ToFromBuffer_Check(611940, "ℤ䃧택髞뺥潹琦欉");
+    Test_ToFromBuffer_Check(201699, "ꞈ짶܊瓽捭ﱋ");
+    Test_ToFromBuffer_Check(691552, "讽ń");
+    Test_ToFromBuffer_Check(841908, "綯臭ध");
+    Test_ToFromBuffer_Check(373377, "褺끤찙뗿");
+    Test_ToFromBuffer_Check(611847, "");
+    Test_ToFromBuffer_Check(821325, "❜料痁혈䒽ꢢ顊꾷㍀");
+    Test_ToFromBuffer_Check(153581, "㫴ݲ");
+    Test_ToFromBuffer_Check(349336, "쉫탑尴ᡰ傹");
+    Test_ToFromBuffer_Check(479024, "냐娫责擔挡賵ঃ");
+    Test_ToFromBuffer_Check(960991, "㸪");
+    Test_ToFromBuffer_Check(674685, "먫ᣆ");
+    Test_ToFromBuffer_Check(638918, "璔氉恌⿇�");
+    Test_ToFromBuffer_Check(7876, "觞影圓倖ŝ䋇ﮥ㇮ᛏ");
+    Test_ToFromBuffer_Check(983162, "Ɉ틛顿");
+    Test_ToFromBuffer_Check(260709, "��짺ၑ珤꼟");
+    Test_ToFromBuffer_Check(173894, "湧섳⒜㓚苵孇᚞粷ּ繞");
+    Test_ToFromBuffer_Check(260068, "㥬ֵ뷨Ŏ猥窣忚軡뿵㏭");
+    Test_ToFromBuffer_Check(786352, "蓞椆욛⪺嶷艒玧");
   }
   
   bool unitTestResults_SyncData_ToFromBuffer = runAsync(Tests_RegisterAll_SyncData_ToFromBuffer);
@@ -336,10 +336,70 @@ namespace Test_SyncData {
     RegisterUnitTest('UnitTest_Persistent_SyncData', UnitTest_Persistent_SyncData);
   }
   
-  bool Check_Persistent_SyncData() {
+  bool Check_Persistent_SyncData(uint lastUpdated, const string &in status) {
+    SyncData@ tmp = SyncData(lastUpdated, status);
+    auto loc = StorageLocation('SyncData.bin');
+    if (IO::FileExists(loc.Path)) {
+      IO::Delete(loc.Path);
+    }
+    tmp.InitPersist(loc);
+    tmp.quiet = true;
+    tmp.Persist();
+    assert(IO::FileExists(loc.Path), 'file should exist after persisting');
+    auto tmp2 = SyncData(loc);
+    assert(tmp == tmp2, 'persisted data should match expected');
+    tmp.lastUpdated += 1;
+    assert(tmp == SyncData(loc), 'mutation should have persisted');
+    assert(tmp != tmp2, 'ensure tmp and tmp2 differ');
+    tmp2.ReloadFromDisk();
+    assert(tmp == tmp2, 'ensure tmp and tmp2 do not differ after reload');
+    return true;
   }
   
   void UnitTest_Persistent_SyncData() {
+    trace('UnitTest_Persistent_SyncData running extra for firstFsIsInt');
+    Check_Persistent_SyncData(883873, "ዿꪹ顂ꭓ軱！");
+    Check_Persistent_SyncData(478225, "䥅뇰㚯態妴ᶄ焟诵ᎋ");
+    Check_Persistent_SyncData(264938, "");
+    Check_Persistent_SyncData(904163, "닼㠠");
+    Check_Persistent_SyncData(826761, "쬅ા鐈");
+    Check_Persistent_SyncData(89268, "");
+    Check_Persistent_SyncData(256839, "⨅砼뛧芀");
+    Check_Persistent_SyncData(949437, "ꃊ");
+    Check_Persistent_SyncData(524862, "");
+    Check_Persistent_SyncData(264667, "홪泍ꀚ");
+    Check_Persistent_SyncData(993695, "ᱹ朕�ꦗ憁෪");
+    Check_Persistent_SyncData(564222, "髃낛⑨༾ྌ쓀�ḉ");
+    Check_Persistent_SyncData(978309, "ه⻮糄");
+    Check_Persistent_SyncData(939164, "䆅躎垜");
+    Check_Persistent_SyncData(712783, "瀶ﵾ⽎ȶ眄烞טּ");
+    Check_Persistent_SyncData(411303, "쭫㻕槄䀮");
+    Check_Persistent_SyncData(178622, "㇈");
+    Check_Persistent_SyncData(905325, "珹㧖");
+    Check_Persistent_SyncData(760686, "㙎뼢⨉㖛엄쳌쁖㟳");
+    Check_Persistent_SyncData(818677, "虒溺῟");
+    Check_Persistent_SyncData(783380, "ก᮷쓎拎䜹췶젗");
+    Check_Persistent_SyncData(40342, "淋ꁜ钭띀槯");
+    Check_Persistent_SyncData(688924, "ਿ銕�⦗※ꚳ㺚梌");
+    Check_Persistent_SyncData(731967, "ؗ霱藜딒挹ꋲ䞜뙓");
+    Check_Persistent_SyncData(721725, "ƺ썱谔థ粄촒펩");
+    Check_Persistent_SyncData(969514, "");
+    Check_Persistent_SyncData(961529, "긼䬳");
+    Check_Persistent_SyncData(575853, "糒㱑혓䰛懑֜⌽");
+    Check_Persistent_SyncData(20712, "꛷꧿ꫬ");
+    Check_Persistent_SyncData(188256, "膑㹝̓");
+    Check_Persistent_SyncData(97043, "抬箌ɝ�㪾ຒ뵑");
+    Check_Persistent_SyncData(201315, "");
+    Check_Persistent_SyncData(858918, "츲닋黢沺㲂σ祲");
+    Check_Persistent_SyncData(333268, "");
+    Check_Persistent_SyncData(941030, "齩⾸包");
+    Check_Persistent_SyncData(250089, "䓢꥔Ⰽ�璥߲틁䣠");
+    Check_Persistent_SyncData(257478, "");
+    Check_Persistent_SyncData(298206, "搂Ꮟ兼⑨ࡿ�鍅䌙炞");
+    Check_Persistent_SyncData(592381, "᧖䊦勤誛");
+    Check_Persistent_SyncData(545349, "霴绒騠藝坠狧蛌");
+    Check_Persistent_SyncData(982596, "滗ｳ궈蹛");
+    Check_Persistent_SyncData(786350, "");
   }
   
   bool unitTestResults_SyncData_Persistent = runAsync(Tests_RegisterAll_SyncData_Persistent);

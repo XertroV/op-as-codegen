@@ -9,6 +9,7 @@ import Gen.Class (jsonObjToClass)
 import Macros.Arrays (mapArray_For)
 import Mixins.CommonTesting (mxCommonTesting)
 import Mixins.DefaultProps (mxDefaultProps)
+import Mixins.OpenplanetFuncs (ioCreateFolder, ioFileExists, ioFolderExists, ioIndexFolder, ioOpenFileReadStmt, ioOpenFileWriteStmt)
 import Mixins.ToFromBuffer (mxToFromBuffer)
 import Mixins.Types (Mixin)
 import Partial.Unsafe (unsafeCrashWith)
@@ -67,18 +68,6 @@ dirOfObjs opts@{ keyType } jo@(JsonObj objName fields) = { cls, obj }
     [ "private string _dir;"
     , "private bool _initialized = false;"
     ]
-
-  ioFolderExists p = fnCall "IO::FolderExists" [ p ]
-
-  ioCreateFolder p = fnCall "IO::CreateFolder" [ p, "true" ]
-
-  ioIndexFolder p = fnCall "IO::IndexFolder" [ p, "false" ]
-
-  ioFileExists p = fnCall "IO::FileExists" [ p ]
-
-  ioOpenFileReadStmt n p = "IO::File " <> fnCall n [ p, "IO::FileMode::Read" ] <> ";"
-
-  ioOpenFileWriteStmt n p = "IO::File " <> fnCall n [ p, "IO::FileMode::Write" ] <> ";"
 
   dodMethods (JsonObj _n _fs) =
     A.intercalate ln

@@ -123,7 +123,7 @@ runNextTest =
         [ utGs <> "[id] = TestStatus::Failed;"
         , "string exInfo = getExceptionInfo();"
         , utFms <> "['' + id] = exInfo;"
-        -- , "print('Test failed: ' + " <> utNames <> "[id] + ' => ' + exInfo);"
+        , "print('\\\\$f21Test failed: ' + " <> utNames <> "[id] + ' => ' + exInfo);"
         ]
     <> [ nbUtsRunning <> "--;"
       , nbUtsDone <> "++;"

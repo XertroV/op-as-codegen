@@ -64,6 +64,7 @@ void UnitTest_RunNext() {
     _unitTests_globalSingleton[id] = TestStatus::Failed;
     string exInfo = getExceptionInfo();
     _unitTests_failureMessages['' + id] = exInfo;
+    print('\\$f21Test failed: ' + _unitTests_names[id] + ' => ' + exInfo);
   }
   _unitTests_nRunning--;
   _unitTests_nDone++;

@@ -4,6 +4,7 @@ module Mixins.ToFromBuffer
   , wtb_arrayFn
   , cbb_arrayFn
   , rfbLpStringFn
+  , rfbLpStringFnNoShare
   , rfb_getNext
   , rfb_getNext'
   , rfb_arrayFn
@@ -151,7 +152,7 @@ test_ToFromBuffer _ms o@(JsonObj objName fields) = { fnName, ls }
 
   args = fields <#> getFName
 
-  allTestArgs = genTestArgs 2 fields
+  allTestArgs = genTestArgs 349867 fields
 
   mainFn =
     wrapMainTest fnName
@@ -175,6 +176,13 @@ wtbLpStringFn =
 rfbLpStringFn :: AsFunction
 rfbLpStringFn =
   wrapFunction' "shared const string" "RFB_LP_String" [ bufArg ]
+    [ "uint len = buf.ReadUInt32();"
+    , "return buf.ReadString(len);"
+    ]
+
+rfbLpStringFnNoShare :: AsFunction
+rfbLpStringFnNoShare =
+  wrapFunction' "const string" "RFB_LP_String" [ bufArg ]
     [ "uint len = buf.ReadUInt32();"
     , "return buf.ReadString(len);"
     ]

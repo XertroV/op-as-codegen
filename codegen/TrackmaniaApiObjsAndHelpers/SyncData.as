@@ -6,6 +6,7 @@ shared class SyncData {
   /* Properties // Mixin: Persistent */
   private string _path;
   private bool _doPersist = false;
+  bool quiet = false;
   
   /* Methods // Mixin: Default Constructor */
   SyncData(uint lastUpdated, const string &in status) {
@@ -107,17 +108,17 @@ shared class SyncData {
   SyncData(StorageLocation@ storageLoc) {
     uint start = Time::Now;
     InitPersist(storageLoc);
-    IO::File f(_path, IO::FileMode::Read);
-    Buffer@ buf = Buffer(f.Read(f.Size()));
-    f.Close();
-    /* Parse field: _lastUpdated of type: uint */
-    _lastUpdated = buf.ReadUInt32();
-    /* Parse field: _status of type: string */
-    _status = RFB_LP_String(buf);
-    trace('\\$a4fSyncData\\$777 loaded \\$a4f' + 1 + '\\$777 entries from: \\$a4f' + _path + '\\$777 in \\$a4f' + Time::Now - start + ' ms\\$777.');
+    ReloadFromDisk();
   }
   
-  private void Persist() {
+  void InitPersist(StorageLocation@ storageLoc) {
+    if (_doPersist) throw('Persistence already initialized.');
+    storageLoc.EnsureDirExists();
+    _path = storageLoc.Path;
+    _doPersist = true;
+  }
+  
+  void Persist(bool _quiet = false) {
     auto start = Time::Now;
     Buffer@ buf = Buffer();
     WriteToBuffer(buf);
@@ -125,7 +126,24 @@ shared class SyncData {
     IO::File f(_path, IO::FileMode::Write);
     f.Write(buf._buf);
     f.Close();
-    trace('\\$a4fSyncData\\$777 saved \\$a4f' + 1 + '\\$777 entries from: \\$a4f' + _path + '\\$777 in \\$a4f' + Time::Now - start + ' ms\\$777.');
+    if (!(quiet || _quiet)) {
+      trace('\\$a4fSyncData\\$777 saved \\$a4f' + 1 + '\\$777 entries from: \\$a4f' + _path + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+    }
+  }
+  
+  void ReloadFromDisk() {
+    IO::File f(_path, IO::FileMode::Read);
+    Buffer@ buf = Buffer(f.Read(f.Size()));
+    f.Close();
+    /* Parse field: _lastUpdated of type: uint */
+    _lastUpdated = buf.ReadUInt32();
+    /* Parse field: _status of type: string */
+    _status = RFB_LP_String(buf);
+  }
+  
+  const string RFB_LP_String(Buffer@ &in buf) {
+    uint len = buf.ReadUInt32();
+    return buf.ReadString(len);
   }
   
   void set_lastUpdated(uint lastUpdated) {
