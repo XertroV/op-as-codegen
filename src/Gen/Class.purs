@@ -1,5 +1,6 @@
 module Gen.Class
   ( AsClass
+  , ClsWithObj
   , jsonObjToClass
   ) where
 

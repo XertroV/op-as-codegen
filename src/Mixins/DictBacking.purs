@@ -2,7 +2,7 @@ module Mixins.DictBacking (mxDictBacking, mkDO, DictOpts) where
 
 import Prelude
 import AsTypes (castOrWrap, jTyIsPrim, jTyPascalCase, jTySetAsRef, jTyShouldCast, jTyToAsTy, jTyToFuncRes)
-import CodeLines (comment, jfieldToAsArg, ln, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapTryCatch, wrapWhileLoop)
+import CodeLines (comment, jfieldToAsArg, ln, logBenchmark, setV, stmt, wrapConstFunction, wrapConstructor, wrapDQuotes, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapMainTest, wrapSQuotes, wrapTryCatch, wrapWhileLoop)
 import Data.Array (intercalate, mapWithIndex)
 import Data.Array as A
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -195,7 +195,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
                       , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
                       ]
                 )
-              <> [ "trace('" <> c_purple <> n <> c_mid_grey <> " loaded " <> c_purple <> "' + GetSize() + '" <> c_mid_grey <> " entries from log file: " <> c_purple <> "' + _logPath + '" <> c_mid_grey <> " in " <> c_purple <> "' + (Time::Now - start) + ' ms" <> c_mid_grey <> ".');"
+              <> [ logBenchmark n "loaded" "GetSize()" "_logPath" "(Time::Now - start)"
                 , "f.Close();"
                 ]
           )

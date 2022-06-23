@@ -118,7 +118,7 @@ shared class DictOfUintToArrayOfUint_WDefault_WriteLog {
         auto kv = _DictOfUintToArrayOfUint_WDefault_WriteLog::_KvPair::ReadFromBuffer(fb);
         _d[K(kv.key)] = kv.val;
       }
-      trace('\\$a4fDictOfUintToArrayOfUint_WDefault_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from log file: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+      trace('\\$a4fDictOfUintToArrayOfUint_WDefault_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
       f.Close();
     } else {
       IO::File f(_logPath, IO::FileMode::Write);

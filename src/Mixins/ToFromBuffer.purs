@@ -5,6 +5,7 @@ module Mixins.ToFromBuffer
   , cbb_arrayFn
   , rfbLpStringFn
   , rfb_getNext
+  , rfb_getNext'
   , rfb_arrayFn
   ) where
 
@@ -107,11 +108,16 @@ readFromBuf name fields =
   where
   fieldVarNames = fields <#> \(JField n _t) -> n
 
-rfb_getNext :: JField -> Lines
-rfb_getNext (JField n t) =
+rfb_getNext' :: _ -> JField -> Lines
+rfb_getNext' fn (JField n t) =
   comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
-    <> [ declSetV (JField n t) (jTyFromBuf "buf" t) ]
+    <> [ fn (JField n t) (jTyFromBuf "buf" t) ]
 
+rfb_getNext :: JField -> Lines
+rfb_getNext = rfb_getNext' declSetV
+
+-- comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
+--   <> [ declSetV (JField n t) (jTyFromBuf "buf" t) ]
 allArrayRfbFuncs :: JFields -> CodeBlocks
 allArrayRfbFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrRfbIfArr
   where

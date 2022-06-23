@@ -19,6 +19,7 @@ import Mixins.DirOf (mxDirOf)
 import Mixins.FromGameObj (mxFromGameObj)
 import Mixins.Getters (mxGetters)
 import Mixins.OpEq (mxOpEq)
+import Mixins.Persistent (mxPersistent)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToFromBuffer (mxToFromBuffer)
 import Mixins.ToFromJsonObj (mxToFromJsonObj)
@@ -96,9 +97,6 @@ dictUintIndex = dictGen $ (mkDO $ JArray JUint) { defaultDictVal = Just "{}", ke
 
 -- indexDict :: ClsWithObj
 -- indexDict = dictGen $ mkDO (JArray JUint) { writeLog = true, isIndex = true }
-type ClsWithObj
-  = { cls :: AsClass, obj :: JsonObj }
-
 competition :: ClsWithObj
 competition = { cls, obj }
   where
@@ -272,6 +270,16 @@ tmMap = { cls, obj }
 tmMapDb :: ClsWithObj
 tmMapDb = dictGen $ (mkDO $ JObject tmMap.obj) { writeLog = true }
 
+syncData :: ClsWithObj
+syncData = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (typicalMixins <> [ mxEmptyConsWDefaults, mxPersistent ])
+
+  obj =
+    object "SyncData"
+      # field "lastUpdated" JUint
+      # field "status" JString
+
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
@@ -299,5 +307,6 @@ everything =
   , totdDb.cls
   , tmMap.cls
   , tmMapDb.cls
+  , syncData.cls
   ]
     <> (stdDicts <#> (_.cls))

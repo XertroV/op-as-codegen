@@ -14,6 +14,7 @@ import Data.String (joinWith)
 import Data.String as S
 import Data.String.Utils (startsWith)
 import Data.Tuple (Tuple(..))
+import ManiaColors (c_mid_grey, c_purple)
 import Partial.Unsafe (unsafeCrashWith)
 import Utils (intToStr)
 
@@ -214,3 +215,14 @@ setV (JField n t) v = ref <> n <> " = " <> v <> ";"
 -- | declare and set a variable
 declSetV :: JField -> String -> String
 declSetV (JField n t) v = jTyToAsTy t <> " " <> n <> " = " <> v <> ";"
+
+-- | log a benchmark (when loading a file)
+logBenchmark ∷ String → String → String → String → String → String
+logBenchmark name action num path duration =
+  "trace('" <> (c_purple <> name)
+    <> (c_mid_grey <> " " <> action <> " ")
+    <> (c_purple <> "' + " <> num <> " + '")
+    <> (c_mid_grey <> " entries from: ")
+    <> (c_purple <> "' + " <> path <> " + '" <> c_mid_grey <> " in ")
+    <> (c_purple <> "' + " <> duration <> " + ' ms")
+    <> (c_mid_grey <> ".');")

@@ -2,8 +2,7 @@ module CommonGlobalClasses where
 
 import Prelude
 import AsTypes (jTyPascalCase)
-import CodeLines (ln, wrapConstructor, wrapConstructor', wrapFunction, wrapFunction', wrapInitedScope)
-import DBTest (ClsWithObj)
+import CodeLines (ln, wrapConstructor, wrapConstructor', wrapFunction, wrapFunction', wrapIf, wrapInitedScope)
 import Data.Array (catMaybes, intercalate, nubEq)
 import Data.Maybe (Maybe(..))
 import Effect (Effect)
@@ -21,7 +20,7 @@ getCommonClasses :: Array AsClass -> Array AsClass
 getCommonClasses cs = requiredCommonClasses
   where
   requiredCommonClasses =
-    [ bufferClass ]
+    [ bufferClass, storageLoc ]
       <> _getReqJMaybeClasses cs
 
 {- MAYBES -}
@@ -47,6 +46,40 @@ getMaybeClassFor t = cls
       # field "hasVal" JBool
 
   cls = jsonObjToClass obj [] [ mxCommonTesting, mxDefaultProps, mxJMaybes ]
+
+{-
+ STORAGE LOCATION
+-}
+storageLoc :: AsClass
+storageLoc = { name, mixins, mainFile, testFile: [], obj }
+  where
+  name = "StorageLocation"
+
+  fileName = JField "fileName" JString
+
+  subDir = JField "subDir" JString
+
+  obj = JsonObj name [ fileName, subDir ]
+
+  mixins = [ mxCommonTesting, mxDefaultProps ]
+
+  mainFile =
+    wrapInitedScope ("shared class " <> name)
+      $ intercalate ln
+          [ [ "private string _path;" ]
+          , constructorFn.decl
+          , getPath.decl
+          ]
+
+  constructorFn =
+    wrapConstructor' name [ "const string &in fileName", "const string &in subDir = ''" ]
+      $ [ "string[] dirs = {'Storage', Meta::ExecutingPlugin()};" ]
+      <> wrapIf "subDir.Length > 0" [ "dirs.InsertLast(subDir);" ]
+      <> [ "dirs.InsertLast(fileName);"
+        , "_path = IO::FromDataFolder(string::Join(dirs, '/'));"
+        ]
+
+  getPath = wrapFunction "const string" "get_Path" [] [ "return _path;" ]
 
 {- BUFFER -}
 bufferClass :: AsClass
