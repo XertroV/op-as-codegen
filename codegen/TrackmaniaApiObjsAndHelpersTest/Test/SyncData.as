@@ -212,64 +212,6 @@ namespace Test_SyncData {
   
   bool unitTestResults_SyncData_OpEq = runAsync(Tests_RegisterAll_SyncData_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_SyncData_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_SyncData', UnitTest_SzThenUnSz_SyncData);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint lastUpdated, const string &in status) {
-    SyncData@ tmp = SyncData(lastUpdated, status);
-    assert(tmp == _SyncData::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_SyncData() {
-    Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒");
-    Test_SzThenUnSz_Check(141231, "엻렒哾๺⾖㻄쪼ﰙ⠁玭");
-    Test_SzThenUnSz_Check(437979, "킅Ề");
-    Test_SzThenUnSz_Check(789556, "밄ꊦ⊼⿕氎꼻");
-    Test_SzThenUnSz_Check(605220, "섌");
-    Test_SzThenUnSz_Check(179363, "汛瀹ፎﬡ賄�匼");
-    Test_SzThenUnSz_Check(906038, "佪�䮞");
-    Test_SzThenUnSz_Check(263354, "푲෗蔃䓥㻥");
-    Test_SzThenUnSz_Check(365118, "䟃넲䗵");
-    Test_SzThenUnSz_Check(322150, "潔箯㉽");
-    Test_SzThenUnSz_Check(547338, "쬙ꅇ᭧봅≹");
-    Test_SzThenUnSz_Check(337261, "ၛⶍ쎦㋥霈�");
-    Test_SzThenUnSz_Check(4946, "︠걿좳樁㠵");
-    Test_SzThenUnSz_Check(67877, "瞄");
-    Test_SzThenUnSz_Check(207150, "ﻊ爛⏂ꥏ꼼砍띑");
-    Test_SzThenUnSz_Check(552233, "㏰鉓켯");
-    Test_SzThenUnSz_Check(675803, "踆");
-    Test_SzThenUnSz_Check(564566, "䩸Ὼ㐚ꂖ摇䞰鄕ꈽ");
-    Test_SzThenUnSz_Check(606676, "᳔䬳⑇勿掝");
-    Test_SzThenUnSz_Check(467845, "㭾멭Პ䑰繤");
-    Test_SzThenUnSz_Check(951853, "퍻䳥");
-    Test_SzThenUnSz_Check(592141, "솛");
-    Test_SzThenUnSz_Check(288796, "奞ͩ줞䟥ፕ⎃");
-    Test_SzThenUnSz_Check(234787, "᪲ꮚ෌ᚸᄺ膲㑅");
-    Test_SzThenUnSz_Check(45702, "ⰳ팑ꇬ䋶");
-    Test_SzThenUnSz_Check(405127, "궈䩓�魓쬣㸕");
-    Test_SzThenUnSz_Check(227499, "巖ㅡ螘笣䨯");
-    Test_SzThenUnSz_Check(571633, "ు盡ₜ阵璫⃔煡");
-    Test_SzThenUnSz_Check(341399, "淡");
-    Test_SzThenUnSz_Check(258409, "ѽ泡誄狋撧곟");
-    Test_SzThenUnSz_Check(925854, "佌Țꡮ殴䉵庨嶏");
-    Test_SzThenUnSz_Check(809993, "㥊ᆺ⻖㋽빽睍");
-    Test_SzThenUnSz_Check(126840, "䒹ਮゴ虻雈皇殤膕");
-    Test_SzThenUnSz_Check(868449, "�〿Ꝼ샛ᣱ");
-    Test_SzThenUnSz_Check(881016, "");
-    Test_SzThenUnSz_Check(266937, "㐟ꯩ㹎ӑ䞖猏鐪");
-    Test_SzThenUnSz_Check(92, "挤");
-    Test_SzThenUnSz_Check(558576, "ꡃ");
-    Test_SzThenUnSz_Check(297578, "⸕숈祭鑚ൃ");
-    Test_SzThenUnSz_Check(848229, "桾뭎挘殤掙얷ᐮ");
-    Test_SzThenUnSz_Check(147932, "");
-    Test_SzThenUnSz_Check(493491, "�䄳凜嬚魯ᄍ");
-  }
-  
-  bool unitTestResults_SyncData_RowSerialization = runAsync(Tests_RegisterAll_SyncData_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_SyncData_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_SyncData', UnitTest_ToFromBuffer_SyncData);

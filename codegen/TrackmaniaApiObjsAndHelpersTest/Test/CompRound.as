@@ -221,64 +221,6 @@ namespace Test_CompRound {
   
   bool unitTestResults_CompRound_OpEq = runAsync(Tests_RegisterAll_CompRound_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_CompRound_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_CompRound', UnitTest_SzThenUnSz_CompRound);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint id, uint qualifierChallengeId, uint position, uint nbMatches, uint startDate, uint endDate, const string &in name, const string &in status, const string &in leaderboardComputeType, MaybeOfString@ teamLeaderboardComputeType, const string &in matchScoreDirection) {
-    CompRound@ tmp = CompRound(id, qualifierChallengeId, position, nbMatches, startDate, endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection);
-    assert(tmp == _CompRound::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_CompRound() {
-    Test_SzThenUnSz_Check(823221, 663647, 352245, 777791, 86592, 719979, "朹鎟ﳙ", "编", "엻렒哾๺⾖㻄쪼ﰙ⠁玭", MaybeOfString("錭鿩꤉䵚ࢂ浮翅쿕"), "䃜");
-    Test_SzThenUnSz_Check(150771, 415169, 519885, 208676, 187232, 661191, "䤍ř챉鋱", "ﬕ૆ࣥ蕇벃堝ᛟ", "뾠粯ꣿ僨躗괱韲瓄ﲼ᭫", MaybeOfString("潔箯㉽貺ᠤᝯ曞䟃넲"), "ꅇ᭧봅≹䎢");
-    Test_SzThenUnSz_Check(723328, 337261, 394778, 629002, 832887, 693999, "㽥︠걿좳樁㠵ᢐ", "먝瞄⧛鉼", "䗇髣", MaybeOfString("�緂️㳻컅䊈퇷䕖⭮�"), "笐");
-    Test_SzThenUnSz_Check(344041, 479132, 313581, 51991, 683426, 294888, "", "絮᳦", "̊鳩཮㤷⣐", MaybeOfString("퍻䳥最徐㭾멭Პ䑰"), "䟥ፕ⎃ﲀᦓ솛格둪");
-    Test_SzThenUnSz_Check(234787, 700902, 853957, 759104, 336591, 877257, "᪲ꮚ", "", "ⰳ팑ꇬ䋶慸", MaybeOfString("兵∋沴挣ה철攣"), "䗽ﵱꐎ굻⛩");
-    Test_SzThenUnSz_Check(92430, 176289, 263591, 976559, 150994, 558367, "簳", "Ԧ懁ㅲ砤㉾滑肜", "ബ踳蝘䳡逶澸", MaybeOfString("㥊ᆺ⻖㋽빽睍뉥៦佌"), "蓬");
-    Test_SzThenUnSz_Check(269534, 991003, 730997, 820813, 647490, 647392, "�〿Ꝼ샛ᣱ沲툕ී쨳", "ӑ䞖猏鐪﹀ྏ䅳税", "③享㐟ꯩ", MaybeOfString("읨껏卹籫ᆄᆖ�"), "翹া䦾灋䗆ᵭ");
-    Test_SzThenUnSz_Check(743612, 549842, 501045, 680772, 31957, 253805, "︮䡴", "춸�", "இᜳꍪ�뱆", MaybeOfString(), "ꉁᏚ");
-    Test_SzThenUnSz_Check(860757, 909951, 951620, 840455, 597747, 283451, "ꊌ멉녍ഩ", "앪衚ध⿺⯌憎祖羔ﾧ", "៳╝⁋컱ⳃ", MaybeOfString("ƒ蠐前袊⬸"), "ើ溥");
-    Test_SzThenUnSz_Check(800390, 199047, 512146, 651310, 973513, 674998, "㖨벑뀁矣₳迿", "肯䨏﻿ꓼ构", "�鸓㮝ႝ䖟哢ꐽ", MaybeOfString("饋᲏඿븹䤭ذ沶"), "銢᜼錢樆䶂");
-    Test_SzThenUnSz_Check(168286, 980432, 494166, 450685, 913447, 380426, "ԙꇖⲽ櫉疷", "ꘓ", "풠氂ᔾ쁄綯", MaybeOfString("ᄜ☝㺸긧�䵘㐯㾙"), "ꊓ�쳉⺋");
-    Test_SzThenUnSz_Check(999224, 249786, 43724, 646739, 703179, 605664, "櫵妊", "天䉵凴᯹", "ോ㖰", MaybeOfString("⊂农陣띰摼푔⼧"), "ை牖Ⲋ");
-    Test_SzThenUnSz_Check(808646, 898762, 882280, 290313, 95401, 233228, "㌠商ᅾ鲑頸헳ᑭᷡƫ믅", "乹ﻺ鮷囫я戵", "撠檗䮋ꏔ箯浔陳", MaybeOfString(), "뼖ቬ뫁귫");
-    Test_SzThenUnSz_Check(711262, 7803, 676619, 934577, 352230, 84355, "긳佒稄㟧歒", "", "⤦鄻隳", MaybeOfString("쒿№妝"), "�");
-    Test_SzThenUnSz_Check(854263, 301209, 922503, 865162, 644143, 558944, "ﷺ⋏晆뗭⴬똣", "狤í똫", "믔ы䞀�ᐑꖢ䞶ꡡ훅", MaybeOfString("�夛篢椞◌꽣⎄"), "ꠌ⤦");
-    Test_SzThenUnSz_Check(528846, 320808, 161072, 328156, 309883, 52673, "颋", "㔻ᓵ倽䨬㭺邇맣", "矨ﱳ刎퍒", MaybeOfString("鳊"), "⿞䅰ꡉፀ븯扻ꋨ䳘쏡");
-    Test_SzThenUnSz_Check(184788, 227017, 552448, 416887, 193882, 131058, "�鯃嘐", "䞓㕋", "砚乸̛瀎ᭆ", MaybeOfString("ᯋ錍჎"), "⶚ꖿ鈳");
-    Test_SzThenUnSz_Check(790880, 108423, 165515, 737512, 516414, 77008, "ꓫ츭⅑뻌腂꟠䖓", "췙鏰ᕑ쥋蒕媕矔泔", "루ᙧ譛ⲡ퟊폟", MaybeOfString("놲싵뇵"), "ꇑﾷꃦꅕ熪饍㨋8辝쵌");
-    Test_SzThenUnSz_Check(808501, 953518, 283816, 334966, 17733, 693496, "冁᯳Ⱄㄺ꛼㻔", "Ⲣ", "魶㭷栳ﮂ窗䊨㎠", MaybeOfString(""), "鹒狧믱");
-    Test_SzThenUnSz_Check(463622, 248976, 458420, 194529, 159641, 586261, "례呞폹ꬻᷪ汍䃿檔", "⛐Ꜿ�ℨ㓩濥岤鹥䘂躴", "ퟖ슲氕ڞ꩹㧾抺", MaybeOfString("ಖⳡ忆悑翐䈐풼"), "鏿");
-    Test_SzThenUnSz_Check(412956, 219851, 254572, 722283, 416051, 450180, "토ф⮭갭띨켊෦聁�", "憖ꀖ銱❕蒚ₖ", "纹謐ሙ䪩引", MaybeOfString("൹袴義겋"), "ꥍ臿陋㋫艠濖");
-    Test_SzThenUnSz_Check(48336, 5749, 928098, 629344, 701117, 125398, "緙퇄⯛婃ꬃ똊鱴䐡낀", "備㵛䓤≴ꠋ", "宁", MaybeOfString(""), "?�ﲙ྇");
-    Test_SzThenUnSz_Check(126346, 591190, 373405, 583731, 707258, 894617, "葑氊듳", "遺错䆈罹Ⰲ룟", "�﫦", MaybeOfString("흶裠"), "臘༝吽턛惠璐擃");
-    Test_SzThenUnSz_Check(803062, 209586, 479899, 294808, 74374, 287422, "≱ꢩ뫛", "꽉೵", "啈냢໚", MaybeOfString("帻鈿橦"), "榄诶");
-    Test_SzThenUnSz_Check(132876, 768987, 543580, 352358, 362634, 72752, "ꗱ᫞菓", "꫈ᨋ》竫퓣䲊폫", "臕", MaybeOfString("ᡣ䓌⤳烗坘䖧骤㛦"), "ꗨ紓뻽");
-    Test_SzThenUnSz_Check(190609, 552528, 616526, 274838, 833852, 784074, "�梛怋컲쀕歛瓩O", "浗导�ṶԹ", "", MaybeOfString("⨝쭻䏤ᢠ䫖葻"), "킄읋溛륹甄");
-    Test_SzThenUnSz_Check(746125, 314857, 332208, 339274, 484862, 916822, "", "േ᥹뛼", "⼏歖맹훿웴⏪", MaybeOfString("݄"), "ꔏ䟾嶩⩧");
-    Test_SzThenUnSz_Check(83397, 843681, 725397, 469213, 208906, 715528, "", "磡", "릚", MaybeOfString("뙥斨从鹜瘁⟱쫯ዼ"), "ꎭﰎ�䢈");
-    Test_SzThenUnSz_Check(243548, 167998, 288457, 646320, 731491, 41462, "┗�莘럜", "搅䉗꙱", "঍ꆡ�鯉罨", MaybeOfString("噧䯪蛯뤔ྉኛ㾜왠"), "");
-    Test_SzThenUnSz_Check(225516, 605540, 347391, 998847, 287718, 553675, "徯ˮ뀁诛祼蝵챼", "Ꝋ钧죿揊ꄊ석恍Ꚇ脽", "�娯딉슝拓䥵�", MaybeOfString("妗�Ț"), "皎䊭匑");
-    Test_SzThenUnSz_Check(279735, 981829, 706774, 173686, 777534, 710652, "卤㵠휄Ｋ", "⅛䉠稯ꛬ焄－噈", "⅌滛ⷖ뿂⬔", MaybeOfString(), "䔋");
-    Test_SzThenUnSz_Check(928013, 332830, 517757, 877749, 981158, 268955, "ꔻ䪣续蹘", "ồ趌ݸﰙ囦鷎", "耼⫰ﭒ䜹", MaybeOfString("憷Ὄဨ㘳顫踠"), "�ㄌ㗫䐮勍㮼");
-    Test_SzThenUnSz_Check(756483, 269129, 980780, 439734, 212480, 361747, "", "䀒䍊빇曁绀溜ⅅ࿿倴", "畵䯖쫟艖", MaybeOfString("틪ۥ焳ｑն鋋"), "");
-    Test_SzThenUnSz_Check(398948, 355957, 668800, 722626, 425594, 459576, "廤�ꑷ堓儝맒샭", "", "꼈ꘁ﬩险檑�Ʋ", MaybeOfString("➲"), "色톽ⱥ졗볆丕鈂");
-    Test_SzThenUnSz_Check(135421, 668347, 602585, 271835, 514223, 706528, "飗㠝茼邬䃳䡝㹅楨", "濁檍ਜ", "ე뉺ྕ", MaybeOfString("줾㓒셡㿸Ꙍ㦩"), "猝᫺鱴䝧ꁥ﷨津䮵");
-    Test_SzThenUnSz_Check(81465, 877945, 855287, 521675, 370152, 58430, "", "建龰ᘃ㵶燞⻱", "", MaybeOfString(""), "许䑐㸬涂�");
-    Test_SzThenUnSz_Check(26718, 163713, 237945, 391276, 436377, 222921, "휋ཞ턂Ỏ", "칿ᱟ㉞Æ斫", "ⱇ墙ୋ蹽鵔", MaybeOfString("뭶ዘ�㷣䷐"), "㰙샛煶끮悫");
-    Test_SzThenUnSz_Check(968553, 558485, 33883, 759363, 973625, 476366, "ⷧ䎚蠠ﵸ亏ʐ鸓쇵", "⍚ꃿ琢뒞", "磮쓛㔔�꺛⎒", MaybeOfString(), "곑釕쒮狛㩪");
-    Test_SzThenUnSz_Check(541904, 739183, 762638, 931856, 159623, 222027, "涠�淿ὤ", "魟䡏鉕�迬�ᔓ", "", MaybeOfString("괴⸸瘓嵱"), "ﷻ");
-    Test_SzThenUnSz_Check(584620, 983140, 879185, 522381, 866549, 706487, "汆얓萿", "", "鑍⛦뚈組仕充쿦ꁇ", MaybeOfString("ⲏ䞹悩牪ᬏ핍"), "ⷷ莣겄㖡⦲");
-    Test_SzThenUnSz_Check(658967, 917238, 215409, 870029, 442569, 544475, "酀Ⅱ渚", "�뜙翕鏅ᩒ딢ⳙ뫊ȁ", "", MaybeOfString(), "�롧䱐Ė٬魒쪘");
-    Test_SzThenUnSz_Check(917862, 129611, 255304, 57045, 121162, 977187, "젒҃⹁ꈥ䗯", "ޞ鍪瞨෢ꨛ", "碵煛克듒籍쬀ጫ㶾�", MaybeOfString("쮜"), "�メ犷");
-  }
-  
-  bool unitTestResults_CompRound_RowSerialization = runAsync(Tests_RegisterAll_CompRound_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_CompRound_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_CompRound', UnitTest_ToFromBuffer_CompRound);

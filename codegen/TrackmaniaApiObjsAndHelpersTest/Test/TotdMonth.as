@@ -214,64 +214,6 @@ namespace Test_TotdMonth {
   
   bool unitTestResults_TotdMonth_OpEq = runAsync(Tests_RegisterAll_TotdMonth_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_TotdMonth_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_TotdMonth', UnitTest_SzThenUnSz_TotdMonth);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint year, uint month, uint lastDay, const TrackOfTheDayEntry@[] &in days) {
-    TotdMonth@ tmp = TotdMonth(year, month, lastDay, days);
-    assert(tmp == _TotdMonth::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_TotdMonth() {
-    Test_SzThenUnSz_Check(823221, 663647, 352245, {TrackOfTheDayEntry(349825, "覎漸࿚", 791017, 113001, "谶릚끣郣", 160627, 311834)});
-    Test_SzThenUnSz_Check(840437, 29355, 736349, {TrackOfTheDayEntry(616400, "佪�", 263354, 427441, "蔃", 198964, 365118), TrackOfTheDayEntry(327500, "ꊦ⊼⿕氎", 605220, 262638, "賄�匼뒱릩䊮", 826942, 906038)});
-    Test_SzThenUnSz_Check(964654, 651288, 7008, {TrackOfTheDayEntry(852959, "圭", 678759, 935802, "괰襧魒뭺鍪㤅쏦", 178321, 145385), TrackOfTheDayEntry(796997, "", 891100, 744130, "씠䪉Ꮢ榋", 705395, 18764)});
-    Test_SzThenUnSz_Check(342094, 694614, 367326, {TrackOfTheDayEntry(4920, "䩸Ὼ㐚ꂖ摇", 606676, 964248, "繤牉᳔䬳⑇勿", 490254, 320578), TrackOfTheDayEntry(83184, "ﻊ爛⏂ꥏ꼼", 552233, 216820, "⤦➦踆⌾ꎳ㏰", 973529, 47392)});
-    Test_SzThenUnSz_Check(583029, 191146, 951853, {TrackOfTheDayEntry(979339, "牐ዻ꼾労樔彭㉮ꇊ疶", 833014, 139588, "糶킢␌窖팿贅", 28064, 49272)});
-    Test_SzThenUnSz_Check(140532, 49662, 661734, {TrackOfTheDayEntry(571633, "ు盡ₜ阵璫⃔煡", 341399, 979997, "뙸줒女ѽ泡誄狋撧곟", 356559, 161330), TrackOfTheDayEntry(485401, "", 405127, 314974, "䩓�魓쬣", 129142, 227499)});
-    Test_SzThenUnSz_Check(809993, 973135, 540022, {TrackOfTheDayEntry(91371, "뱆鳌춸�⡛", 612172, 30265, "㧟訩逎", 6692, 648132), TrackOfTheDayEntry(22517, "া", 702708, 743612, "ᗿ鉞ꊵ㻛踴Ṷ耦", 253805, 750292), TrackOfTheDayEntry(154873, "庚䛥嶿路꒵혘", 812057, 963710, "卹籫", 116704, 632361), TrackOfTheDayEntry(447567, "欍匝ۢራ滕윑ᄃ毃", 267031, 884892, "넺硫銚䋱垇ᒋ젔", 539543, 854039)});
-    Test_SzThenUnSz_Check(718544, 751060, 162893, {TrackOfTheDayEntry(876904, "븹䤭ذ沶ꫴ", 796856, 120221, "銢᜼錢樆䶂", 168286, 980432), TrackOfTheDayEntry(769796, "∐", 840501, 861580, "仅䃜쪪", 770642, 834356), TrackOfTheDayEntry(271620, "", 651952, 806313, "濜ḟ₺洉疧", 116699, 616919), TrackOfTheDayEntry(652149, "⁋컱ⳃ㩄앪衚ध⿺", 859526, 830203, "꩸㸵", 606450, 478495)});
-    Test_SzThenUnSz_Check(494166, 450685, 913447, {TrackOfTheDayEntry(557752, "", 668538, 623212, "�䵘㐯㾙ɂ䂟籱ჟ杗", 640399, 462625)});
-    Test_SzThenUnSz_Check(805167, 411531, 999224, {TrackOfTheDayEntry(395131, "ꏔ箯浔陳᳚乹ﻺ鮷", 482962, 745915, "", 912496, 258633), TrackOfTheDayEntry(808646, "㪁▫윁벼寥ﴋᮝ臢", 233228, 57986, "商ᅾ鲑頸헳ᑭᷡ", 505384, 263354), TrackOfTheDayEntry(559916, "푔⼧巇麃", 923280, 929837, "⊂", 487546, 504451), TrackOfTheDayEntry(896339, "쎆㊆⯟骙䁣", 983651, 768217, "负釺", 477588, 555890)});
-    Test_SzThenUnSz_Check(295400, 15896, 937387, {TrackOfTheDayEntry(934577, "笔", 949213, 240441, "紨⤦鄻隳砒긳", 655561, 826967)});
-    Test_SzThenUnSz_Check(255252, 893171, 630514, {TrackOfTheDayEntry(491930, "욜푭沈ĉ漎", 189578, 148425, "", 947791, 66053), TrackOfTheDayEntry(885846, "", 47427, 680346, "鱫댫䚦럕ț頛臾", 281680, 40045), TrackOfTheDayEntry(865162, "뗭⴬똣궆暱여", 27512, 645217, "믔ы䞀�ᐑꖢ䞶ꡡ훅", 354093, 59229)});
-    Test_SzThenUnSz_Check(821243, 312859, 716, {TrackOfTheDayEntry(79839, "헣⧾ﾊ驏שּׂ맳站둨", 370248, 538568, "ᆻ�圜苨ꮸ", 675616, 713480)});
-    Test_SzThenUnSz_Check(654607, 212628, 177422, {TrackOfTheDayEntry(742412, "韭쟰튤⟫砚", 999603, 252543, "", 186040, 69951)});
-    Test_SzThenUnSz_Check(157313, 385300, 285037, {TrackOfTheDayEntry(927069, "◛歴", 790340, 302162, "", 26840, 545496), TrackOfTheDayEntry(30298, "鏰ᕑ쥋", 952806, 152050, "会루ᙧ譛ⲡ퟊", 95259, 409949), TrackOfTheDayEntry(108423, "夫뚟詸쮺꡽", 77008, 115796, "ꓫ츭", 234951, 997572)});
-    Test_SzThenUnSz_Check(468068, 465736, 127425, {TrackOfTheDayEntry(219851, "ꙵ", 722283, 416051, "켊෦聁�诨", 550861, 181236), TrackOfTheDayEntry(20949, "➵孞扎㹰㽙ᶝ㒾ⴙ荡옄", 763745, 133184, "ಖⳡ忆悑翐䈐풼仫", 985661, 412956), TrackOfTheDayEntry(148525, "ꪐ脹窕ૐ취ꨟ泒擵䆲罋", 403152, 568649, "䲲옮伴ꁧⓚ紝쾲", 318654, 576027), TrackOfTheDayEntry(17733, "Ⱄㄺ꛼㻔㴕", 618972, 913943, "魶㭷栳ﮂ窗䊨㎠", 373048, 125776)});
-    Test_SzThenUnSz_Check(462111, 975084, 231318, {TrackOfTheDayEntry(359796, "ìҏ", 652584, 968986, "濖෷൹袴義겋㞔鲱", 222029, 61248)});
-    Test_SzThenUnSz_Check(818218, 978008, 379909, {TrackOfTheDayEntry(938700, "὏鞳鿔힢ꤪ㙖࡮�", 112382, 755332, "j좠⵲贉韽벻", 813063, 803259)});
-    Test_SzThenUnSz_Check(674290, 314257, 695590, {TrackOfTheDayEntry(314116, "瘃⍴", 142993, 950657, "䖧骤㛦샚娄奾鴄", 959424, 603884), TrackOfTheDayEntry(873590, "繖䡬ٍ눘ꇰ࡞", 385761, 995570, "㵌⏭슒鷖ꩰ﵄", 940280, 974716), TrackOfTheDayEntry(69620, "�臘༝", 803062, 209586, "盘譊桍䭜䨄쪆锍ⶀ", 284152, 908119), TrackOfTheDayEntry(611777, "꣠㤽襜洞젶⊫蠡", 474286, 659378, "绨亁㸂厊ধ媟魾", 15023, 401824)});
-    Test_SzThenUnSz_Check(853320, 636474, 179745, {TrackOfTheDayEntry(862762, "�", 412916, 692155, "쉭邀", 959717, 827282)});
-    Test_SzThenUnSz_Check(387499, 263097, 603237, {TrackOfTheDayEntry(314889, "偆㊺噙ꙕኤꤌ馅㕴ꈽ", 297433, 723615, "", 980896, 869727), TrackOfTheDayEntry(811487, "〹㏮랬쉰", 249007, 467039, "⩧݄觤", 970884, 879589), TrackOfTheDayEntry(900439, "眭", 534423, 507167, "㏁", 738210, 810198), TrackOfTheDayEntry(709771, "翇첵㼭浗导�ṶԹ카�", 875535, 402199, "ꊣ⑏냏說䏿븮赡", 974649, 282138)});
-    Test_SzThenUnSz_Check(300035, 728099, 506470, {TrackOfTheDayEntry(941798, "櫳挧盬", 32797, 118284, "퐵儋䳆䦺謑膢֣", 262457, 175643), TrackOfTheDayEntry(87582, "鯉罨婽搅", 521630, 322390, "풦䦵亰絽࢜", 725908, 60001), TrackOfTheDayEntry(243548, "苕覾", 731491, 41462, "┗�莘럜", 280138, 458087)});
-    Test_SzThenUnSz_Check(943138, 362458, 597302, {TrackOfTheDayEntry(59231, "⨈キ퍰蔍궆넺", 761385, 90957, "⥽ꏗ", 124992, 930533), TrackOfTheDayEntry(449756, "", 142009, 652408, "", 401760, 410374), TrackOfTheDayEntry(20491, "", 203544, 564864, "跇�娯딉슝拓䥵", 327162, 374909)});
-    Test_SzThenUnSz_Check(225177, 348131, 33566, {TrackOfTheDayEntry(635778, "艖佺䀒䍊빇", 724134, 823505, "੉諡", 916666, 664136), TrackOfTheDayEntry(540743, "㮼쓎憷Ὄဨ㘳顫踠䙲", 916384, 756483, "븝弮�옚䬟", 361747, 876177), TrackOfTheDayEntry(655057, "㌼㏖⼇䋯줪꿙找쯡", 52221, 296737, "ᐱ", 19966, 818431)});
-    Test_SzThenUnSz_Check(816274, 509939, 797218, {TrackOfTheDayEntry(192100, "�꒭ɞ�斧晛昱", 207043, 626469, "﷨津䮵嬂줾㓒셡㿸", 781312, 119192), TrackOfTheDayEntry(806546, "ك", 850352, 683597, "乍拢줊∣", 318853, 898567), TrackOfTheDayEntry(62080, "", 769546, 639897, "蔘赩ﻔ", 621112, 556897), TrackOfTheDayEntry(425594, "�ꑷ堓儝맒샭넗", 496640, 239049, "ꘁ﬩险檑�", 404141, 441900)});
-    Test_SzThenUnSz_Check(481657, 917376, 127628, {TrackOfTheDayEntry(243716, "愛쫿", 645572, 163036, "ꐶ塶靖肳", 172725, 276095)});
-    Test_SzThenUnSz_Check(496962, 68866, 727035, {TrackOfTheDayEntry(876539, "뭶ዘ�㷣䷐ꌂ䈀", 964441, 353001, "悷姩麟ᠺ嵜㰙", 968553, 558485), TrackOfTheDayEntry(4118, "⧐䷔본촄益뎘嵖體峊瀏", 559282, 106187, "䳨⼨늾쏲⦜냍䖨", 199589, 987772)});
-    Test_SzThenUnSz_Check(33883, 759363, 973625, {TrackOfTheDayEntry(284960, "坤痒", 222277, 736962, "膋ᢒ罯髗ɸ", 108619, 869473), TrackOfTheDayEntry(146610, "�迬�", 655210, 251377, "춶堢쟔楟旒笟둀", 952811, 725125), TrackOfTheDayEntry(848606, "썏곑釕쒮狛", 739183, 762638, "糢쨶波ፑ", 828621, 323283), TrackOfTheDayEntry(321371, "沛葄ད�ኈ椉ૻ", 82774, 126019, "〗춙끬➒ᗽ}൳鸄", 122948, 926947)});
-    Test_SzThenUnSz_Check(798386, 942423, 332730, {TrackOfTheDayEntry(748809, "欼炼⬊鍦幨⪓�", 57045, 121162, "젒҃⹁ꈥ䗯ీ", 427135, 221693), TrackOfTheDayEntry(619400, "⿅ﭪ", 525975, 34293, "享ኁ", 955242, 736008), TrackOfTheDayEntry(122038, "", 942857, 796402, "灮⸽�쒒᲍鲈廘搝턣", 980174, 108419), TrackOfTheDayEntry(699856, "�", 440747, 240032, "䈊", 890146, 24316)});
-    Test_SzThenUnSz_Check(983580, 673801, 456894, {TrackOfTheDayEntry(147648, "쮜먏핝祰䧈躺줘웎", 346112, 927486, "豯�쉾캆㠷픮똹₀㘞�", 606304, 61306)});
-    Test_SzThenUnSz_Check(783215, 582181, 224304, {TrackOfTheDayEntry(282466, "밌ᇿ", 984768, 951108, "ໞ鹻凉Ǥ貉蛒︴", 498132, 745654), TrackOfTheDayEntry(889944, "�", 371522, 264447, "", 290759, 64229), TrackOfTheDayEntry(388105, "奁뛏ꍝٺ", 670511, 287847, "ꆾ", 461355, 180666)});
-    Test_SzThenUnSz_Check(474730, 215796, 181277, {});
-    Test_SzThenUnSz_Check(974017, 962956, 397246, {TrackOfTheDayEntry(855456, "ⳋ塄㐿胆骡㹭", 145074, 853521, "홱뽥䮌ڛ鈧뼞迣媩캼", 617725, 138812), TrackOfTheDayEntry(264329, "즷休彃", 65793, 728794, "��粡刮؉", 28442, 941016), TrackOfTheDayEntry(719147, "ﺯ籀ݍ", 725412, 732117, "", 484239, 371973), TrackOfTheDayEntry(334369, "㮊䔽", 32500, 497045, "", 743513, 814560)});
-    Test_SzThenUnSz_Check(490875, 552523, 448076, {TrackOfTheDayEntry(740624, "ဘ蹄梉ᘂ됔﮲", 497787, 992700, "䈈춃☴ʍ︠", 153177, 992714), TrackOfTheDayEntry(376448, "ᅾ⇈䷫堧Ἶ贖᧽�", 335548, 840347, "㏶⚉諍㓥٧", 570496, 194897)});
-    Test_SzThenUnSz_Check(214595, 113491, 621062, {TrackOfTheDayEntry(780255, "", 579494, 836264, "榡儠ꚬ�ꯞ첧�즯⨻", 314910, 923136)});
-    Test_SzThenUnSz_Check(569385, 672962, 898832, {TrackOfTheDayEntry(726327, "밈䘒䃨櫓", 495034, 993846, "䟋", 996191, 705160)});
-    Test_SzThenUnSz_Check(671095, 258857, 200822, {TrackOfTheDayEntry(734411, "ꨔ轮", 296865, 990300, "Ꝙ❬", 719728, 816765), TrackOfTheDayEntry(464000, "", 671139, 541598, "檢랳ꤼﲸ遗畊跨乤", 688999, 576885)});
-    Test_SzThenUnSz_Check(605835, 117180, 252476, {TrackOfTheDayEntry(496154, "᫢痜颷嬮", 242465, 832404, "䮒换", 589869, 829061), TrackOfTheDayEntry(656698, "ꌰእﯴ�쓏`냢", 150351, 631603, "庅㚺䇸", 170614, 439993)});
-    Test_SzThenUnSz_Check(575792, 471649, 586716, {TrackOfTheDayEntry(1437, "∼퇓儻惈�폤弹", 363028, 610902, "孱奒ㄴ퉳᠀", 783455, 295194)});
-    Test_SzThenUnSz_Check(277545, 536336, 106082, {TrackOfTheDayEntry(702962, "ꚨ㏨嘁﷕貾瀍叶┛", 666488, 727845, "騂邉젝皎먳", 402160, 928008)});
-    Test_SzThenUnSz_Check(282021, 660128, 544225, {TrackOfTheDayEntry(783624, "", 716456, 465989, "ꞁ屵펽", 701760, 647193)});
-    Test_SzThenUnSz_Check(799669, 550782, 264903, {TrackOfTheDayEntry(932760, "㙏槉㵭㲗", 255327, 770792, "", 169728, 602754), TrackOfTheDayEntry(18652, "�ꊪൔ絬茓㏿᪽嗈", 645330, 227230, "䅬權呋ᑎ藜즋", 603608, 899606)});
-  }
-  
-  bool unitTestResults_TotdMonth_RowSerialization = runAsync(Tests_RegisterAll_TotdMonth_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_TotdMonth_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_TotdMonth', UnitTest_ToFromBuffer_TotdMonth);

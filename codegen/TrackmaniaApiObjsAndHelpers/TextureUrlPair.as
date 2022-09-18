@@ -40,6 +40,15 @@ shared class TextureUrlPair {
     return this._url;
   }
   
+  /* Methods // Mixin: Setters */
+  void set_filename(const string &in new_filename) {
+    this._filename = new_filename;
+  }
+  
+  void set_url(const string &in new_url) {
+    this._url = new_url;
+  }
+  
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TextureUrlPair('

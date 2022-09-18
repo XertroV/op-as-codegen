@@ -121,6 +121,7 @@ wrapConstructor = wrapFunction ""
 wrapConstructor' :: String -> Array String -> Lines -> AsFunction
 wrapConstructor' = wrapFunction' ""
 
+-- | Returns an AsFunction. Arguments: return type, name, args, lines
 wrapFunction :: String -> String -> JFields -> Lines -> AsFunction
 wrapFunction ret name args lines = wrapFunction'' ret name (Just args) (jfieldToAsArg <$> args) false lines
 

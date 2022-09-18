@@ -76,25 +76,6 @@ shared class MatchResult {
       ;
   }
   
-  /* Methods // Mixin: Row Serialization */
-  const string ToRowString() {
-    string ret = "";
-    ret += TRS_WrapString(_rank.ToRowString()) + ",";
-    ret += TRS_WrapString(_score.ToRowString()) + ",";
-    ret += TRS_WrapString(_participant) + ",";
-    ret += TRS_WrapString(_zone) + ",";
-    return ret;
-  }
-  
-  private const string TRS_WrapString(const string &in s) {
-    string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    string ret = '(' + _s.Length + ':' + _s + ')';
-    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
-      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
-    }
-    return ret;
-  }
-  
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
     _rank.WriteToBuffer(buf);
@@ -119,72 +100,6 @@ shared class MatchResult {
 }
 
 namespace _MatchResult {
-  /* Namespace // Mixin: Row Serialization */
-  shared MatchResult@ FromRowString(const string &in str) {
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    /* Parse field: rank of type: MaybeOfUint@ */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    MaybeOfUint@ rank = _MaybeOfUint::FromRowString(chunk);
-    /* Parse field: score of type: MaybeOfUint@ */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    MaybeOfUint@ score = _MaybeOfUint::FromRowString(chunk);
-    /* Parse field: participant of type: string */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    string participant = chunk;
-    /* Parse field: zone of type: string */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    string zone = chunk;
-    return MatchResult(rank, score, participant, zone);
-  }
-  
-  shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {
-    if (sample != expected) {
-      throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
-    }
-  }
-  
   /* Namespace // Mixin: ToFromBuffer */
   shared MatchResult@ ReadFromBuffer(Buffer@ &in buf) {
     /* Parse field: rank of type: MaybeOfUint@ */

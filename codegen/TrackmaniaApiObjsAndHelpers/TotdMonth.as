@@ -100,33 +100,6 @@ shared class TotdMonth {
       ;
   }
   
-  /* Methods // Mixin: Row Serialization */
-  const string ToRowString() {
-    string ret = "";
-    ret += '' + _year + ",";
-    ret += '' + _month + ",";
-    ret += '' + _lastDay + ",";
-    ret += TRS_WrapString(TRS_Array_TrackOfTheDayEntry(_days)) + ",";
-    return ret;
-  }
-  
-  private const string TRS_WrapString(const string &in s) {
-    string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    string ret = '(' + _s.Length + ':' + _s + ')';
-    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
-      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
-    }
-    return ret;
-  }
-  
-  private const string TRS_Array_TrackOfTheDayEntry(const array<TrackOfTheDayEntry@> &in arr) {
-    string ret = '';
-    for (uint i = 0; i < arr.Length; i++) {
-      ret += TRS_WrapString(arr[i].ToRowString()) + ',';
-    }
-    return ret;
-  }
-  
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
     buf.Write(_year);
@@ -168,82 +141,6 @@ shared class TotdMonth {
 }
 
 namespace _TotdMonth {
-  /* Namespace // Mixin: Row Serialization */
-  shared TotdMonth@ FromRowString(const string &in str) {
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    /* Parse field: year of type: uint */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    uint year = Text::ParseInt(chunk);
-    /* Parse field: month of type: uint */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    uint month = Text::ParseInt(chunk);
-    /* Parse field: lastDay of type: uint */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    uint lastDay = Text::ParseInt(chunk);
-    /* Parse field: days of type: array<TrackOfTheDayEntry@> */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    array<TrackOfTheDayEntry@> days = FRS_Array_TrackOfTheDayEntry(chunk);
-    return TotdMonth(year, month, lastDay, days);
-  }
-  
-  shared const array<TrackOfTheDayEntry@>@ FRS_Array_TrackOfTheDayEntry(const string &in str) {
-    array<TrackOfTheDayEntry@> ret = array<TrackOfTheDayEntry@>(0);
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    while (remainder.Length > 0) {
-      try {
-        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-        tmp = remainder.SubStr(1).Split(':', 2);
-        chunkLen = Text::ParseInt(tmp[0]);
-        chunk = tmp[1].SubStr(0, chunkLen);
-        remainder = tmp[1].SubStr(chunkLen + 2);
-        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      } catch {
-        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-        throw(getExceptionInfo());
-      }
-      ret.InsertLast(_TrackOfTheDayEntry::FromRowString(chunk));
-    }
-    return ret;
-  }
-  
-  shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {
-    if (sample != expected) {
-      throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
-    }
-  }
-  
   /* Namespace // Mixin: ToFromBuffer */
   shared TotdMonth@ ReadFromBuffer(Buffer@ &in buf) {
     /* Parse field: year of type: uint */

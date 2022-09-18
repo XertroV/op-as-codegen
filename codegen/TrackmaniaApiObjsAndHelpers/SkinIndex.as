@@ -38,6 +38,11 @@ shared class SkinIndex {
     return this._skins;
   }
   
+  /* Methods // Mixin: Setters */
+  void set_skins(const SkinSpec@[] &in new_skins) {
+    this._skins = new_skins;
+  }
+  
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'SkinIndex('

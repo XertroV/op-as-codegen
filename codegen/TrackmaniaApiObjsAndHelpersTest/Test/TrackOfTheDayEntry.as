@@ -217,64 +217,6 @@ namespace Test_TrackOfTheDayEntry {
   
   bool unitTestResults_TrackOfTheDayEntry_OpEq = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_TrackOfTheDayEntry_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_TrackOfTheDayEntry', UnitTest_SzThenUnSz_TrackOfTheDayEntry);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
-    TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
-    assert(tmp == _TrackOfTheDayEntry::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_TrackOfTheDayEntry() {
-    Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", 141231, 325863, "藴킅Ề쯣欚엻렒哾๺⾖", 327500, 300954);
-    Test_SzThenUnSz_Check(714358, "�밄ꊦ⊼", 262638, 498192, "", 179363, 144555);
-    Test_SzThenUnSz_Check(409427, "瀹ፎ", 906038, 616400, "佪�", 263354, 427441);
-    Test_SzThenUnSz_Check(565451, "蹟牪Ộ푲෗", 651288, 7008, "", 322150, 614406);
-    Test_SzThenUnSz_Check(417104, "㯠쬙ꅇ᭧봅≹䎢竟", 337261, 394778, "㠵ᢐၛⶍ쎦㋥霈", 130027, 641708);
-    Test_SzThenUnSz_Check(67877, "瞄", 207150, 392550, "ꥏ꼼砍", 966343, 542139);
-    Test_SzThenUnSz_Check(990030, "⤦➦踆⌾ꎳ㏰鉓켯τ", 973529, 47392, "", 122428, 837623);
-    Test_SzThenUnSz_Check(615687, "䩸Ὼ", 606676, 964248, "繤牉᳔䬳⑇勿", 490254, 320578);
-    Test_SzThenUnSz_Check(583029, "솛格둪퍻䳥最徐㭾", 288796, 42061, "", 234787, 700902);
-    Test_SzThenUnSz_Check(853957, "෌ᚸ", 761537, 579694, "昭剼", 896779, 485401);
-    Test_SzThenUnSz_Check(405127, "궈䩓�魓쬣㸕", 227499, 571633, "ు盡ₜ阵璫⃔煡", 341399, 979997);
-    Test_SzThenUnSz_Check(258409, "ѽ泡誄狋撧곟", 925854, 762338, "Țꡮ殴䉵庨", 161330, 809993);
-    Test_SzThenUnSz_Check(973135, "⻖㋽", 344084, 240382, "膕躯", 991003, 730997);
-    Test_SzThenUnSz_Check(820813, "ී쨳ㄤ䒹ਮ", 868449, 179302, "〿Ꝼ샛ᣱ", 881016, 266937);
-    Test_SzThenUnSz_Check(914118, "㹎ӑ䞖猏", 92, 558576, "ꡃ", 297578, 12322);
-    Test_SzThenUnSz_Check(613456, "殤掙얷ᐮጧ뎆", 573568, 464559, "죐ᓌﻸꚡ䯯", 300346, 447767);
-    Test_SzThenUnSz_Check(195527, "樦纍ﲀ⧝�䄳", 759025, 99463, "", 909951, 951620);
-    Test_SzThenUnSz_Check(840455, "䫚蜳㽤", 10849, 185372, "⯌憎祖羔ﾧ鋣ꊌ멉", 78147, 209790);
-    Test_SzThenUnSz_Check(723283, "៳╝⁋컱", 830203, 657034, "찀믌聅똯샩愍", 651952, 806313);
-    Test_SzThenUnSz_Check(330629, "", 116699, 616919, "㯊䂁∐⒳", 861580, 247650);
-    Test_SzThenUnSz_Check(379916, "᤾", 770642, 834356, "ذ沶ꫴ痺ﾖ", 595771, 192620);
-    Test_SzThenUnSz_Check(796856, "簜饋", 587261, 379807, "䷗鷪묡", 450685, 913447);
-    Test_SzThenUnSz_Check(380426, "ԙꇖⲽ櫉疷", 884816, 252573, "", 449721, 421428);
-    Test_SzThenUnSz_Check(437232, "Ⓘ", 360995, 43735, "䁣豅琧뗇躏òꘄ", 625722, 983651);
-    Test_SzThenUnSz_Check(768217, "负釺", 477588, 555890, "麃犿", 923280, 929837);
-    Test_SzThenUnSz_Check(487546, "檓㸠斻ை牖", 808646, 898762, "ﴋᮝ", 95401, 233228);
-    Test_SzThenUnSz_Check(57986, "商ᅾ鲑頸헳ᑭᷡ", 505384, 263354, "箯浔陳᳚乹ﻺ鮷囫", 482962, 745915);
-    Test_SzThenUnSz_Check(315247, "쎡韠ᣳ翠�", 15896, 937387, "�᧶륫삈켳劻�", 141403, 123480);
-    Test_SzThenUnSz_Check(876501, "여군햛蝅縰�㔭", 558944, 587878, "ﷺ⋏晆뗭", 27512, 645217);
-    Test_SzThenUnSz_Check(635672, "䞀�", 207205, 354093, "낊㮄瓲ꔽ႙趹", 680346, 153507);
-    Test_SzThenUnSz_Check(335942, "䚦", 168469, 571192, "漎㛊�鉠託", 478307, 405974);
-    Test_SzThenUnSz_Check(189578, "霭䞓", 148425, 947791, "鳊鍽扐肑レ", 896003, 238891);
-    Test_SzThenUnSz_Check(267100, "屹팑龚", 552448, 416887, "㕋�鯃嘐ኽੱ晤斔�", 829491, 742412);
-    Test_SzThenUnSz_Check(433578, "튤⟫", 333008, 445010, "", 252543, 401634);
-    Test_SzThenUnSz_Check(764241, "㺡࣊砅", 385300, 285037, "뻗８ᦲ菬蜻췭栴省", 178803, 221120);
-    Test_SzThenUnSz_Check(675410, "桩弜蛱왓", 717927, 8570, "ꦾ첥⡵苨앶㴗ၖ忧ⷾ챲", 87188, 226618);
-    Test_SzThenUnSz_Check(571222, "饍㨋8辝쵌ᶬ놲싵", 93150, 98007, "㰿苨앛䡳␬鴎", 334966, 17733);
-    Test_SzThenUnSz_Check(693496, "冁᯳Ⱄㄺ꛼㻔", 913943, 896342, "", 373048, 125776);
-    Test_SzThenUnSz_Check(148525, "ꪐ脹窕ૐ취ꨟ泒擵䆲罋", 403152, 568649, "䲲옮伴ꁧⓚ紝쾲", 318654, 576027);
-    Test_SzThenUnSz_Check(20949, "➵孞扎㹰㽙ᶝ㒾ⴙ荡옄", 763745, 133184, "ಖⳡ忆悑翐䈐풼仫", 985661, 412956);
-    Test_SzThenUnSz_Check(219851, "ꙵ", 722283, 416051, "켊෦聁�诨", 550861, 181236);
-    Test_SzThenUnSz_Check(462111, "憖ꀖ銱❕蒚ₖ", 293221, 133601, "灣眇죫ㅿ傴灲纹謐ሙ", 113139, 633845);
-  }
-  
-  bool unitTestResults_TrackOfTheDayEntry_RowSerialization = runAsync(Tests_RegisterAll_TrackOfTheDayEntry_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_TrackOfTheDayEntry_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_TrackOfTheDayEntry', UnitTest_ToFromBuffer_TrackOfTheDayEntry);

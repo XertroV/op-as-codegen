@@ -211,64 +211,6 @@ namespace Test_Challenges {
   
   bool unitTestResults_Challenges_OpEq = runAsync(Tests_RegisterAll_Challenges_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_Challenges_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_Challenges', UnitTest_SzThenUnSz_Challenges);
-  }
-  
-  bool Test_SzThenUnSz_Check(const Challenge@[] &in challenges) {
-    Challenges@ tmp = Challenges(challenges);
-    assert(tmp == _Challenges::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_Challenges() {
-    Test_SzThenUnSz_Check({});
-    Test_SzThenUnSz_Check({});
-    Test_SzThenUnSz_Check({Challenge(527623, "陏", "씠䪉Ꮢ榋", 705395, 18764, 852959), Challenge(555317, "ﲼ᭫뇾", "粯ꣿ僨躗괱韲", 131261, 366231, 796997), Challenge(34637, "赩ࡋ痋蒪䃜졂錭鿩꤉", "ř챉鋱Ʞ爇⼺鐸䨒", 311318, 690397, 585467), Challenge(275348, "�놮鿍ᔛ覎漸࿚팂툭뮊", "骈咮ﱴ㞩谶릚끣", 840437, 29355, 736349)});
-    Test_SzThenUnSz_Check({Challenge(956732, "퍻䳥最徐㭾멭Პ䑰", "䟥ፕ⎃ﲀᦓ솛格둪", 234787, 700902, 853957), Challenge(949845, "Ὼ㐚ꂖ摇䞰鄕ꈽ洞⤦", "", 964248, 970574, 467845), Challenge(439305, "⏂ꥏ꼼砍띑䗇髣蘟", "鉓켯τ㪔ﻊ爛", 4343, 482726, 675803), Challenge(629002, "㠵ᢐၛⶍ쎦", "좳", 641708, 67877, 569276)});
-    Test_SzThenUnSz_Check({Challenge(362888, "", "澸曂Ԧ懁ㅲ砤", 357453, 442238, 627991), Challenge(241793, "愵䗽ﵱꐎ", "ⓧ撲왭改ᢂ䙏", 976559, 150994, 558367), Challenge(480710, "훃�폡䐂᰾홗", "柊麑囼", 279372, 312200, 227617)});
-    Test_SzThenUnSz_Check({Challenge(868449, "�〿Ꝼ샛ᣱ", "ӑ䞖猏鐪﹀ྏ䅳税", 729161, 92, 558576), Challenge(161330, "⻖㋽빽睍뉥", "雈皇殤膕躯蓬㥊", 820813, 647490, 647392)});
-    Test_SzThenUnSz_Check({Challenge(704477, "Ṷ耦穰㢴", "ﳓ눼ᗿ鉞ꊵ㻛", 253805, 750292, 91371), Challenge(963710, "卹籫", "䗆ᵭ䠽읨", 632361, 22517, 361965)});
-    Test_SzThenUnSz_Check({Challenge(824789, "樦", "Ꮪ猾ؙ太蠵", 99463, 860757, 909951)});
-    Test_SzThenUnSz_Check({Challenge(904059, "ቔٺ", "歬痠", 249089, 840079, 628804), Challenge(6692, "�난ힼ떐砤늈ꆅ", "忖鯲人覚�", 35015, 1591, 338337)});
-    Test_SzThenUnSz_Check({Challenge(834356, "ذ沶ꫴ痺ﾖ", "䶂簜饋᲏඿븹", 587261, 379807, 168286), Challenge(606450, "₺洉疧ꅦ뭲끀䗶찀믌", "㌲㯊䂁∐⒳伷鳯⽸︧濜", 247650, 379916, 770642)});
-    Test_SzThenUnSz_Check({Challenge(901092, "ᐼ쳴䣹뒞듻", "ꊣǆ녃", 241326, 984560, 736725), Challenge(646739, "㙂詵", "妊嵚뻭ቡ", 593371, 777624, 10462), Challenge(560435, "ᄜ☝㺸긧�䵘㐯", "ꊓ�쳉⺋", 999224, 249786, 43724), Challenge(334072, "ﬗ炅⧬䥱", "આ騧➊皠㓧脺﫭", 396305, 730943, 49473)});
-    Test_SzThenUnSz_Check({Challenge(263354, "箯浔陳᳚乹ﻺ鮷囫", "䮋", 745915, 315247, 912496), Challenge(808646, "㪁▫윁벼寥ﴋᮝ臢", "鲑頸헳ᑭᷡƫ믅༐", 880579, 464345, 505384)});
-    Test_SzThenUnSz_Check({Challenge(711262, "㟧歒䉛笔ꦚ흯슍뾚ॄ", "紨⤦鄻隳砒긳佒", 655561, 826967, 255252)});
-    Test_SzThenUnSz_Check({Challenge(354093, "낊㮄瓲ꔽ႙趹", "䚦럕ț頛臾ÍἩ", 168469, 571192, 936735), Challenge(532104, "궆暱여군햛蝅縰", "狤í똫俑ﷺ⋏晆뗭⴬", 635672, 394180, 207205)});
-    Test_SzThenUnSz_Check({Challenge(682863, "ꤔ侂", "ஜ瑌탂븞觸", 833655, 636614, 245216), Challenge(733581, "헣⧾ﾊ驏שּׂ맳", "힫ʹ", 577770, 412880, 396732), Challenge(328156, "倽䨬㭺邇맣Լ颋骶熎", "퍒幽㔻", 399064, 523589, 79839)});
-    Test_SzThenUnSz_Check({Challenge(266241, "", "ꇑﾷꃦꅕ", 808501, 953518, 283816), Challenge(427827, "챲퉗溕㹅灜桩弜", "蕹尷ꦾ첥⡵苨앶㴗ၖ忧", 571222, 581686, 977267), Challenge(385300, "", "뻗８ᦲ菬蜻췭栴省", 178803, 221120, 675410), Challenge(333008, "愤섉", "", 186040, 69951, 157313)});
-    Test_SzThenUnSz_Check({Challenge(458420, "⸏윲氕繍廻䎎ਥ噚", "䄟", 268043, 850901, 454459), Challenge(665972, "떁", "ᶮ苿퍎ᇏ伅", 36375, 463622, 248976), Challenge(772770, "♭", "߀룞ꖭ", 316948, 157014, 260103)});
-    Test_SzThenUnSz_Check({Challenge(181735, "ㆻಖⳡ忆", "蝶ꙵ隓臹⢺", 722283, 416051, 450180), Challenge(788899, "扎㹰㽙ᶝ㒾ⴙ", "�悝ㅍ➵", 763745, 133184, 698385)});
-    Test_SzThenUnSz_Check({Challenge(642392, "蠡拉⢐쀌", "襜洞젶", 83850, 980557, 474286), Challenge(629344, "⯛婃ꬃ똊鱴䐡낀飻㥾", "㵛䓤≴ꠋ뽾緙", 362497, 172777, 816885), Challenge(897734, "臿陋㋫", "", 48336, 5749, 928098), Challenge(448848, "䭰�줖쵮ݯ滞觏퇌", "겋㞔鲱˯掑⺃爛ì", 350187, 935445, 663598)});
-    Test_SzThenUnSz_Check({Challenge(352358, "⤫ꗱ᫞菓镫웤", "搯臕䘔꫈ᨋ》竫퓣䲊", 224416, 875242, 857629), Challenge(172416, "帻鈿橦衺㉹䧚炐▖䕥ϖ", "榄诶", 132876, 768987, 543580), Challenge(159848, "", "蠕续盲", 432129, 995984, 361102), Challenge(376242, "﫦㊷", "ഀ옉龞꺌ꭎ", 809611, 319210, 462891)});
-    Test_SzThenUnSz_Check({Challenge(833852, "�梛怋컲쀕歛瓩O⁞鰎", "浗导�ṶԹ", 21513, 875535, 402199), Challenge(853320, "", "῀䬉ⱗꈣꗨ紓뻽龋", 552528, 616526, 274838)});
-    Test_SzThenUnSz_Check({Challenge(967719, "闎࿎≮ㅻ", "", 470347, 773077, 164451), Challenge(385683, "쉅亠햇ᖇ⼏歖", "㡆햽㸞", 858641, 186903, 106182), Challenge(299030, "৸⑓", "뛼켄雝繗環錆㕟﵇", 235369, 775412, 329853)});
-    Test_SzThenUnSz_Check({Challenge(588400, "뤔ྉ", "䯪", 225516, 605540, 347391), Challenge(368420, "੥룧큎仡�॑覿", "༳�튤眑冼", 467563, 598709, 626664), Challenge(869727, "㲡軖", "輐౟휐咒⣅꩹", 479336, 553341, 951269)});
-    Test_SzThenUnSz_Check({Challenge(444800, "㭐銣콇ﲇ꽾", "皎䊭匑⩶妗�Ț釄툆", 279735, 981829, 706774), Challenge(32797, "", "⚷큙퐵儋䳆䦺謑膢֣ꤿ", 943138, 362458, 597302)});
-    Test_SzThenUnSz_Check({Challenge(67457, "ᘎ耼⫰ﭒ䜹ᰯồ趌ݸﰙ", "鑛驖腙췍꽄꫻", 968174, 67155, 956741), Challenge(348131, "땲ꛠ瞣䔋黏੩鄭", "帜뇘룧김则", 285836, 135488, 487812), Challenge(742591, "⥽ꏗ謂㆞㒍眨釞", "", 124992, 930533, 225177)});
-    Test_SzThenUnSz_Check({Challenge(237564, "諡畵䯖쫟艖佺", "﹊鴥묏⛿랥泘섆ۧꄕῗ", 960634, 536175, 493971), Challenge(756483, "븝弮�옚䬟", "", 876177, 635778, 984182)});
-    Test_SzThenUnSz_Check({Challenge(496640, "", "꼈ꘁ﬩险檑�Ʋ", 441900, 62080, 769546)});
-    Test_SzThenUnSz_Check({Challenge(1334, "肳圵놄欭愛", "�贲Ἴｃ鉃买㊜ꐶ塶", 727035, 239302, 354245), Challenge(844070, "", "矖", 759709, 762061, 243716), Challenge(265019, "ྕ㫐", "ე", 166520, 568742, 158127), Challenge(465913, "톽", "봫᧮Ἳ촷韄", 514223, 706528, 809621)});
-    Test_SzThenUnSz_Check({Challenge(551008, "䷐ꌂ䈀菿ԏ�럔㼪쁉㪒", "샛煶끮悫뭶ዘ�", 949509, 968553, 558485), Challenge(498422, "ꟛ⧐䷔본촄益뎘", "詑脧坑遚∻", 908579, 497376, 417417)});
-    Test_SzThenUnSz_Check({Challenge(251508, "둀魟䡏鉕�迬", "楟旒", 952811, 725125, 284960), Challenge(3276, "釕", "糢쨶波ፑ鄪厦ﴑ봭썏", 828621, 323283, 146610), Challenge(139818, "ዬ沛葄ད", "춙끬➒ᗽ}൳鸄ꋺ䨼", 122948, 926947, 848606), Challenge(434625, "ꦔ堦", "", 321371, 438846, 575999)});
-    Test_SzThenUnSz_Check({Challenge(983140, "芢㏤깠", "萿�", 849105, 927472, 472625)});
-    Test_SzThenUnSz_Check({Challenge(630552, "핍竉䃋", "䞹悩牪", 805392, 905573, 86768)});
-    Test_SzThenUnSz_Check({Challenge(221693, "", "듒籍쬀ጫ㶾�嚦ޞ", 255012, 859595, 291541), Challenge(57045, "", "⹁ꈥ䗯ీ軧﮿", 1104, 916487, 427135), Challenge(34293, "享ኁ", "롧䱐Ė٬魒쪘퍓胾", 917862, 129611, 255304), Challenge(942857, "�쒒᲍鲈廘搝턣囬낌", "浿㯋ᩴ糺灮", 108419, 619400, 525975)});
-    Test_SzThenUnSz_Check({Challenge(783215, "䭢 漓", "䨉", 57286, 328354, 976565), Challenge(750419, "픮똹₀㘞", "쉾캆", 507080, 606304, 61306)});
-    Test_SzThenUnSz_Check({Challenge(290759, "ᇿ팑ퟞề딈㯪╴뽝", "햣䩝↡", 951108, 978517, 717017), Challenge(287847, "ꆾ", "謖䷅㔊㡟", 371522, 264447, 752411)});
-    Test_SzThenUnSz_Check({Challenge(384104, "ꅒ豱숛᤻溜伔宜䷷랖ꛝ", "椐犀᝙뷟훇", 40915, 619666, 994180)});
-    Test_SzThenUnSz_Check({Challenge(34528, "胆骡㹭騣냞黎ᶊ뮵", "迣媩캼卶肯쯑ޚⳋ塄", 135731, 890827, 617725), Challenge(814560, "꩖沀躁䢆⥳ﺯ籀ݍ枍", "穂゙뾙誜ὣ즷休彃쟝", 997117, 804301, 873428)});
-    Test_SzThenUnSz_Check({Challenge(70124, "ᘒ", "뭜䳜͉跕睾鍛铫匃ԋ", 581368, 470748, 522343), Challenge(271507, "ᦵ㏶⚉", "ဘ蹄梉ᘂ됔﮲롲沞粍", 497787, 992700, 988040), Challenge(655784, "᧽�향醁줪Ф◩�雅", "ᅾ⇈䷫堧Ἶ", 335548, 840347, 175594)});
-    Test_SzThenUnSz_Check({Challenge(392257, "켥碡榡儠ꚬ�ꯞ첧", "䘌ﲸ莖꠹䟄ꣃ㥾鯴ܗ", 914442, 753670, 413978)});
-    Test_SzThenUnSz_Check({Challenge(217026, "", "믲떦ꭖ", 215975, 39885, 166725), Challenge(544748, "⫧Þ橒醟몾毭區", "砾裡恫唒鎣颿瑪쉗￣", 465965, 30508, 547864), Challenge(834812, "莕", "Ԡ귆㬈闄K宱轒", 844403, 566657, 738123), Challenge(705160, "洝忣�", "ꝝ", 258857, 200822, 391278)});
-    Test_SzThenUnSz_Check({Challenge(329763, "牺㒢Њ鞍㭞", "䗘硓莜", 181493, 816799, 929973), Challenge(363028, "孱奒ㄴ퉳᠀㺍", "좆趚ꙷ騼ᰕ鴭伜蜸", 277545, 536336, 106082), Challenge(356473, "颒飗뉕镶", "�폤弹Ꮅ㝪", 38188, 714272, 805472), Challenge(361262, "罾䧼蔓ᦺ㷍ଚ쐯␂", "ޠﳻ됷躊낧�뷸堂", 869400, 909564, 566754)});
-    Test_SzThenUnSz_Check({Challenge(770792, "", "䵹隐ﶚ", 281490, 648533, 877620), Challenge(18652, "�ꊪൔ絬茓㏿᪽嗈", "⸡Გ䅬權呋ᑎ藜즋ఠ킴", 932760, 420047, 255327), Challenge(878108, "༖ⓚ塋娽", "番횛", 768916, 646546, 869902), Challenge(928008, "䁬岚貈읫⃎눅伇", "鈠渔", 228966, 473050, 546662)});
-  }
-  
-  bool unitTestResults_Challenges_RowSerialization = runAsync(Tests_RegisterAll_Challenges_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_Challenges_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_Challenges', UnitTest_ToFromBuffer_Challenges);

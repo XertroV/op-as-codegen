@@ -56,6 +56,19 @@ shared class SkinSpec {
     return this._texturePairs;
   }
   
+  /* Methods // Mixin: Setters */
+  void set_baseModel(const string &in new_baseModel) {
+    this._baseModel = new_baseModel;
+  }
+  
+  void set_hasPlayerMesh(bool new_hasPlayerMesh) {
+    this._hasPlayerMesh = new_hasPlayerMesh;
+  }
+  
+  void set_texturePairs(const TextureUrlPair@[] &in new_texturePairs) {
+    this._texturePairs = new_texturePairs;
+  }
+  
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'SkinSpec('

@@ -21,15 +21,16 @@ import Mixins.Getters (mxGetters)
 import Mixins.OpEq (mxOpEq)
 import Mixins.Persistent (mxPersistent)
 import Mixins.RowSz (mxRowSz)
+import Mixins.Setters (mxSetters)
 import Mixins.ToFromBuffer (mxToFromBuffer)
 import Mixins.ToFromJsonObj (mxToFromJsonObj)
 import Mixins.ToString (mxToString)
 
 typicalMixins :: Array Mixin
-typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz, mxToFromBuffer ]
+typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxToFromBuffer ] -- mxRowSz,
 
 simpleJsonMixins :: Array Mixin
-simpleJsonMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq ]
+simpleJsonMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxSetters, mxToString, mxOpEq ]
 
 codecChallenge ∷ JsonObj
 codecChallenge =
@@ -292,15 +293,18 @@ sceneItem = { cls, obj }
 
   obj =
     object "SceneItem"
+      # field "uid" JString
       # field "name" JString
-      # field "ver" JUint
       # field "type" (JEnum "SItemType")
+      # field "visible" JBool
       # field "pos" JVec3
       # field "angle" JNumber
       # field "tt" JBool
       # field "carSync" JBool
       # field "attachedTo" (JMaybe JString)
       # field "skinZip" JString
+      # field "skinUrl" JString
+      # field "ver" JUint
 
 -- player skins
 skinIndex :: ClsWithObj

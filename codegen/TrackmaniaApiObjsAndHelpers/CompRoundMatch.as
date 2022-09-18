@@ -85,26 +85,6 @@ shared class CompRoundMatch {
       ;
   }
   
-  /* Methods // Mixin: Row Serialization */
-  const string ToRowString() {
-    string ret = "";
-    ret += '' + _id + ",";
-    ret += '' + _position + ",";
-    ret += '' + _isCompleted + ",";
-    ret += TRS_WrapString(_name) + ",";
-    ret += TRS_WrapString(_clubMatchLiveId) + ",";
-    return ret;
-  }
-  
-  private const string TRS_WrapString(const string &in s) {
-    string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    string ret = '(' + _s.Length + ':' + _s + ')';
-    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
-      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
-    }
-    return ret;
-  }
-  
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
     buf.Write(_id);
@@ -131,73 +111,6 @@ shared class CompRoundMatch {
 }
 
 namespace _CompRoundMatch {
-  /* Namespace // Mixin: Row Serialization */
-  shared CompRoundMatch@ FromRowString(const string &in str) {
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    /* Parse field: id of type: uint */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    uint id = Text::ParseInt(chunk);
-    /* Parse field: position of type: uint */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    uint position = Text::ParseInt(chunk);
-    /* Parse field: isCompleted of type: bool */
-    try {
-      tmp = remainder.Split(',', 2);
-      chunk = tmp[0]; remainder = tmp[1];
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    bool isCompleted = ('true' == chunk.ToLower());
-    /* Parse field: name of type: string */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    string name = chunk;
-    /* Parse field: clubMatchLiveId of type: string */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    string clubMatchLiveId = chunk;
-    return CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
-  }
-  
-  shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {
-    if (sample != expected) {
-      throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
-    }
-  }
-  
   /* Namespace // Mixin: ToFromBuffer */
   shared CompRoundMatch@ ReadFromBuffer(Buffer@ &in buf) {
     /* Parse field: id of type: uint */

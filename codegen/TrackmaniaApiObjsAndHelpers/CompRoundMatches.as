@@ -71,30 +71,6 @@ shared class CompRoundMatches {
       ;
   }
   
-  /* Methods // Mixin: Row Serialization */
-  const string ToRowString() {
-    string ret = "";
-    ret += TRS_WrapString(TRS_Array_CompRoundMatch(_matches)) + ",";
-    return ret;
-  }
-  
-  private const string TRS_WrapString(const string &in s) {
-    string _s = s.Replace('\n', '\\n').Replace('\r', '\\r');
-    string ret = '(' + _s.Length + ':' + _s + ')';
-    if (ret.Length != (3 + _s.Length + ('' + _s.Length).Length)) {
-      throw('bad string length encoding. expected: ' + (3 + _s.Length + ('' + _s.Length).Length) + '; but got ' + ret.Length);
-    }
-    return ret;
-  }
-  
-  private const string TRS_Array_CompRoundMatch(const array<CompRoundMatch@> &in arr) {
-    string ret = '';
-    for (uint i = 0; i < arr.Length; i++) {
-      ret += TRS_WrapString(arr[i].ToRowString()) + ',';
-    }
-    return ret;
-  }
-  
   /* Methods // Mixin: ToFromBuffer */
   void WriteToBuffer(Buffer@ &in buf) {
     WTB_Array_CompRoundMatch(buf, _matches);
@@ -147,55 +123,6 @@ shared class CompRoundMatches {
 }
 
 namespace _CompRoundMatches {
-  /* Namespace // Mixin: Row Serialization */
-  shared CompRoundMatches@ FromRowString(const string &in str) {
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    /* Parse field: matches of type: array<CompRoundMatch@> */
-    try {
-      FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-      tmp = remainder.SubStr(1).Split(':', 2);
-      chunkLen = Text::ParseInt(tmp[0]);
-      chunk = tmp[1].SubStr(0, chunkLen);
-      remainder = tmp[1].SubStr(chunkLen + 2);
-      FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-    } catch {
-      warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-      throw(getExceptionInfo());
-    }
-    array<CompRoundMatch@> matches = FRS_Array_CompRoundMatch(chunk);
-    return CompRoundMatches(matches);
-  }
-  
-  shared const array<CompRoundMatch@>@ FRS_Array_CompRoundMatch(const string &in str) {
-    array<CompRoundMatch@> ret = array<CompRoundMatch@>(0);
-    string chunk = '', remainder = str;
-    array<string> tmp = array<string>(2);
-    uint chunkLen = 0;
-    while (remainder.Length > 0) {
-      try {
-        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
-        tmp = remainder.SubStr(1).Split(':', 2);
-        chunkLen = Text::ParseInt(tmp[0]);
-        chunk = tmp[1].SubStr(0, chunkLen);
-        remainder = tmp[1].SubStr(chunkLen + 2);
-        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
-      } catch {
-        warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
-        throw(getExceptionInfo());
-      }
-      ret.InsertLast(_CompRoundMatch::FromRowString(chunk));
-    }
-    return ret;
-  }
-  
-  shared void FRS_Assert_String_Eq(const string &in sample, const string &in expected) {
-    if (sample != expected) {
-      throw('[FRS_Assert_String_Eq] expected sample string to equal: "' + expected + '" but it was "' + sample + '" instead.');
-    }
-  }
-  
   /* Namespace // Mixin: ToFromBuffer */
   shared CompRoundMatches@ ReadFromBuffer(Buffer@ &in buf) {
     /* Parse field: matches of type: array<CompRoundMatch@> */

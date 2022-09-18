@@ -215,64 +215,6 @@ namespace Test_CompRoundMatch {
   
   bool unitTestResults_CompRoundMatch_OpEq = runAsync(Tests_RegisterAll_CompRoundMatch_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_CompRoundMatch_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_CompRoundMatch', UnitTest_SzThenUnSz_CompRoundMatch);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint id, uint position, bool isCompleted, const string &in name, const string &in clubMatchLiveId) {
-    CompRoundMatch@ tmp = CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
-    assert(tmp == _CompRoundMatch::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_CompRoundMatch() {
-    Test_SzThenUnSz_Check(823221, 663647, true, "�놮鿍ᔛ覎漸࿚팂툭뮊", "骈咮ﱴ㞩谶릚끣");
-    Test_SzThenUnSz_Check(840437, 29355, true, "꼻㤚藴", "");
-    Test_SzThenUnSz_Check(964425, 605220, true, "", "ř챉鋱Ʞ爇⼺鐸䨒");
-    Test_SzThenUnSz_Check(311318, 690397, true, "佪�", "㻥잒묑");
-    Test_SzThenUnSz_Check(565451, 198964, false, "ヂᶥ뾠", "");
-    Test_SzThenUnSz_Check(796997, 527623, true, "竟潔", "쬙ꅇ᭧봅≹");
-    Test_SzThenUnSz_Check(337261, 394778, false, "뭺鍪㤅쏦웺㟌", "侴괰襧魒");
-    Test_SzThenUnSz_Check(145385, 342094, false, "⏂ꥏ꼼砍띑䗇髣蘟", "鉓켯τ㪔ﻊ爛");
-    Test_SzThenUnSz_Check(4343, 482726, false, "얨ᗨ釴䤏㟈ꡕ", "㎑䣷㬴䥪抑࿐ច");
-    Test_SzThenUnSz_Check(321123, 996777, false, "Პ䑰繤牉᳔䬳", "솛格둪퍻䳥最徐㭾");
-    Test_SzThenUnSz_Check(288796, 42061, false, "贅谌⼋牐", "糶킢␌窖");
-    Test_SzThenUnSz_Check(480710, 37562, false, "᪲ꮚ", "");
-    Test_SzThenUnSz_Check(45702, 896779, true, "ה철攣�母柊", "ꐎ굻⛩㰣兵∋沴");
-    Test_SzThenUnSz_Check(129658, 92430, false, "璫⃔煡욣", "ₜ");
-    Test_SzThenUnSz_Check(471390, 341399, true, "Ԧ懁ㅲ砤㉾滑肜깛", "ബ踳蝘䳡逶澸");
-    Test_SzThenUnSz_Check(954615, 923112, false, "膕躯蓬㥊ᆺ⻖㋽빽", "");
-    Test_SzThenUnSz_Check(730997, 820813, true, "쫌ㆃ欍", "넺硫銚䋱垇ᒋ젔攸");
-    Test_SzThenUnSz_Check(539543, 854039, true, "享㐟ꯩ㹎ӑ䞖猏鐪﹀", "挤");
-    Test_SzThenUnSz_Check(558576, 297578, true, "া䦾灋䗆ᵭ䠽읨껏", "ᗿ鉞ꊵ㻛踴Ṷ耦穰㢴翹");
-    Test_SzThenUnSz_Check(253805, 750292, false, "", "⧝");
-    Test_SzThenUnSz_Check(824789, 700839, false, "逎ஙஇᜳꍪ", "砤늈ꆅむ␢䎭ꊱ㧟");
-    Test_SzThenUnSz_Check(751060, 162893, false, "", "憎");
-    Test_SzThenUnSz_Check(575382, 78147, true, "陏殀", "ٺ늴");
-    Test_SzThenUnSz_Check(142829, 411907, false, "刪ᖑ᭬", "䗶찀믌聅똯샩愍꩸");
-    Test_SzThenUnSz_Check(651952, 806313, true, "ⵢ⎕곰", "");
-    Test_SzThenUnSz_Check(915071, 81373, false, "∐", "᤾℟仅䃜쪪㌲㯊");
-    Test_SzThenUnSz_Check(770642, 834356, true, "鸓", "㶡앧");
-    Test_SzThenUnSz_Check(760086, 694611, true, "䶂簜饋᲏඿", "䷗鷪묡拠銢᜼錢");
-    Test_SzThenUnSz_Check(450685, 913447, false, "", "騧➊皠㓧脺﫭맢ﬗ");
-    Test_SzThenUnSz_Check(623212, 396305, true, "풠氂", "ຶꔽﾜᵏ");
-    Test_SzThenUnSz_Check(360995, 43735, true, "코姦퇈⻟돴", "㙂詵");
-    Test_SzThenUnSz_Check(703179, 605664, false, "", "웕펽꩙负釺锼珟");
-    Test_SzThenUnSz_Check(559916, 78214, true, "녃䩈ᐼ쳴䣹뒞듻뙐붰", "ꒇ損荂䷫ꊣ");
-    Test_SzThenUnSz_Check(374839, 237721, true, "벼寥ﴋ", "믅༐൨㪁▫");
-    Test_SzThenUnSz_Check(455286, 886316, false, "먓쏜뙅橙䳅퓪룐บ䩘", "૵瘞⺔셡秆ᢜ");
-    Test_SzThenUnSz_Check(661744, 916701, false, "쎡韠ᣳ翠�", "삈켳劻�桮럫憍ᕝ");
-    Test_SzThenUnSz_Check(577624, 959424, true, "紨⤦鄻隳砒긳佒", "ⶾ仄떏ମ뇌ß儴礋啹ӧ");
-    Test_SzThenUnSz_Check(877839, 489240, true, "ﷺ⋏晆뗭⴬똣궆", "狤í똫");
-    Test_SzThenUnSz_Check(635672, 394180, false, "૧籠ᱰ", "꽣");
-    Test_SzThenUnSz_Check(143075, 485481, true, "䚦럕ț頛臾Í", "鉠託鱫");
-    Test_SzThenUnSz_Check(491930, 695761, false, "颋骶", "㔻ᓵ倽䨬㭺邇맣");
-    Test_SzThenUnSz_Check(693093, 399064, true, "扻ꋨ䳘쏡卋鳊鍽扐", "鞞㉪屹팑龚⿞䅰ꡉፀ");
-  }
-  
-  bool unitTestResults_CompRoundMatch_RowSerialization = runAsync(Tests_RegisterAll_CompRoundMatch_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_CompRoundMatch_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_CompRoundMatch', UnitTest_ToFromBuffer_CompRoundMatch);

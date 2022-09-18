@@ -216,64 +216,6 @@ namespace Test_Challenge {
   
   bool unitTestResults_Challenge_OpEq = runAsync(Tests_RegisterAll_Challenge_OpEq);
   
-  /* Test // Mixin: Row Serialization */
-  void Tests_RegisterAll_Challenge_RowSerialization() {
-    RegisterUnitTest('UnitTest_SzThenUnSz_Challenge', UnitTest_SzThenUnSz_Challenge);
-  }
-  
-  bool Test_SzThenUnSz_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
-    Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
-    assert(tmp == _Challenge::FromRowString(tmp.ToRowString()), 'SzThenUnSz fail: ' + tmp.ToRowString());
-    return true;
-  }
-  
-  void UnitTest_SzThenUnSz_Challenge() {
-    Test_SzThenUnSz_Check(823221, "�朹鎟ﳙ㻲翾鵜靀㍒", "ﰙ⠁玭텆", 325863, 922558, 661263);
-    Test_SzThenUnSz_Check(436830, "쯣欚", "⿕氎꼻㤚藴킅", 964425, 605220, 262638);
-    Test_SzThenUnSz_Check(498192, "", "賄�匼뒱", 826942, 906038, 616400);
-    Test_SzThenUnSz_Check(263354, "푲෗蔃䓥㻥", "䟃넲䗵蹟牪", 322150, 614406, 417104);
-    Test_SzThenUnSz_Check(547338, "쬙ꅇ᭧봅≹", "�ౝ", 629002, 832887, 693999);
-    Test_SzThenUnSz_Check(4946, "︠걿좳樁㠵", "髣蘟먝瞄⧛鉼竲", 392550, 83184, 876484);
-    Test_SzThenUnSz_Check(70271, "㏰鉓켯τ㪔ﻊ爛", "ꈽ洞⤦➦踆⌾", 4920, 122428, 837623);
-    Test_SzThenUnSz_Check(615687, "䩸Ὼ", "", 964248, 970574, 467845);
-    Test_SzThenUnSz_Check(956732, "퍻䳥最徐㭾멭Პ䑰", "䟥ፕ⎃ﲀᦓ솛格둪", 234787, 700902, 853957);
-    Test_SzThenUnSz_Check(759104, "剼᪲ꮚ෌", "ⰳ팑ꇬ䋶慸", 405127, 314974, 151896);
-    Test_SzThenUnSz_Check(129142, "ㅡ螘笣䨯䄸", "璫⃔煡욣", 908297, 233268, 471390);
-    Test_SzThenUnSz_Check(341399, "淡", "뙸줒女ѽ泡誄狋撧곟", 356559, 161330, 809993);
-    Test_SzThenUnSz_Check(973135, "⻖㋽", "雈皇殤膕躯蓬㥊", 820813, 647490, 647392);
-    Test_SzThenUnSz_Check(868449, "�〿Ꝼ샛ᣱ", "ӑ䞖猏鐪﹀ྏ䅳税", 729161, 92, 558576);
-    Test_SzThenUnSz_Check(297578, "⸕숈祭鑚ൃ", "䯯桾뭎挘殤掙얷ᐮጧ", 147932, 493491, 300346);
-    Test_SzThenUnSz_Check(447767, "樦纍ﲀ⧝�䄳凜", "Ꮪ猾ؙ太蠵", 99463, 860757, 909951);
-    Test_SzThenUnSz_Check(951620, "鋣ꊌ멉녍ഩ਽䫚蜳㽤쎮", "⿺⯌憎祖羔", 209790, 723283, 128346);
-    Test_SzThenUnSz_Check(859526, "᭬퇠至៳", "샩愍꩸㸵刪", 606450, 478495, 271620);
-    Test_SzThenUnSz_Check(651952, "疧ꅦ", "", 116699, 616919, 769796);
-    Test_SzThenUnSz_Check(544943, "䂁", "ᡊ︆᤾℟仅䃜쪪㌲", 876904, 384560, 271358);
-    Test_SzThenUnSz_Check(595771, "䶂簜饋᲏඿", "䷗鷪묡拠銢᜼錢", 450685, 913447, 380426);
-    Test_SzThenUnSz_Check(542068, "ꇖⲽ", "", 884816, 252573, 449721);
-    Test_SzThenUnSz_Check(421428, "ຶꔽﾜᵏ䒴", "譥횓ƹ", 360995, 43735, 133754);
-    Test_SzThenUnSz_Check(771161, "琧", "쎆㊆⯟骙䁣", 983651, 768217, 477588);
-    Test_SzThenUnSz_Check(555890, "麃犿", "陣띰摼푔⼧", 487546, 504451, 808646);
-    Test_SzThenUnSz_Check(898762, "ﴋᮝ", "▫윁벼", 233228, 57986, 455286);
-    Test_SzThenUnSz_Check(886316, "댢㌠商ᅾ", "箯浔陳᳚乹ﻺ鮷囫я", 482962, 745915, 315247);
-    Test_SzThenUnSz_Check(912496, "�桮럫憍ᕝ芜쎡韠", "", 577624, 959424, 779544);
-    Test_SzThenUnSz_Check(141403, "", "쒿№妝�並㈛贆", 930027, 532104, 633576);
-    Test_SzThenUnSz_Check(854263, "똣궆暱여군햛", "ﷺ⋏晆뗭", 27512, 645217, 635672);
-    Test_SzThenUnSz_Check(394180, "႙趹攘ꆓ믔ы", "낊㮄瓲", 680346, 153507, 335942);
-    Test_SzThenUnSz_Check(779011, "鱫댫", "鉠", 491930, 695761, 478307);
-    Test_SzThenUnSz_Check(405974, "仚饩�Ꮚ혹霭䞓盅", "鳊鍽扐肑レ", 896003, 238891, 267100);
-    Test_SzThenUnSz_Check(216236, "ﶾ鞞㉪屹팑", "뒧", 416887, 193882, 131058);
-    Test_SzThenUnSz_Check(392530, "�", "䞓㕋", 829491, 742412, 433578);
-    Test_SzThenUnSz_Check(786049, "婌ਠ愤섉韭쟰튤⟫", "췭栴省ᨱ흴뒭㺡࣊", 159725, 498260, 41159);
-    Test_SzThenUnSz_Check(178803, "蛱왓꿨᳁ْଠ墻", "忧ⷾ챲퉗溕㹅灜桩弜", 727940, 382451, 621003);
-    Test_SzThenUnSz_Check(307142, "尷", "놲싵뇵쯷", 581686, 977267, 266241);
-    Test_SzThenUnSz_Check(93150, "ꇑﾷꃦ", "␬", 953518, 283816, 334966);
-    Test_SzThenUnSz_Check(17733, "Ⱄㄺ꛼㻔㴕", "窗䊨㎠๥Ⲣ⪒冁", 896342, 154401, 373048);
-    Test_SzThenUnSz_Check(125776, "ꨟ泒擵䆲罋婬", "ૐ", 363891, 810147, 786060);
-    Test_SzThenUnSz_Check(403152, "옮伴ꁧⓚ紝쾲铃켴돺", "ᚡ窓", 576027, 20949, 788899);
-  }
-  
-  bool unitTestResults_Challenge_RowSerialization = runAsync(Tests_RegisterAll_Challenge_RowSerialization);
-  
   /* Test // Mixin: ToFromBuffer */
   void Tests_RegisterAll_Challenge_ToFromBuffer() {
     RegisterUnitTest('UnitTest_ToFromBuffer_Challenge', UnitTest_ToFromBuffer_Challenge);
