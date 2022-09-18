@@ -22,13 +22,13 @@ shared class TrackOfTheDayEntry {
   /* Methods // Mixin: ToFrom JSON Object */
   TrackOfTheDayEntry(const Json::Value &in j) {
     try {
-      this._campaignId = j["campaignId"];
-      this._mapUid = j["mapUid"];
-      this._day = j["day"];
-      this._monthDay = j["monthDay"];
-      this._seasonUid = j["seasonUid"];
-      this._startTimestamp = j["startTimestamp"];
-      this._endTimestamp = j["endTimestamp"];
+      this._campaignId = uint(j["campaignId"]);
+      this._mapUid = string(j["mapUid"]);
+      this._day = uint(j["day"]);
+      this._monthDay = uint(j["monthDay"]);
+      this._seasonUid = string(j["seasonUid"]);
+      this._startTimestamp = uint(j["startTimestamp"]);
+      this._endTimestamp = uint(j["endTimestamp"]);
     } catch {
       OnFromJsonError(j);
     }

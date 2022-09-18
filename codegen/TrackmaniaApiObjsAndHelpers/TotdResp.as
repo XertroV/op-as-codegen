@@ -18,8 +18,8 @@ shared class TotdResp {
       for (uint i = 0; i < j["monthList"].Length; i++) {
         @this._monthList[i] = TotdMonth(j["monthList"][i]);
       }
-      this._itemCount = j["itemCount"];
-      this._nextRequestTimestamp = j["nextRequestTimestamp"];
+      this._itemCount = uint(j["itemCount"]);
+      this._nextRequestTimestamp = uint(j["nextRequestTimestamp"]);
     } catch {
       OnFromJsonError(j);
     }

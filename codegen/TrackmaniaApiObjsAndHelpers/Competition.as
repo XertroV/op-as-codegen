@@ -32,15 +32,15 @@ shared class Competition {
   /* Methods // Mixin: ToFrom JSON Object */
   Competition(const Json::Value &in j) {
     try {
-      this._id = j["id"];
-      this._startDate = j["startDate"];
-      this._endDate = j["endDate"];
+      this._id = uint(j["id"]);
+      this._startDate = uint(j["startDate"]);
+      this._endDate = uint(j["endDate"]);
       @this._matchesGenerationDate = MaybeOfUint(j["matchesGenerationDate"]);
-      this._nbPlayers = j["nbPlayers"];
-      this._leaderboardId = j["leaderboardId"];
-      this._name = j["name"];
-      this._liveId = j["liveId"];
-      this._creator = j["creator"];
+      this._nbPlayers = uint(j["nbPlayers"]);
+      this._leaderboardId = uint(j["leaderboardId"]);
+      this._name = string(j["name"]);
+      this._liveId = string(j["liveId"]);
+      this._creator = string(j["creator"]);
       @this._region = MaybeOfString(j["region"]);
       @this._description = MaybeOfString(j["description"]);
       @this._registrationStart = MaybeOfUint(j["registrationStart"]);

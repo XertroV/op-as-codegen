@@ -48,6 +48,8 @@ jValSimpleStr jf var = case jf of
   JUint -> "'' + " <> var
   JNumber -> "'' + " <> var
   JBool -> "'' + " <> var
+  JVec3 -> var <> ".ToString()"
+  (JEnum n) -> "tostring(" <> var <> ")"
   JString -> var
   JArray t -> (ts_arrayFn t).callRaw [ var ]
   JObject _ -> var <> ".ToString()"

@@ -18,8 +18,8 @@ shared class MatchResult {
     try {
       @this._rank = MaybeOfUint(j["rank"]);
       @this._score = MaybeOfUint(j["score"]);
-      this._participant = j["participant"];
-      this._zone = j["zone"];
+      this._participant = string(j["participant"]);
+      this._zone = string(j["zone"]);
     } catch {
       OnFromJsonError(j);
     }

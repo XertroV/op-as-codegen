@@ -37,6 +37,7 @@ opEqMethods (JsonObj name fields) = intercalate ln [ opEqFn.decl ]
 
   fieldEqLine (JField n t) = case t of
     (JArray arrTy) -> "&& " <> tmpArrEqVar n
+    JVec3 -> "&& " <> intercalate " && " ([ ".x", ".y", ".z" ] <#> \p -> n <> p <> " == other." <> n <> p)
     _ -> "&& _" <> n <> " == other." <> n -- assume defualt prop names (prepended with _)
 
   tmpArrEqVar n = "_tmp_arrEq_" <> n

@@ -41,6 +41,8 @@ data JType
   | JNull
   | JBool
   | JNumber
+  | JVec3
+  | JEnum String -- | basically a uint but wrapped with the name in the string
   | JArray JType
   | JObject JsonObj
   | JDict JType -- | Like a JObject but has unknown keys. All values must have the same type. Keys are always strings.

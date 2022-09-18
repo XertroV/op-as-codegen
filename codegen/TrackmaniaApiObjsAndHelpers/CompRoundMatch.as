@@ -18,11 +18,11 @@ shared class CompRoundMatch {
   /* Methods // Mixin: ToFrom JSON Object */
   CompRoundMatch(const Json::Value &in j) {
     try {
-      this._id = j["id"];
-      this._position = j["position"];
-      this._isCompleted = j["isCompleted"];
-      this._name = j["name"];
-      this._clubMatchLiveId = j["clubMatchLiveId"];
+      this._id = uint(j["id"]);
+      this._position = uint(j["position"]);
+      this._isCompleted = bool(j["isCompleted"]);
+      this._name = string(j["name"]);
+      this._clubMatchLiveId = string(j["clubMatchLiveId"]);
     } catch {
       OnFromJsonError(j);
     }

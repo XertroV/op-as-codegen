@@ -20,12 +20,12 @@ shared class Challenge {
   /* Methods // Mixin: ToFrom JSON Object */
   Challenge(const Json::Value &in j) {
     try {
-      this._id = j["id"];
-      this._uid = j["uid"];
-      this._name = j["name"];
-      this._startDate = j["startDate"];
-      this._endDate = j["endDate"];
-      this._leaderboardId = j["leaderboardId"];
+      this._id = uint(j["id"]);
+      this._uid = string(j["uid"]);
+      this._name = string(j["name"]);
+      this._startDate = uint(j["startDate"]);
+      this._endDate = uint(j["endDate"]);
+      this._leaderboardId = uint(j["leaderboardId"]);
     } catch {
       OnFromJsonError(j);
     }

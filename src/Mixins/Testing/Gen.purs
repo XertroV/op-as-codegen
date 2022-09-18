@@ -2,10 +2,11 @@ module Mixins.Testing.Gen where
 
 import Prelude
 import AsTypes (jTyPascalCase, jTyToAsTy)
-import CodeLines (indent, ln, wrapFunction)
+import CodeLines (indent, ln, wrapFunction, wrapInitedScope)
 import Consts (nTestsToRun)
 import Control.Monad.Rec.Class (Step(..), tailRec)
-import Data.Array (foldl, intercalate)
+import Control.Monad.Trans.Class (lift)
+import Data.Array (concat, foldl, intercalate, range)
 import Data.Array as A
 import Data.Array.NonEmpty as NEA
 import Data.DateTime.Instant (unInstant)
@@ -79,6 +80,16 @@ arbitraryFromJType JNull = (arbitrary :: Gen Unit) <#> (\_ -> "NULL")
 
 arbitraryFromJType JBool = (arbitrary :: Gen Boolean) <#> (\b -> if b then "true" else "false")
 
+arbitraryFromJType (JEnum n) = (arbitrary :: Gen Int) `suchThat` (_ >= 0) <#> (intToStr >>> \i -> n <> "(" <> i <> ")")
+
+arbitraryFromJType JVec3 = do
+  x <- someVal
+  y <- someVal
+  z <- someVal
+  pure $ "vec3(" <> joinWith ", " [ x, y, z ] <> ")"
+  where
+  someVal = (arbitrary :: Gen Number) <#> floatToStr
+
 -- helpful to add for debug mb: <#> B64.encode
 arbitraryFromJType JString = (stripChars "\"\n\r\x0b\x0c\x1c\x1d\x1e\x85\x2028\x2029\\" <$> arbitrary :: Gen String) `suchThat` (S.contains (Pattern "\"") >>> not) <#> (\s -> "\"" <> s <> "\"")
 
@@ -88,7 +99,23 @@ arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(
   where
   gens = arbitraryFromFields fields
 
-arbitraryFromJType (JDict t) = unsafeCrashWith "un impl" -- (arbitraryFromJType t)
+arbitraryFromJType (JDict t) = do -- pure "dictionary()" -- unsafeCrashWith "un impl" -- (arbitraryFromJType t) -- todo
+  dLen <- genIntRarelyZero
+  (kvs :: Array (Tuple String String)) <-
+    sequence -- $ if dLen <= 0 then
+    --     pure unit
+    --   else
+    do
+      _ <- range 0 (dLen - 1)
+      pure
+        $ do
+            k <- arbitraryFromJType JString
+            v <- arbitraryFromJType t
+            pure $ Tuple k v
+  pure $ "{" <> printDictKvPairs kvs <> "}"
+  where
+  printDictKvPairs :: Array (Tuple String String) -> String
+  printDictKvPairs kvs = joinWith "," $ concat $ (\(Tuple k v) -> wrapInitedScope "" $ [ k <> ", " <> v ]) <$> kvs
 
 arbitraryFromJType m@(JMaybe t) =
   frequency

@@ -44,24 +44,24 @@ shared class TmMap {
   /* Methods // Mixin: ToFrom JSON Object */
   TmMap(const Json::Value &in j) {
     try {
-      this._Id = j["Id"];
-      this._Uid = j["Uid"];
-      this._Name = j["Name"];
-      this._FileName = j["FileName"];
-      this._AuthorScore = j["AuthorScore"];
-      this._GoldScore = j["GoldScore"];
-      this._SilverScore = j["SilverScore"];
-      this._BronzeScore = j["BronzeScore"];
-      this._AuthorDisplayName = j["AuthorDisplayName"];
-      this._AuthorAccountId = j["AuthorAccountId"];
-      this._AuthorWebServicesUserId = j["AuthorWebServicesUserId"];
-      this._SubmitterAccountId = j["SubmitterAccountId"];
-      this._SubmitterWebServicesUserId = j["SubmitterWebServicesUserId"];
-      this._Style = j["Style"];
-      this._TimeStamp = j["TimeStamp"];
-      this._Type = j["Type"];
-      this._FileUrl = j["FileUrl"];
-      this._ThumbnailUrl = j["ThumbnailUrl"];
+      this._Id = string(j["Id"]);
+      this._Uid = string(j["Uid"]);
+      this._Name = string(j["Name"]);
+      this._FileName = string(j["FileName"]);
+      this._AuthorScore = uint(j["AuthorScore"]);
+      this._GoldScore = uint(j["GoldScore"]);
+      this._SilverScore = uint(j["SilverScore"]);
+      this._BronzeScore = uint(j["BronzeScore"]);
+      this._AuthorDisplayName = string(j["AuthorDisplayName"]);
+      this._AuthorAccountId = string(j["AuthorAccountId"]);
+      this._AuthorWebServicesUserId = string(j["AuthorWebServicesUserId"]);
+      this._SubmitterAccountId = string(j["SubmitterAccountId"]);
+      this._SubmitterWebServicesUserId = string(j["SubmitterWebServicesUserId"]);
+      this._Style = string(j["Style"]);
+      this._TimeStamp = uint(j["TimeStamp"]);
+      this._Type = string(j["Type"]);
+      this._FileUrl = string(j["FileUrl"]);
+      this._ThumbnailUrl = string(j["ThumbnailUrl"]);
     } catch {
       OnFromJsonError(j);
     }

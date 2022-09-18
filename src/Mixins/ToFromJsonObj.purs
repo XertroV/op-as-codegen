@@ -1,8 +1,8 @@
-module Mixins.ToFromJsonObj (mxToFromJsonObj) where
+module Mixins.ToFromJsonObj (mxToFromJsonObj, vec3ToJsonFn) where
 
 import Prelude
-import AsTypes (jTyIsPrim, jTyPascalCase, jTyToAsTy, setVarOfJTyToVal)
-import CodeLines (comment, fnCall, forLoopArray, indent, ln, stmt, toPropField, toPropFields, wrapConstFunction, wrapConstFunction', wrapFunction, wrapMainTest, wrapTryCatch)
+import AsTypes (jTyFromJson, jTyIsPrim, jTyPascalCase, jTyToAsTy, setVarOfJTyToVal)
+import CodeLines (comment, fnCall, forLoopArray, indent, ln, stmt, toPropField, toPropFields, wrapConstFunction, wrapConstFunction', wrapFunction, wrapFunction', wrapMainTest, wrapTryCatch)
 import Data.Array (dropEnd, foldl, intercalate, zip)
 import Data.Array as A
 import Data.Maybe (Maybe(..), fromMaybe)
@@ -15,7 +15,7 @@ import Mixins.DefaultProps (mxDefaultProps)
 import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.Types (Mixin, TestGenerators, TestGenerator)
 import Partial.Unsafe (unsafeCrashWith)
-import Types (JField(..), JType(..), JsonObj(..), AsFunction, getFTy, isJArray)
+import Types (AsFunction, JField(..), JType(..), JsonObj(..), getFTy, isJArray)
 
 mxToFromJsonObj :: Mixin
 mxToFromJsonObj =
@@ -69,8 +69,20 @@ toJsonFieldLines tff@(Tuple (JField n (JArray _)) (JField p _)) = toJsonArray tf
 
 toJsonFieldLines (Tuple (JField n (JMaybe _)) (JField p _)) = [ "j" <> getKey n <> " = " <> p <> ".ToJson();" ]
 
+toJsonFieldLines (Tuple (JField n JVec3) (JField p _)) = [ "j" <> getKey n <> " = " <> vec3ToJsonFn.callRaw [ p ] <> ";" ]
+
 -- todo: safe integers
-toJsonFieldLines (Tuple (JField n t) (JField p t2)) = [ "j" <> getKey n <> " = " <> p <> ";" ]
+toJsonFieldLines (Tuple (JField n _t) (JField p _t2)) = [ "j" <> getKey n <> " = " <> p <> ";" ]
+
+vec3ToJsonFn :: AsFunction
+vec3ToJsonFn =
+  wrapFunction' "shared Json::Value" "Vec3ToJsonObj" [ "vec3 &in v" ]
+    [ "auto j = Json::Object();"
+    , "j['x'] = v.x;"
+    , "j['y'] = v.y;"
+    , "j['z'] = v.z;"
+    , "return j;"
+    ]
 
 -- toJsonFieldLines jf@(Tuple _ (JField _ (JArray _))) = toJsonArray jf
 -- toJsonFieldLines (Tuple (JField p _) (JField n (JObject _))) = [ "this." <> p <> " = " <> n <> "(j" <> getKey n <> ");" ]
@@ -145,7 +157,7 @@ fromJsonArray :: Tuple JField JField -> Array String
 fromJsonArray (Tuple (JField p _) (JField n (JArray arrTy))) =
   [ arrDecl arrTy ]
     <> forLoopArray "i" jArr
-        [ setVarOfJTyToVal (arrEl "i") arrTy (jTyFromJson arrTy $ jArrEl "i") ]
+        [ setVarOfJTyToVal (arrEl "i") arrTy (jArrEl "i") ] -- jTyFromJson arrTy $
     <> []
   where
   tmpV = "_tmp_" <> n
@@ -164,16 +176,6 @@ fromJsonArray (Tuple (JField p _) (JField n (JArray arrTy))) =
   arrDecl _ty = "this." <> p <> " = array<" <> jTyToAsTy _ty <> "@>(" <> tmpV <> ".Length);"
 
 fromJsonArray _ = comment "! WARNING: Json non-array passed to fromJsonArray"
-
-jTyFromJson :: JType -> String -> String
-jTyFromJson ty var =
-  if jTyIsPrim ty then
-    var
-  else case ty of
-    JObject (JsonObj n _) -> fnCall n [ var ]
-    JArray _ -> unsafeCrashWith "unimpl: recursive jTyFromJson for JArray"
-    mt@(JMaybe _) -> fnCall (jTyPascalCase mt) [ var ]
-    _ -> var
 
 {-
   Test To/From JSON

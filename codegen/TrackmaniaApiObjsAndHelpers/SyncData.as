@@ -17,8 +17,8 @@ shared class SyncData {
   /* Methods // Mixin: ToFrom JSON Object */
   SyncData(const Json::Value &in j) {
     try {
-      this._lastUpdated = j["lastUpdated"];
-      this._status = j["status"];
+      this._lastUpdated = uint(j["lastUpdated"]);
+      this._status = string(j["status"]);
     } catch {
       OnFromJsonError(j);
     }

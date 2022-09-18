@@ -28,6 +28,9 @@ import Mixins.ToString (mxToString)
 typicalMixins :: Array Mixin
 typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq, mxRowSz, mxToFromBuffer ]
 
+simpleJsonMixins :: Array Mixin
+simpleJsonMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq ]
+
 codecChallenge ∷ JsonObj
 codecChallenge =
   object "Challenge"
@@ -74,6 +77,7 @@ dictGen opts@{ valType } = { cls, obj }
       $ [ mxCommonTesting, mxDefaultProps, mxDictBacking opts ]
       <> opts.extraMixins
 
+stdDictTypes ∷ Array JType
 stdDictTypes = [ JBool, JUint, JInt, JString ]
 
 stdDictOpts t = [ mkDO t, (mkDO t) { writeLog = true } ]
@@ -280,6 +284,55 @@ syncData = { cls, obj }
       # field "lastUpdated" JUint
       # field "status" JString
 
+-- menu bg randomizer
+sceneItem :: ClsWithObj
+sceneItem = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (simpleJsonMixins)
+
+  obj =
+    object "SceneItem"
+      # field "name" JString
+      # field "ver" JUint
+      # field "type" (JEnum "SItemType")
+      # field "pos" JVec3
+      # field "angle" JNumber
+      # field "tt" JBool
+      # field "carSync" JBool
+      # field "attachedTo" (JMaybe JString)
+      # field "skinZip" JString
+
+-- player skins
+skinIndex :: ClsWithObj
+skinIndex = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (simpleJsonMixins)
+
+  obj =
+    object "SkinIndex"
+      # field "skins" (JArray (JObject skinSpec.obj))
+
+textureUrlPair :: ClsWithObj
+textureUrlPair = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (simpleJsonMixins)
+
+  obj =
+    object "TextureUrlPair"
+      # field "filename" JString
+      # field "url" JString
+
+skinSpec :: ClsWithObj
+skinSpec = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (simpleJsonMixins)
+
+  obj =
+    object "SkinSpec"
+      # field "baseModel" JString
+      # field "hasPlayerMesh" JBool
+      # field "texturePairs" (JArray (JObject textureUrlPair.obj))
+
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
@@ -308,5 +361,9 @@ everything =
   , tmMap.cls
   , tmMapDb.cls
   , syncData.cls
+  , sceneItem.cls
+  , skinIndex.cls
+  , skinSpec.cls
+  , textureUrlPair.cls
   ]
     <> (stdDicts <#> (_.cls))

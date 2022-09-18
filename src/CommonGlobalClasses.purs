@@ -3,8 +3,8 @@ module CommonGlobalClasses where
 import Prelude
 import AsTypes (jTyPascalCase)
 import CodeLines (ln, wrapConstructor, wrapConstructor', wrapFunction, wrapFunction', wrapIf, wrapInitedScope)
-import Data.Array (catMaybes, intercalate, nubEq)
-import Data.Maybe (Maybe(..))
+import Data.Array (catMaybes, init, intercalate, last, nubEq, tail)
+import Data.Maybe (Maybe(..), fromJust, fromMaybe)
 import Effect (Effect)
 import Gen.Class (AsClass, jsonObjToClass)
 import Mixins.CommonTesting (mxCommonTesting)
@@ -15,6 +15,7 @@ import Mixins.OpEq (mxOpEq)
 import Mixins.OpenplanetFuncs (ioCreateFolder, ioFolderExists)
 import Mixins.RowSz (mxRowSz)
 import Mixins.ToFromBuffer (rfbLpStringFn, wtbLpStringFn)
+import Mixins.ToFromJsonObj (vec3ToJsonFn)
 import Types (JField(..), JType(..), JsonObj(..), Lines, field, getFName, getFTy, object)
 
 getCommonClasses :: Array AsClass -> Array AsClass
@@ -235,4 +236,12 @@ getCommonGlobalFuncs =
   intercalate ln
     $ [ wtbLpStringFn.decl
       , rfbLpStringFn.decl
+      , enumSItemTypeDecl
+      , vec3ToJsonFn.decl
       ]
+
+enumSItemTypeDecl :: Lines
+enumSItemTypeDecl =
+  wrapInitedScope "shared enum SItemType"
+    $ (\n -> ((_ <> ",") <$> (fromMaybe [] $ init n)) <> [ fromMaybe "Error!:!" $ last n ])
+        [ "CarSport", "CharacterPilot" ]

@@ -16,9 +16,9 @@ shared class TotdMonth {
   /* Methods // Mixin: ToFrom JSON Object */
   TotdMonth(const Json::Value &in j) {
     try {
-      this._year = j["year"];
-      this._month = j["month"];
-      this._lastDay = j["lastDay"];
+      this._year = uint(j["year"]);
+      this._month = uint(j["month"]);
+      this._lastDay = uint(j["lastDay"]);
       this._days = array<TrackOfTheDayEntry@>(j["days"].Length);
       for (uint i = 0; i < j["days"].Length; i++) {
         @this._days[i] = TrackOfTheDayEntry(j["days"][i]);

@@ -6,7 +6,6 @@ import AsTypes
 import Mixins.Types
 import Prelude
 import Types
-
 import CodeLines (fieldsToAsArgs, indent, jfieldToAsArg, ln, wrapFunction, wrapIf, wrapMainTest)
 import Data.Array (elem, intercalate)
 import Data.Maybe (Maybe(..))
@@ -67,6 +66,10 @@ test_GettersMatch ms o@(JsonObj objName fs) = { fnName, ls }
   objTy = jTyToAsTy (JObject o)
 
   args = fs <#> \(JField n _) -> n
+
+  checkFieldAgainstTmp (JField n t@JVec3) = "assert(" <> vec3EqStr <> ", 'field " <> n <> assertMsgWithValue n t <> "');"
+    where
+    vec3EqStr = intercalate " && " ([ ".x", ".y", ".z" ] <#> \p -> n <> p <> " == tmp." <> n <> p)
 
   checkFieldAgainstTmp (JField n t) = "assert(" <> n <> " == " <> "tmp." <> n <> ", 'field " <> n <> assertMsgWithValue n t <> "');"
 

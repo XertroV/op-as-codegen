@@ -30,17 +30,17 @@ shared class CompRound {
   /* Methods // Mixin: ToFrom JSON Object */
   CompRound(const Json::Value &in j) {
     try {
-      this._id = j["id"];
-      this._qualifierChallengeId = j["qualifierChallengeId"];
-      this._position = j["position"];
-      this._nbMatches = j["nbMatches"];
-      this._startDate = j["startDate"];
-      this._endDate = j["endDate"];
-      this._name = j["name"];
-      this._status = j["status"];
-      this._leaderboardComputeType = j["leaderboardComputeType"];
+      this._id = uint(j["id"]);
+      this._qualifierChallengeId = uint(j["qualifierChallengeId"]);
+      this._position = uint(j["position"]);
+      this._nbMatches = uint(j["nbMatches"]);
+      this._startDate = uint(j["startDate"]);
+      this._endDate = uint(j["endDate"]);
+      this._name = string(j["name"]);
+      this._status = string(j["status"]);
+      this._leaderboardComputeType = string(j["leaderboardComputeType"]);
       @this._teamLeaderboardComputeType = MaybeOfString(j["teamLeaderboardComputeType"]);
-      this._matchScoreDirection = j["matchScoreDirection"];
+      this._matchScoreDirection = string(j["matchScoreDirection"]);
     } catch {
       OnFromJsonError(j);
     }

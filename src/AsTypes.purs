@@ -3,14 +3,13 @@ module AsTypes where
 import Prelude
 import Data.Array as A
 import Data.Maybe (fromMaybe)
-import Data.String (toUpper)
+import Data.String (joinWith, toUpper)
 import Data.String as S
 import Data.String.Utils (charAt, endsWith)
 import Partial.Unsafe (unsafeCrashWith)
 import Types (JType(..), JsonObj(..))
 
 -- | Angelscript equiv of json types
--- todo: add uint support
 jTyToAsTy :: JType -> String
 jTyToAsTy JInt = "int"
 
@@ -23,6 +22,10 @@ jTyToAsTy JNumber = "float"
 jTyToAsTy JBool = "bool"
 
 jTyToAsTy JNull = unsafeCrashWith "jTyToAsTy NULL BAD"
+
+jTyToAsTy JVec3 = "vec3"
+
+jTyToAsTy (JEnum n) = n
 
 jTyToAsTy (JArray t) = "array<" <> jTyToAsTy t <> ">"
 
@@ -70,6 +73,8 @@ jTyIsPrim t = case t of
   JString -> true
   JNumber -> true
   JBool -> true
+  -- JEnum _ -> true -- false, need custom logic
+  -- JVec3 -> true -- false, need custom logic
   _ -> false
 
 -- | Is this a type that we should reference when setting?
@@ -86,12 +91,31 @@ jTySetAsRef JBool = false
 
 jTySetAsRef JNull = false
 
+jTySetAsRef (JEnum _) = false
+
+jTySetAsRef JVec3 = false
+
 jTySetAsRef (JArray _) = false
 
 jTySetAsRef _ = true
 
 setVarOfJTyToVal ∷ String → JType → String → String
-setVarOfJTyToVal var ty val = (if jTySetAsRef ty then "@" else "") <> var <> " = " <> val <> ";"
+setVarOfJTyToVal var ty val = (if jTySetAsRef ty then "@" else "") <> var <> " = " <> jTyFromJson ty val <> ";"
+
+jTyFromJson :: JType -> String -> String
+jTyFromJson ty var =
+  if jTyIsPrim ty then
+    fnCall (jTyToAsTy ty) [ var ]
+  else case ty of
+    JObject (JsonObj n _) -> fnCall n [ var ]
+    JArray _ -> unsafeCrashWith "unimpl: recursive jTyFromJson for JArray"
+    mt@(JMaybe _) -> fnCall (jTyPascalCase mt) [ var ]
+    JEnum enumName -> fnCall enumName [ fnCall "uint" [ var ] ]
+    JVec3 -> fnCall "vec3" $ [ "x", "y", "z" ] <#> \p -> fnCall "float" [ var <> "['" <> p <> "']" ]
+    _ -> var
+  where
+  fnCall :: String -> Array String -> String
+  fnCall name args = name <> "(" <> joinWith ", " args <> ")"
 
 -- | When casting might be required, should we?
 -- | (alternative is to wrap like string(x), int(x), etc)
@@ -117,6 +141,10 @@ jTyDefaultVal JNumber = "0"
 jTyDefaultVal JBool = "false"
 
 jTyDefaultVal JString = "''"
+
+jTyDefaultVal (JEnum n) = n <> "()"
+
+jTyDefaultVal JVec3 = "vec3()"
 
 jTyDefaultVal (JArray t) = "{}" -- "array<" <> <> ">()"
 

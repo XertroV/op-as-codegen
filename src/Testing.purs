@@ -2,7 +2,9 @@ module Testing where
 
 import Prelude
 import CodeLines (ln, wrapForLoop, wrapFunction, wrapFunction', wrapIf, wrapIfElse, wrapInitedScope, wrapTryCatch, wrapTryCatchFake, wrapWhileLoop)
+import CommonGlobalClasses (enumSItemTypeDecl, getCommonGlobalFuncs)
 import ManiaColors (c_green_700, c_orange_600)
+import Mixins.ToFromJsonObj (vec3ToJsonFn)
 import Types (Lines, AsFunction)
 
 utGs :: String
@@ -58,7 +60,12 @@ unitTestSingletonFileLines =
     <> runNextTest.decl
     <> ln
     <> printResults.decl
+    <> ln
+    <> getCommonGlobalFuncs
 
+-- <> enumSItemTypeDecl
+-- <> ln
+-- <> vec3ToJsonFn.decl
 enumTestStatus :: Array String
 enumTestStatus =
   wrapInitedScope "enum TestStatus"
