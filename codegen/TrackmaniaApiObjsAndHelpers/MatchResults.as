@@ -14,7 +14,7 @@ shared class MatchResults {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  MatchResults(const Json::Value &in j) {
+  MatchResults(const Json::Value@ j) {
     try {
       this._roundPosition = uint(j["roundPosition"]);
       this._matchLiveId = string(j["matchLiveId"]);
@@ -28,12 +28,12 @@ shared class MatchResults {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["roundPosition"] = _roundPosition;
     j["matchLiveId"] = _matchLiveId;
     j["scoreUnit"] = _scoreUnit;
-    Json::Value _tmp_results = Json::Array();
+    Json::Value@ _tmp_results = Json::Array();
     for (uint i = 0; i < _results.Length; i++) {
       auto v = _results[i];
       _tmp_results.Add(v.ToJson());
@@ -42,7 +42,7 @@ shared class MatchResults {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

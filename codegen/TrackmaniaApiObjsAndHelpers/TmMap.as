@@ -42,7 +42,7 @@ shared class TmMap {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  TmMap(const Json::Value &in j) {
+  TmMap(const Json::Value@ j) {
     try {
       this._Id = string(j["Id"]);
       this._Uid = string(j["Uid"]);
@@ -67,8 +67,8 @@ shared class TmMap {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["Id"] = _Id;
     j["Uid"] = _Uid;
     j["Name"] = _Name;
@@ -90,7 +90,7 @@ shared class TmMap {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

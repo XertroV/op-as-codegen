@@ -20,7 +20,7 @@ shared class TrackOfTheDayEntry {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  TrackOfTheDayEntry(const Json::Value &in j) {
+  TrackOfTheDayEntry(const Json::Value@ j) {
     try {
       this._campaignId = uint(j["campaignId"]);
       this._mapUid = string(j["mapUid"]);
@@ -34,8 +34,8 @@ shared class TrackOfTheDayEntry {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["campaignId"] = _campaignId;
     j["mapUid"] = _mapUid;
     j["day"] = _day;
@@ -46,7 +46,7 @@ shared class TrackOfTheDayEntry {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

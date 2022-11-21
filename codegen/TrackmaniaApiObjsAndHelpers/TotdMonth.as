@@ -14,7 +14,7 @@ shared class TotdMonth {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  TotdMonth(const Json::Value &in j) {
+  TotdMonth(const Json::Value@ j) {
     try {
       this._year = uint(j["year"]);
       this._month = uint(j["month"]);
@@ -28,12 +28,12 @@ shared class TotdMonth {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["year"] = _year;
     j["month"] = _month;
     j["lastDay"] = _lastDay;
-    Json::Value _tmp_days = Json::Array();
+    Json::Value@ _tmp_days = Json::Array();
     for (uint i = 0; i < _days.Length; i++) {
       auto v = _days[i];
       _tmp_days.Add(v.ToJson());
@@ -42,7 +42,7 @@ shared class TotdMonth {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

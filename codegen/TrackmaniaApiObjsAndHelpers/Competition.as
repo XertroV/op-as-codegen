@@ -30,7 +30,7 @@ shared class Competition {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Competition(const Json::Value &in j) {
+  Competition(const Json::Value@ j) {
     try {
       this._id = uint(j["id"]);
       this._startDate = uint(j["startDate"]);
@@ -49,8 +49,8 @@ shared class Competition {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["id"] = _id;
     j["startDate"] = _startDate;
     j["endDate"] = _endDate;
@@ -66,7 +66,7 @@ shared class Competition {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

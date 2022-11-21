@@ -30,7 +30,7 @@ shared class SceneItem {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  SceneItem(const Json::Value &in j) {
+  SceneItem(const Json::Value@ j) {
     try {
       this._uid = string(j["uid"]);
       this._name = string(j["name"]);
@@ -49,8 +49,8 @@ shared class SceneItem {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["uid"] = _uid;
     j["name"] = _name;
     j["type"] = _type;
@@ -66,7 +66,7 @@ shared class SceneItem {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

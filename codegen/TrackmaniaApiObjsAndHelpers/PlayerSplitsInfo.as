@@ -26,7 +26,7 @@ shared class PlayerSplitsInfo {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  PlayerSplitsInfo(const Json::Value &in j) {
+  PlayerSplitsInfo(const Json::Value@ j) {
     try {
       this._Name = string(j["Name"]);
       this._MapName = string(j["MapName"]);
@@ -64,48 +64,48 @@ shared class PlayerSplitsInfo {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["Name"] = _Name;
     j["MapName"] = _MapName;
-    Json::Value _tmp_PBTimes = Json::Array();
+    Json::Value@ _tmp_PBTimes = Json::Array();
     for (uint i = 0; i < _PBTimes.Length; i++) {
       auto v = _PBTimes[i];
       _tmp_PBTimes.Add(Json::Value(v));
     }
     j["PBTimes"] = _tmp_PBTimes;
-    Json::Value _tmp_PBSplits = Json::Array();
+    Json::Value@ _tmp_PBSplits = Json::Array();
     for (uint i = 0; i < _PBSplits.Length; i++) {
       auto v = _PBSplits[i];
       _tmp_PBSplits.Add(Json::Value(v));
     }
     j["PBSplits"] = _tmp_PBSplits;
-    Json::Value _tmp_BestSplits = Json::Array();
+    Json::Value@ _tmp_BestSplits = Json::Array();
     for (uint i = 0; i < _BestSplits.Length; i++) {
       auto v = _BestSplits[i];
       _tmp_BestSplits.Add(Json::Value(v));
     }
     j["BestSplits"] = _tmp_BestSplits;
     j["SumOfBest"] = _SumOfBest;
-    Json::Value _tmp_NextBestTimes1 = Json::Array();
+    Json::Value@ _tmp_NextBestTimes1 = Json::Array();
     for (uint i = 0; i < _NextBestTimes1.Length; i++) {
       auto v = _NextBestTimes1[i];
       _tmp_NextBestTimes1.Add(Json::Value(v));
     }
     j["NextBestTimes1"] = _tmp_NextBestTimes1;
-    Json::Value _tmp_NextBestTimes2 = Json::Array();
+    Json::Value@ _tmp_NextBestTimes2 = Json::Array();
     for (uint i = 0; i < _NextBestTimes2.Length; i++) {
       auto v = _NextBestTimes2[i];
       _tmp_NextBestTimes2.Add(Json::Value(v));
     }
     j["NextBestTimes2"] = _tmp_NextBestTimes2;
-    Json::Value _tmp_NextBestTimes3 = Json::Array();
+    Json::Value@ _tmp_NextBestTimes3 = Json::Array();
     for (uint i = 0; i < _NextBestTimes3.Length; i++) {
       auto v = _NextBestTimes3[i];
       _tmp_NextBestTimes3.Add(Json::Value(v));
     }
     j["NextBestTimes3"] = _tmp_NextBestTimes3;
-    Json::Value _tmp_NextBestTimes4 = Json::Array();
+    Json::Value@ _tmp_NextBestTimes4 = Json::Array();
     for (uint i = 0; i < _NextBestTimes4.Length; i++) {
       auto v = _NextBestTimes4[i];
       _tmp_NextBestTimes4.Add(Json::Value(v));
@@ -114,7 +114,7 @@ shared class PlayerSplitsInfo {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

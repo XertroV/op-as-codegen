@@ -12,7 +12,7 @@ shared class SkinSpec {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  SkinSpec(const Json::Value &in j) {
+  SkinSpec(const Json::Value@ j) {
     try {
       this._baseModel = string(j["baseModel"]);
       this._hasPlayerMesh = bool(j["hasPlayerMesh"]);
@@ -25,11 +25,11 @@ shared class SkinSpec {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["baseModel"] = _baseModel;
     j["hasPlayerMesh"] = _hasPlayerMesh;
-    Json::Value _tmp_texturePairs = Json::Array();
+    Json::Value@ _tmp_texturePairs = Json::Array();
     for (uint i = 0; i < _texturePairs.Length; i++) {
       auto v = _texturePairs[i];
       _tmp_texturePairs.Add(v.ToJson());
@@ -38,7 +38,7 @@ shared class SkinSpec {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

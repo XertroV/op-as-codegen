@@ -61,7 +61,7 @@ genMethods (JsonObj name fields) = methods
 
   consJson = do
     fTy <- getValTy
-    pure $ wrapFunction' "" name [ "const Json::Value &in j" ]
+    pure $ wrapFunction' "" name [ "const Json::Value@ j" ]
       $ wrapIfElse "j.GetType() % Json::Type::Null == 0"
           [ "_hasVal = false;" ]
           [ "_hasVal = true;", "_val = " <> castOrWrap fTy "j" <> ";" ]
@@ -104,7 +104,7 @@ genMethods (JsonObj name fields) = methods
 
   toJson = do
     fTy <- getValTy
-    pure $ wrapFunction "Json::Value" "ToJson" []
+    pure $ wrapFunction "Json::Value@" "ToJson" []
       $ wrapIf "IsNothing()" [ "return Json::Value(); // json null" ]
       <> [ if jTyIsPrim fTy then
             "return Json::Value(_val);"

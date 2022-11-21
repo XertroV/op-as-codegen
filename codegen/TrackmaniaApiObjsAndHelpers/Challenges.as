@@ -8,7 +8,7 @@ shared class Challenges {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Challenges(const Json::Value &in j) {
+  Challenges(const Json::Value@ j) {
     try {
       this._challenges = array<Challenge@>(j.Length);
       for (uint i = 0; i < j.Length; i++) {
@@ -19,8 +19,8 @@ shared class Challenges {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value _tmp_challenges = Json::Array();
+  Json::Value@ ToJson() {
+    Json::Value@ _tmp_challenges = Json::Array();
     for (uint i = 0; i < _challenges.Length; i++) {
       auto v = _challenges[i];
       _tmp_challenges.Add(v.ToJson());
@@ -28,7 +28,7 @@ shared class Challenges {
     return _tmp_challenges;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

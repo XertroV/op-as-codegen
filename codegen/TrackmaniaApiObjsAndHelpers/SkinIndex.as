@@ -8,7 +8,7 @@ shared class SkinIndex {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  SkinIndex(const Json::Value &in j) {
+  SkinIndex(const Json::Value@ j) {
     try {
       this._skins = array<SkinSpec@>(j.Length);
       for (uint i = 0; i < j.Length; i++) {
@@ -19,8 +19,8 @@ shared class SkinIndex {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value _tmp_skins = Json::Array();
+  Json::Value@ ToJson() {
+    Json::Value@ _tmp_skins = Json::Array();
     for (uint i = 0; i < _skins.Length; i++) {
       auto v = _skins[i];
       _tmp_skins.Add(v.ToJson());
@@ -28,7 +28,7 @@ shared class SkinIndex {
     return _tmp_skins;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

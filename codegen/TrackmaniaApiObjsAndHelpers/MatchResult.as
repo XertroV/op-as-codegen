@@ -14,7 +14,7 @@ shared class MatchResult {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  MatchResult(const Json::Value &in j) {
+  MatchResult(const Json::Value@ j) {
     try {
       @this._rank = MaybeOfUint(j["rank"]);
       @this._score = MaybeOfUint(j["score"]);
@@ -25,8 +25,8 @@ shared class MatchResult {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["rank"] = _rank.ToJson();
     j["score"] = _score.ToJson();
     j["participant"] = _participant;
@@ -34,7 +34,7 @@ shared class MatchResult {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

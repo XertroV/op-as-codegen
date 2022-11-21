@@ -18,7 +18,7 @@ shared class Challenge {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  Challenge(const Json::Value &in j) {
+  Challenge(const Json::Value@ j) {
     try {
       this._id = uint(j["id"]);
       this._uid = string(j["uid"]);
@@ -31,8 +31,8 @@ shared class Challenge {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["id"] = _id;
     j["uid"] = _uid;
     j["name"] = _name;
@@ -42,7 +42,7 @@ shared class Challenge {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

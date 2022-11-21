@@ -25,11 +25,11 @@ mxToFromJsonObj =
   , methods:
       Just
         $ \(JsonObj name fields) ->
-            [ name <> "(const Json::Value &in j) {" ]
+            [ name <> "(const Json::Value@ j) {" ]
               <> indent 1 (fromJsonBody fields)
               <> [ "}" ]
               <> ln
-              <> [ "Json::Value ToJson() {" ]
+              <> [ "Json::Value@ ToJson() {" ]
               <> indent 1 (toJsonBody fields)
               <> [ "}" ]
               <> ln
@@ -41,7 +41,7 @@ mxToFromJsonObj =
 
 onFromJsonError :: AsFunction
 onFromJsonError =
-  wrapConstFunction' "void" "OnFromJsonError" [ "const Json::Value &in j" ]
+  wrapConstFunction' "void" "OnFromJsonError" [ "const Json::Value@ j" ]
     [ "warn('Parsing json failed: ' + Json::Write(j));"
     , "throw('Failed to parse JSON: ' + getExceptionInfo());"
     ]
@@ -52,7 +52,7 @@ onFromJsonError =
 toJsonBody ∷ Array JField → Array String
 toJsonBody fields = altJsonAllFields mbSingletonCase
   where
-  altJsonAllFields = fromMaybe $ [ "Json::Value j = Json::Object();" ] <> (foldl (<>) [] $ toJsonFieldLines <$> zip fields (toPropFields fields)) <> [ "return j;" ]
+  altJsonAllFields = fromMaybe $ [ "Json::Value@ j = Json::Object();" ] <> (foldl (<>) [] $ toJsonFieldLines <$> zip fields (toPropFields fields)) <> [ "return j;" ]
 
   mbSingletonCase =
     if A.length fields /= 1 then
@@ -84,6 +84,16 @@ vec3ToJsonFn =
     , "return j;"
     ]
 
+vec3ToJsonFn2 :: AsFunction
+vec3ToJsonFn2 =
+  wrapFunction' "shared Json::Value@" "Vec3ToJsonObj2" [ "vec3 &in v" ]
+    [ "auto j = Json::Object();"
+    , "j['x'] = v.x;"
+    , "j['y'] = v.y;"
+    , "j['z'] = v.z;"
+    , "return j;"
+    ]
+
 -- toJsonFieldLines jf@(Tuple _ (JField _ (JArray _))) = toJsonArray jf
 -- toJsonFieldLines (Tuple (JField p _) (JField n (JObject _))) = [ "this." <> p <> " = " <> n <> "(j" <> getKey n <> ");" ]
 -- toJsonFieldLines (Tuple (JField p _) (JField n _)) =
@@ -91,7 +101,7 @@ vec3ToJsonFn =
 --   ]
 toJsonArray :: Tuple JField JField -> Array String
 toJsonArray (Tuple (JField n _) (JField p (JArray arrTy))) =
-  [ "Json::Value " <> tmpV <> " = Json::Array();"
+  [ "Json::Value@ " <> tmpV <> " = Json::Array();"
   ]
     <> mapArray_For { arr: p, el: "v", ix: "i" }
       [ tmpV <> ".Add(" <> jTyToJson arrTy "v" <> ");" ]

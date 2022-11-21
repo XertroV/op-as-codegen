@@ -32,6 +32,9 @@ typicalMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonOb
 simpleJsonMixins :: Array Mixin
 simpleJsonMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxSetters, mxToString, mxOpEq ]
 
+readOnlyJsonMixins :: Array Mixin
+readOnlyJsonMixins = [ mxCommonTesting, mxDefaultProps, mxDefaultCons, mxToFromJsonObj, mxGetters, mxToString, mxOpEq ]
+
 codecChallenge ∷ JsonObj
 codecChallenge =
   object "Challenge"
@@ -370,6 +373,33 @@ playerSplitsInfo = { cls, obj }
       # field "NextBestTimes3" (JArray JUint)
       # field "NextBestTimes4" (JArray JUint)
 
+-- CGF data structs
+
+cgfRoomInfo :: ClsWithObj
+cgfRoomInfo = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (readOnlyJsonMixins)
+  obj =
+    object "RoomInfo"
+      # field "name" JString
+      # field "n_teams" JUint
+      # field "n_players" JUint
+      # field "player_limit" JUint
+      # field "join_code" (JMaybe JString)
+      # field "is_public" JBool
+
+cgfLobbyInfo :: ClsWithObj
+cgfLobbyInfo = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (readOnlyJsonMixins)
+  obj =
+    object "LobbyInfo"
+      # field "name" JString
+      # field "n_clients" JUint
+      # field "n_rooms" JUint
+      # field "n_public_rooms" JUint
+      # field "rooms" (JArray (JObject cgfRoomInfo.obj))
+
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
@@ -404,5 +434,7 @@ everything =
   , textureUrlPair.cls
   , playerStats.cls
   , playerSplitsInfo.cls
+  , cgfRoomInfo.cls
+  , cgfLobbyInfo.cls
   ]
     <> (stdDicts <#> (_.cls))

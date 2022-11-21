@@ -12,7 +12,7 @@ shared class TotdResp {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  TotdResp(const Json::Value &in j) {
+  TotdResp(const Json::Value@ j) {
     try {
       this._monthList = array<TotdMonth@>(j["monthList"].Length);
       for (uint i = 0; i < j["monthList"].Length; i++) {
@@ -25,9 +25,9 @@ shared class TotdResp {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
-    Json::Value _tmp_monthList = Json::Array();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
+    Json::Value@ _tmp_monthList = Json::Array();
     for (uint i = 0; i < _monthList.Length; i++) {
       auto v = _monthList[i];
       _tmp_monthList.Add(v.ToJson());
@@ -38,7 +38,7 @@ shared class TotdResp {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

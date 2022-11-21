@@ -8,7 +8,7 @@ shared class CompRoundMatches {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  CompRoundMatches(const Json::Value &in j) {
+  CompRoundMatches(const Json::Value@ j) {
     try {
       this._matches = array<CompRoundMatch@>(j.Length);
       for (uint i = 0; i < j.Length; i++) {
@@ -19,8 +19,8 @@ shared class CompRoundMatches {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value _tmp_matches = Json::Array();
+  Json::Value@ ToJson() {
+    Json::Value@ _tmp_matches = Json::Array();
     for (uint i = 0; i < _matches.Length; i++) {
       auto v = _matches[i];
       _tmp_matches.Add(v.ToJson());
@@ -28,7 +28,7 @@ shared class CompRoundMatches {
     return _tmp_matches;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

@@ -15,7 +15,7 @@ shared class SyncData {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  SyncData(const Json::Value &in j) {
+  SyncData(const Json::Value@ j) {
     try {
       this._lastUpdated = uint(j["lastUpdated"]);
       this._status = string(j["status"]);
@@ -24,14 +24,14 @@ shared class SyncData {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["lastUpdated"] = _lastUpdated;
     j["status"] = _status;
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

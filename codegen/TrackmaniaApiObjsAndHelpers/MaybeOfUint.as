@@ -13,7 +13,7 @@ shared class MaybeOfUint {
     _hasVal = false;
   }
   
-  MaybeOfUint(const Json::Value &in j) {
+  MaybeOfUint(const Json::Value@ j) {
     if (j.GetType() % Json::Type::Null == 0) {
       _hasVal = false;
     } else {
@@ -53,7 +53,7 @@ shared class MaybeOfUint {
     return ret;
   }
   
-  Json::Value ToJson() {
+  Json::Value@ ToJson() {
     if (IsNothing()) {
       return Json::Value(); // json null
     }

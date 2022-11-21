@@ -16,7 +16,7 @@ shared class CompRoundMatch {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  CompRoundMatch(const Json::Value &in j) {
+  CompRoundMatch(const Json::Value@ j) {
     try {
       this._id = uint(j["id"]);
       this._position = uint(j["position"]);
@@ -28,8 +28,8 @@ shared class CompRoundMatch {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["id"] = _id;
     j["position"] = _position;
     j["isCompleted"] = _isCompleted;
@@ -38,7 +38,7 @@ shared class CompRoundMatch {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

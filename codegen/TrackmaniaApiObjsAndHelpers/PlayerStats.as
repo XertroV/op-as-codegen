@@ -18,7 +18,7 @@ shared class PlayerStats {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  PlayerStats(const Json::Value &in j) {
+  PlayerStats(const Json::Value@ j) {
     try {
       this._Name = string(j["Name"]);
       this._SpawnStatus = string(j["SpawnStatus"]);
@@ -37,17 +37,17 @@ shared class PlayerStats {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["Name"] = _Name;
     j["SpawnStatus"] = _SpawnStatus;
-    Json::Value _tmp_CurrentLapTimes = Json::Array();
+    Json::Value@ _tmp_CurrentLapTimes = Json::Array();
     for (uint i = 0; i < _CurrentLapTimes.Length; i++) {
       auto v = _CurrentLapTimes[i];
       _tmp_CurrentLapTimes.Add(Json::Value(v));
     }
     j["CurrentLapTimes"] = _tmp_CurrentLapTimes;
-    Json::Value _tmp_CurrentRaceTimes = Json::Array();
+    Json::Value@ _tmp_CurrentRaceTimes = Json::Array();
     for (uint i = 0; i < _CurrentRaceTimes.Length; i++) {
       auto v = _CurrentRaceTimes[i];
       _tmp_CurrentRaceTimes.Add(Json::Value(v));
@@ -58,7 +58,7 @@ shared class PlayerStats {
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }

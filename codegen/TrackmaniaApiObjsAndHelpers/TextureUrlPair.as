@@ -10,7 +10,7 @@ shared class TextureUrlPair {
   }
   
   /* Methods // Mixin: ToFrom JSON Object */
-  TextureUrlPair(const Json::Value &in j) {
+  TextureUrlPair(const Json::Value@ j) {
     try {
       this._filename = string(j["filename"]);
       this._url = string(j["url"]);
@@ -19,14 +19,14 @@ shared class TextureUrlPair {
     }
   }
   
-  Json::Value ToJson() {
-    Json::Value j = Json::Object();
+  Json::Value@ ToJson() {
+    Json::Value@ j = Json::Object();
     j["filename"] = _filename;
     j["url"] = _url;
     return j;
   }
   
-  void OnFromJsonError(const Json::Value &in j) const {
+  void OnFromJsonError(const Json::Value@ j) const {
     warn('Parsing json failed: ' + Json::Write(j));
     throw('Failed to parse JSON: ' + getExceptionInfo());
   }
