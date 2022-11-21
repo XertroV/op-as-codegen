@@ -94,7 +94,7 @@ toJsonArray (Tuple (JField n _) (JField p (JArray arrTy))) =
   [ "Json::Value " <> tmpV <> " = Json::Array();"
   ]
     <> mapArray_For { arr: p, el: "v", ix: "i" }
-        [ tmpV <> ".Add(" <> jTyToJson arrTy "v" <> ");" ]
+      [ tmpV <> ".Add(" <> jTyToJson arrTy "v" <> ");" ]
     <> [ opIx "j" n <> " = " <> tmpV <> ";" ]
   where
   tmpV = "_tmp_" <> n
@@ -157,7 +157,7 @@ fromJsonArray :: Tuple JField JField -> Array String
 fromJsonArray (Tuple (JField p _) (JField n (JArray arrTy))) =
   [ arrDecl arrTy ]
     <> forLoopArray "i" jArr
-        [ setVarOfJTyToVal (arrEl "i") arrTy (jArrEl "i") ] -- jTyFromJson arrTy $
+      [ setVarOfJTyToVal (arrEl "i") arrTy (jArrEl "i") ] -- jTyFromJson arrTy $
     <> []
   where
   tmpV = "_tmp_" <> n
@@ -173,7 +173,7 @@ fromJsonArray (Tuple (JField p _) (JField n (JArray arrTy))) =
   arrDecl (JObject (JsonObj jon _)) = arrName <> " = array<" <> jon <> "@>(" <> jArr <> ".Length);"
 
   -- arrDecl (JArray _in) = "this." <> p <> " = array<" <> jon <> "@>(" <> tmpV <> ".Length);"
-  arrDecl _ty = "this." <> p <> " = array<" <> jTyToAsTy _ty <> "@>(" <> tmpV <> ".Length);"
+  arrDecl _ty = "this." <> p <> " = array<" <> jTyToAsTy _ty <> ">(" <> jArr <> ".Length);"
 
 fromJsonArray _ = comment "! WARNING: Json non-array passed to fromJsonArray"
 
@@ -193,8 +193,8 @@ test_ToJsonFromJson ms o@(JsonObj objName fields) = { fnName, ls }
   checkerFn =
     wrapFunction "bool" checkerFnName fields
       $ [ objTy <> " tmp = " <> fnCall objName args <> ";" ]
-      <> [ "assert(tmp == " <> fnCall (objName) [ "tmp.ToJson()" ] <> ", 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));" ]
-      <> [ "return true;" ]
+          <> [ "assert(tmp == " <> fnCall (objName) [ "tmp.ToJson()" ] <> ", 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));" ]
+          <> [ "return true;" ]
 
   objTy = jTyToAsTy (JObject o)
 
@@ -205,6 +205,6 @@ test_ToJsonFromJson ms o@(JsonObj objName fields) = { fnName, ls }
   mainFn =
     wrapMainTest fnName
       $ (\testArgs -> checkerFn.callRaw testArgs <> ";")
-      <$> allTestArgs
+          <$> allTestArgs
 
   ls = intercalate ln [ checkerFn.decl, mainFn.decl ]

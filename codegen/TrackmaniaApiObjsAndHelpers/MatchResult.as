@@ -77,7 +77,7 @@ shared class MatchResult {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     _rank.WriteToBuffer(buf);
     _score.WriteToBuffer(buf);
     WTB_LP_String(buf, _participant);
@@ -93,7 +93,7 @@ shared class MatchResult {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -101,7 +101,7 @@ shared class MatchResult {
 
 namespace _MatchResult {
   /* Namespace // Mixin: ToFromBuffer */
-  shared MatchResult@ ReadFromBuffer(Buffer@ &in buf) {
+  shared MatchResult@ ReadFromBuffer(Buffer@ buf) {
     /* Parse field: rank of type: MaybeOfUint@ */
     MaybeOfUint@ rank = _MaybeOfUint::ReadFromBuffer(buf);
     /* Parse field: score of type: MaybeOfUint@ */
@@ -113,7 +113,7 @@ namespace _MatchResult {
     return MatchResult(rank, score, participant, zone);
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

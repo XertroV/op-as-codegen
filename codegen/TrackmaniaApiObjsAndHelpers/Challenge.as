@@ -95,7 +95,7 @@ shared class Challenge {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     buf.Write(_id);
     WTB_LP_String(buf, _uid);
     WTB_LP_String(buf, _name);
@@ -115,7 +115,7 @@ shared class Challenge {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -123,7 +123,7 @@ shared class Challenge {
 
 namespace _Challenge {
   /* Namespace // Mixin: ToFromBuffer */
-  shared Challenge@ ReadFromBuffer(Buffer@ &in buf) {
+  shared Challenge@ ReadFromBuffer(Buffer@ buf) {
     /* Parse field: id of type: uint */
     uint id = buf.ReadUInt32();
     /* Parse field: uid of type: string */
@@ -139,7 +139,7 @@ namespace _Challenge {
     return Challenge(id, uid, name, startDate, endDate, leaderboardId);
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

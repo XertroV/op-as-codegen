@@ -244,4 +244,4 @@ enumSItemTypeDecl :: Lines
 enumSItemTypeDecl =
   wrapInitedScope "shared enum SItemType"
     $ (\n -> ((_ <> ",") <$> (fromMaybe [] $ init n)) <> [ fromMaybe "Error!:!" $ last n ])
-        [ "CarSport", "CharacterPilot" ]
+        [ "CarSport", "CharacterPilot", "CustomMesh" ]

@@ -52,8 +52,7 @@ challenges = { cls, obj }
 
   obj = object "Challenges" # field "challenges" (JArray (JObject codecChallenge))
 
-type ArrayProxyOpts
-  = { n :: String, f :: String, o :: ClsWithObj }
+type ArrayProxyOpts = { n :: String, f :: String, o :: ClsWithObj }
 
 mkArrayProxy :: ArrayProxyOpts -> ClsWithObj
 mkArrayProxy { n, f, o } = { cls, obj }
@@ -76,7 +75,7 @@ dictGen opts@{ valType } = { cls, obj }
   cls =
     jsonObjToClass obj []
       $ [ mxCommonTesting, mxDefaultProps, mxDictBacking opts ]
-      <> opts.extraMixins
+          <> opts.extraMixins
 
 stdDictTypes ∷ Array JType
 stdDictTypes = [ JBool, JUint, JInt, JString ]
@@ -337,6 +336,40 @@ skinSpec = { cls, obj }
       # field "hasPlayerMesh" JBool
       # field "texturePairs" (JArray (JObject textureUrlPair.obj))
 
+playerStats :: ClsWithObj
+playerStats = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (simpleJsonMixins)
+
+  obj =
+    object "PlayerStats"
+      # field "Name" JString
+      -- # field "TimeNow" JUint
+
+      # field "SpawnStatus" JString
+      # field "CurrentLapTimes" (JArray JUint)
+      # field "CurrentRaceTimes" (JArray JUint)
+      # field "CurrentLapTime" JUint
+      # field "CurrentRaceTime" JUint
+
+playerSplitsInfo :: ClsWithObj
+playerSplitsInfo = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (typicalMixins)
+
+  obj =
+    object "PlayerSplitsInfo"
+      # field "Name" JString
+      # field "MapName" JString
+      # field "PBTimes" (JArray JUint)
+      # field "PBSplits" (JArray JUint)
+      # field "BestSplits" (JArray JUint)
+      # field "SumOfBest" JUint
+      # field "NextBestTimes1" (JArray JUint)
+      # field "NextBestTimes2" (JArray JUint)
+      # field "NextBestTimes3" (JArray JUint)
+      # field "NextBestTimes4" (JArray JUint)
+
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
@@ -369,5 +402,7 @@ everything =
   , skinIndex.cls
   , skinSpec.cls
   , textureUrlPair.cls
+  , playerStats.cls
+  , playerSplitsInfo.cls
   ]
     <> (stdDicts <#> (_.cls))

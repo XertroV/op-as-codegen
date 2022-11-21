@@ -92,7 +92,7 @@ shared class TotdResp {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     WTB_Array_TotdMonth(buf, _monthList);
     buf.Write(_itemCount);
     buf.Write(_nextRequestTimestamp);
@@ -106,12 +106,12 @@ shared class TotdResp {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_TotdMonth(Buffer@ &in buf, const array<TotdMonth@> &in arr) {
+  void WTB_Array_TotdMonth(Buffer@ buf, const array<TotdMonth@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -131,7 +131,7 @@ shared class TotdResp {
 
 namespace _TotdResp {
   /* Namespace // Mixin: ToFromBuffer */
-  shared TotdResp@ ReadFromBuffer(Buffer@ &in buf) {
+  shared TotdResp@ ReadFromBuffer(Buffer@ buf) {
     /* Parse field: monthList of type: array<TotdMonth@> */
     array<TotdMonth@> monthList = RFB_Array_TotdMonth(buf);
     /* Parse field: itemCount of type: uint */
@@ -141,12 +141,12 @@ namespace _TotdResp {
     return TotdResp(monthList, itemCount, nextRequestTimestamp);
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<TotdMonth@>@ RFB_Array_TotdMonth(Buffer@ &in buf) {
+  shared const array<TotdMonth@>@ RFB_Array_TotdMonth(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     array<TotdMonth@> arr = array<TotdMonth@>(len);
     for (uint i = 0; i < arr.Length; i++) {

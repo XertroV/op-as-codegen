@@ -114,7 +114,7 @@ genMethods (JsonObj name fields) = methods
 
   writeToBuffer = do
     fTy <- getValTy
-    pure $ wrapFunction' "void" "WriteToBuffer" [ "Buffer@ &in buf" ]
+    pure $ wrapFunction' "void" "WriteToBuffer" [ "Buffer@ buf" ]
       $ wrapIfElse "IsNothing()" [ "buf.Write(uint8(0));" ]
       $ [ "buf.Write(uint8(1));"
         , stmt $ jFieldToBuf "buf" (JField "_val" fTy)
@@ -150,7 +150,7 @@ genNamespace (JsonObj objName fields) =
       <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]
 
   rfb =
-    wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "Buffer@ &in buf" ]
+    wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "Buffer@ buf" ]
       $ [ "bool isNothing = 0 == buf.ReadUInt8();" ]
       <> wrapIfElse "isNothing"
           [ "return " <> objName <> "();" ]

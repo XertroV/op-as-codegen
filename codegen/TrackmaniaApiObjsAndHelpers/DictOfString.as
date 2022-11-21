@@ -137,7 +137,7 @@ namespace _DictOfString {
     }
     
     /* Methods // Mixin: ToFromBuffer */
-    void WriteToBuffer(Buffer@ &in buf) {
+    void WriteToBuffer(Buffer@ buf) {
       WTB_LP_String(buf, _key);
       WTB_LP_String(buf, _val);
     }
@@ -149,7 +149,7 @@ namespace _DictOfString {
       return bytes;
     }
     
-    void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    void WTB_LP_String(Buffer@ buf, const string &in s) {
       buf.Write(uint(s.Length));
       buf.Write(s);
     }
@@ -197,7 +197,7 @@ namespace _DictOfString {
     }
     
     /* Namespace // Mixin: ToFromBuffer */
-    shared KvPair@ ReadFromBuffer(Buffer@ &in buf) {
+    shared KvPair@ ReadFromBuffer(Buffer@ buf) {
       /* Parse field: key of type: string */
       string key = RFB_LP_String(buf);
       /* Parse field: val of type: string */
@@ -205,7 +205,7 @@ namespace _DictOfString {
       return KvPair(key, val);
     }
     
-    shared const string RFB_LP_String(Buffer@ &in buf) {
+    shared const string RFB_LP_String(Buffer@ buf) {
       uint len = buf.ReadUInt32();
       return buf.ReadString(len);
     }

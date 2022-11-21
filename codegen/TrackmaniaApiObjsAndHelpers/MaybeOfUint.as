@@ -60,7 +60,7 @@ shared class MaybeOfUint {
     return Json::Value(_val);
   }
   
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     if (IsNothing()) {
       buf.Write(uint8(0));
     } else {
@@ -69,7 +69,7 @@ shared class MaybeOfUint {
     }
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -136,7 +136,7 @@ namespace _MaybeOfUint {
     }
   }
   
-  shared MaybeOfUint@ ReadFromBuffer(Buffer@ &in buf) {
+  shared MaybeOfUint@ ReadFromBuffer(Buffer@ buf) {
     bool isNothing = 0 == buf.ReadUInt8();
     if (isNothing) {
       return MaybeOfUint();
@@ -147,7 +147,7 @@ namespace _MaybeOfUint {
     }
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

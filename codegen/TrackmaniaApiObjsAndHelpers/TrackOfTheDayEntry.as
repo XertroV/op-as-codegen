@@ -104,7 +104,7 @@ shared class TrackOfTheDayEntry {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     buf.Write(_campaignId);
     WTB_LP_String(buf, _mapUid);
     buf.Write(_day);
@@ -126,7 +126,7 @@ shared class TrackOfTheDayEntry {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -134,7 +134,7 @@ shared class TrackOfTheDayEntry {
 
 namespace _TrackOfTheDayEntry {
   /* Namespace // Mixin: ToFromBuffer */
-  shared TrackOfTheDayEntry@ ReadFromBuffer(Buffer@ &in buf) {
+  shared TrackOfTheDayEntry@ ReadFromBuffer(Buffer@ buf) {
     /* Parse field: campaignId of type: uint */
     uint campaignId = buf.ReadUInt32();
     /* Parse field: mapUid of type: string */
@@ -152,7 +152,7 @@ namespace _TrackOfTheDayEntry {
     return TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

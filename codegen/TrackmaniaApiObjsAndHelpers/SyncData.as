@@ -64,7 +64,7 @@ shared class SyncData {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ &in buf) {
+  void WriteToBuffer(Buffer@ buf) {
     buf.Write(_lastUpdated);
     WTB_LP_String(buf, _status);
   }
@@ -76,7 +76,7 @@ shared class SyncData {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+  void WTB_LP_String(Buffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -124,7 +124,7 @@ shared class SyncData {
     _status = RFB_LP_String(buf);
   }
   
-  const string RFB_LP_String(Buffer@ &in buf) {
+  const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
@@ -142,7 +142,7 @@ shared class SyncData {
 
 namespace _SyncData {
   /* Namespace // Mixin: ToFromBuffer */
-  shared SyncData@ ReadFromBuffer(Buffer@ &in buf) {
+  shared SyncData@ ReadFromBuffer(Buffer@ buf) {
     /* Parse field: lastUpdated of type: uint */
     uint lastUpdated = buf.ReadUInt32();
     /* Parse field: status of type: string */
@@ -150,7 +150,7 @@ namespace _SyncData {
     return SyncData(lastUpdated, status);
   }
   
-  shared const string RFB_LP_String(Buffer@ &in buf) {
+  shared const string RFB_LP_String(Buffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

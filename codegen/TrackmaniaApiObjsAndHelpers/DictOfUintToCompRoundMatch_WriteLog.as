@@ -206,7 +206,7 @@ namespace _DictOfUintToCompRoundMatch_WriteLog {
     }
     
     /* Methods // Mixin: ToFromBuffer */
-    void WriteToBuffer(Buffer@ &in buf) {
+    void WriteToBuffer(Buffer@ buf) {
       buf.Write(_key);
       _val.WriteToBuffer(buf);
     }
@@ -218,7 +218,7 @@ namespace _DictOfUintToCompRoundMatch_WriteLog {
       return bytes;
     }
     
-    void WTB_LP_String(Buffer@ &in buf, const string &in s) {
+    void WTB_LP_String(Buffer@ buf, const string &in s) {
       buf.Write(uint(s.Length));
       buf.Write(s);
     }
@@ -262,7 +262,7 @@ namespace _DictOfUintToCompRoundMatch_WriteLog {
     }
     
     /* Namespace // Mixin: ToFromBuffer */
-    shared KvPair@ ReadFromBuffer(Buffer@ &in buf) {
+    shared KvPair@ ReadFromBuffer(Buffer@ buf) {
       /* Parse field: key of type: uint */
       uint key = buf.ReadUInt32();
       /* Parse field: val of type: CompRoundMatch@ */
@@ -270,7 +270,7 @@ namespace _DictOfUintToCompRoundMatch_WriteLog {
       return KvPair(key, val);
     }
     
-    shared const string RFB_LP_String(Buffer@ &in buf) {
+    shared const string RFB_LP_String(Buffer@ buf) {
       uint len = buf.ReadUInt32();
       return buf.ReadString(len);
     }

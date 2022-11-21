@@ -6,7 +6,7 @@
   "scripts": {
     "test": "spago test",
     "build": "spago build",
-    "testCodegen": "spago run"
+    "codegen": "spago run"
   },
   "repository": {
     "type": "git",

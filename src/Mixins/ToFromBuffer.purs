@@ -11,6 +11,7 @@ module Mixins.ToFromBuffer
   ) where
 
 import Prelude
+
 import AsTypes (jTyToAsTy, jTyToFuncArg)
 import CodeLines (comment, declSetV, fnCall, forLoopArray, ln, setV, stmt, toPropFields, wrapFunction, wrapFunction', wrapMainTest)
 import Data.Array (intercalate)
@@ -25,7 +26,7 @@ import Mixins.Testing.Gen (genTestArgs, genTests)
 import Mixins.ToString (mxToString)
 import Mixins.Types (Mixin, TestGenerator, TestGenerators)
 import SzAsTypes (cbb_arrayFnName, jFieldCountBufBytes, jFieldToBuf, jTyFromBuf, rfb_arrayFnName, wtb_arrayFnName)
-import Types (AsFunction, CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines, getFName)
+import Types (AsFunction, CodeBlocks, JField(..), JFields, JType(..), JsonObj(..), Lines, getFName, uniqueArrayTypes)
 
 mxToFromBuffer :: Mixin
 mxToFromBuffer =
@@ -39,7 +40,7 @@ mxToFromBuffer =
   }
 
 bufArg ∷ String
-bufArg = "Buffer@ &in buf"
+bufArg = "Buffer@ buf"
 
 writeToBufFn :: Array JField -> AsFunction
 writeToBufFn fields =
@@ -55,8 +56,8 @@ cbb_Fn :: Array JField -> AsFunction
 cbb_Fn fields =
   wrapFunction' "uint" "CountBufBytes" []
     $ [ "uint bytes = 0;" ]
-    <> (toPropFields fields <#> \f -> "bytes += " <> jFieldCountBufBytes f <> ";")
-    <> [ "return bytes;" ]
+        <> (toPropFields fields <#> \f -> "bytes += " <> jFieldCountBufBytes f <> ";")
+        <> [ "return bytes;" ]
 
 -- <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
 --     [ stmt $ "bytes += " <> jFieldCountBufBytes [ JField "el" arrTy ] ]
@@ -64,8 +65,8 @@ wtb_arrayFn :: JType -> AsFunction
 wtb_arrayFn arrTy =
   mkFunction
     $ [ "buf.Write(uint(arr.Length));" ]
-    <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
-        [ _writeToBufFrom "buf" (JField "el" arrTy) ]
+        <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
+          [ _writeToBufFrom "buf" (JField "el" arrTy) ]
   where
   mkFunction =
     wrapFunction' "void" (wtb_arrayFnName arrTy)
@@ -75,28 +76,27 @@ cbb_arrayFn :: JType -> AsFunction
 cbb_arrayFn arrTy =
   wrapFunction' "uint" (cbb_arrayFnName arrTy) [ "const array<" <> jTyToFuncArg arrTy <> "> &in arr" ]
     $ [ "uint bytes = 4;" ]
-    <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
-        [ stmt $ "bytes += " <> jFieldCountBufBytes (JField "el" arrTy) ]
-    <> [ "return bytes;" ]
+        <> mapArray_For { arr: "arr", el: "el", ix: "ix" }
+          [ stmt $ "bytes += " <> jFieldCountBufBytes (JField "el" arrTy) ]
+        <> [ "return bytes;" ]
 
 rfb_arrayFn :: JType -> AsFunction
 rfb_arrayFn arrTy =
   wrapFunction' ("shared const " <> arrayTypeAs <> "@") (rfb_arrayFnName arrTy) [ bufArg ]
-    $ [ "uint len = buf.ReadUInt32();"
+    $
+      [ "uint len = buf.ReadUInt32();"
       , arrayTypeAs <> " arr = " <> arrayTypeAs <> "(len);"
       ]
-    <> forLoopArray "i" "arr"
-        [ setV (JField "arr[i]" arrTy) (jTyFromBuf "buf" arrTy) ]
-    <> [ "return arr;" ]
+        <> forLoopArray "i" "arr"
+          [ setV (JField "arr[i]" arrTy) (jTyFromBuf "buf" arrTy) ]
+        <> [ "return arr;" ]
   where
   arrayTypeAs = "array<" <> jTyToAsTy arrTy <> ">"
 
 allArrayWtbFuncs :: JFields -> Array Lines
-allArrayWtbFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrTrsIfArr
+allArrayWtbFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrTrsIfArr <<< uniqueArrayTypes
   where
-  arrTrsIfArr (JField _n (JArray t)) = (wtb_arrayFn t).decl <> ln <> (cbb_arrayFn t).decl
-
-  arrTrsIfArr _ = []
+  arrTrsIfArr t = (wtb_arrayFn t).decl <> ln <> (cbb_arrayFn t).decl
 
 rfb_genNamespace :: JsonObj -> Lines
 rfb_genNamespace (JsonObj objName fields) = intercalate ln $ [ (readFromBuf objName fields).decl, rfbLpStringFn.decl ] <> allArrayRfbFuncs fields
@@ -105,7 +105,7 @@ readFromBuf :: String -> Array JField -> AsFunction
 readFromBuf name fields =
   wrapFunction' ("shared " <> name <> "@") "ReadFromBuffer" [ bufArg ]
     $ intercalate [] (rfb_getNext <$> fields)
-    <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
+        <> [ "return " <> name <> "(" <> joinWith ", " fieldVarNames <> ");" ]
   where
   fieldVarNames = fields <#> \(JField n _t) -> n
 
@@ -120,11 +120,11 @@ rfb_getNext = rfb_getNext' declSetV
 -- comment ("Parse field: " <> n <> " of type: " <> jTyToAsTy t)
 --   <> [ declSetV (JField n t) (jTyFromBuf "buf" t) ]
 allArrayRfbFuncs :: JFields -> CodeBlocks
-allArrayRfbFuncs = A.filter (\ls -> A.length ls > 0) <<< map arrRfbIfArr
+allArrayRfbFuncs = uniqueArrayTypes
+  >>> map arrRfbIfArr
+  >>> A.filter (\ls -> A.length ls > 0)
   where
-  arrRfbIfArr (JField _n (JArray t)) = (rfb_arrayFn t).decl
-
-  arrRfbIfArr _ = []
+  arrRfbIfArr t = (rfb_arrayFn t).decl
 
 toFromBufTests :: TestGenerators
 toFromBufTests = [ test_ToFromBuffer ]
@@ -138,7 +138,8 @@ test_ToFromBuffer _ms o@(JsonObj objName fields) = { fnName, ls }
 
   checkerFn =
     wrapFunction "bool" checkerFnName fields
-      $ [ objTy <> " tmp = " <> fnCall objName args <> ";"
+      $
+        [ objTy <> " tmp = " <> fnCall objName args <> ";"
         , "Buffer@ buf = Buffer();"
         , "tmp.WriteToBuffer(buf);"
         , "buf.Seek(0, 0);"
@@ -157,7 +158,7 @@ test_ToFromBuffer _ms o@(JsonObj objName fields) = { fnName, ls }
   mainFn =
     wrapMainTest fnName
       $ (\testArgs -> checkerFn.callRaw testArgs <> ";")
-      <$> allTestArgs
+          <$> allTestArgs
 
   ls = intercalate ln [ checkerFn.decl, mainFn.decl ]
 

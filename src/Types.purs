@@ -1,18 +1,18 @@
 module Types where
 
 import Prelude
-import Data.Maybe (Maybe)
+
+import Data.Array as Array
+import Data.Maybe (Maybe(..))
 
 -- data JsonSpec
 --     = Object (Array KVPair)
 --     | Array Type
-data JsonObj
-  = JsonObj String (Array JField)
+data JsonObj = JsonObj String (Array JField)
 
 derive instance eqJsonObj :: Eq JsonObj
 
-data JField
-  = JField String JType
+data JField = JField String JType
 
 derive instance eqJField :: Eq JField
 
@@ -22,17 +22,13 @@ getFName (JField n _t) = n
 getFTy ∷ JField → JType
 getFTy (JField _n t) = t
 
-type JFields
-  = Array JField
+type JFields = Array JField
 
-type Strings
-  = Array String
+type Strings = Array String
 
-type Lines
-  = Array String
+type Lines = Array String
 
-type CodeBlocks
-  = Array Lines
+type CodeBlocks = Array Lines
 
 data JType
   = JInt
@@ -86,13 +82,25 @@ object name = JsonObj name []
 field :: String -> JType -> JsonObj -> JsonObj
 field n t (JsonObj jn jf) = JsonObj jn $ jf <> [ JField n t ]
 
-type AsFunction
-  = { decl :: Lines
-    , call :: JFields -> String
-    , callRaw :: Array String -> String
-    , fields :: Maybe JFields
-    , name :: String
-    }
+type AsFunction =
+  { decl :: Lines
+  , call :: JFields -> String
+  , callRaw :: Array String -> String
+  , fields :: Maybe JFields
+  , name :: String
+  }
 
 getDecl :: AsFunction -> Lines
 getDecl { decl } = decl
+
+-- | Get a unique list of inner types from all array types in the list of fields
+uniqueArrayTypes :: JFields -> Array JType
+uniqueArrayTypes = Array.mapMaybe getArrayType >>> unique
+
+  where
+
+  getArrayType (JField _ (JArray t)) = Just t
+  getArrayType _ = Nothing
+
+  unique :: Array JType -> Array JType
+  unique = Array.foldl (\tys t -> if Array.elem t tys then tys else Array.snoc tys t) []
