@@ -27,40 +27,36 @@ shared class PlayerSplitsInfo {
   
   /* Methods // Mixin: ToFrom JSON Object */
   PlayerSplitsInfo(const Json::Value@ j) {
-    try {
-      this._Name = string(j["Name"]);
-      this._MapName = string(j["MapName"]);
-      this._PBTimes = array<uint>(j["PBTimes"].Length);
-      for (uint i = 0; i < j["PBTimes"].Length; i++) {
-        this._PBTimes[i] = uint(j["PBTimes"][i]);
-      }
-      this._PBSplits = array<uint>(j["PBSplits"].Length);
-      for (uint i = 0; i < j["PBSplits"].Length; i++) {
-        this._PBSplits[i] = uint(j["PBSplits"][i]);
-      }
-      this._BestSplits = array<uint>(j["BestSplits"].Length);
-      for (uint i = 0; i < j["BestSplits"].Length; i++) {
-        this._BestSplits[i] = uint(j["BestSplits"][i]);
-      }
-      this._SumOfBest = uint(j["SumOfBest"]);
-      this._NextBestTimes1 = array<uint>(j["NextBestTimes1"].Length);
-      for (uint i = 0; i < j["NextBestTimes1"].Length; i++) {
-        this._NextBestTimes1[i] = uint(j["NextBestTimes1"][i]);
-      }
-      this._NextBestTimes2 = array<uint>(j["NextBestTimes2"].Length);
-      for (uint i = 0; i < j["NextBestTimes2"].Length; i++) {
-        this._NextBestTimes2[i] = uint(j["NextBestTimes2"][i]);
-      }
-      this._NextBestTimes3 = array<uint>(j["NextBestTimes3"].Length);
-      for (uint i = 0; i < j["NextBestTimes3"].Length; i++) {
-        this._NextBestTimes3[i] = uint(j["NextBestTimes3"][i]);
-      }
-      this._NextBestTimes4 = array<uint>(j["NextBestTimes4"].Length);
-      for (uint i = 0; i < j["NextBestTimes4"].Length; i++) {
-        this._NextBestTimes4[i] = uint(j["NextBestTimes4"][i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._Name = string(j["Name"]);
+    this._MapName = string(j["MapName"]);
+    this._PBTimes = array<uint>(j["PBTimes"].Length);
+    for (uint i = 0; i < j["PBTimes"].Length; i++) {
+      this._PBTimes[i] = uint(j["PBTimes"][i]);
+    }
+    this._PBSplits = array<uint>(j["PBSplits"].Length);
+    for (uint i = 0; i < j["PBSplits"].Length; i++) {
+      this._PBSplits[i] = uint(j["PBSplits"][i]);
+    }
+    this._BestSplits = array<uint>(j["BestSplits"].Length);
+    for (uint i = 0; i < j["BestSplits"].Length; i++) {
+      this._BestSplits[i] = uint(j["BestSplits"][i]);
+    }
+    this._SumOfBest = uint(j["SumOfBest"]);
+    this._NextBestTimes1 = array<uint>(j["NextBestTimes1"].Length);
+    for (uint i = 0; i < j["NextBestTimes1"].Length; i++) {
+      this._NextBestTimes1[i] = uint(j["NextBestTimes1"][i]);
+    }
+    this._NextBestTimes2 = array<uint>(j["NextBestTimes2"].Length);
+    for (uint i = 0; i < j["NextBestTimes2"].Length; i++) {
+      this._NextBestTimes2[i] = uint(j["NextBestTimes2"][i]);
+    }
+    this._NextBestTimes3 = array<uint>(j["NextBestTimes3"].Length);
+    for (uint i = 0; i < j["NextBestTimes3"].Length; i++) {
+      this._NextBestTimes3[i] = uint(j["NextBestTimes3"][i]);
+    }
+    this._NextBestTimes4 = array<uint>(j["NextBestTimes4"].Length);
+    for (uint i = 0; i < j["NextBestTimes4"].Length; i++) {
+      this._NextBestTimes4[i] = uint(j["NextBestTimes4"][i]);
     }
   }
   
@@ -163,7 +159,7 @@ shared class PlayerSplitsInfo {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'PlayerSplitsInfo('
-      + string::Join({'Name=' + Name, 'MapName=' + MapName, 'PBTimes=' + TS_Array_uint(PBTimes), 'PBSplits=' + TS_Array_uint(PBSplits), 'BestSplits=' + TS_Array_uint(BestSplits), 'SumOfBest=' + '' + SumOfBest, 'NextBestTimes1=' + TS_Array_uint(NextBestTimes1), 'NextBestTimes2=' + TS_Array_uint(NextBestTimes2), 'NextBestTimes3=' + TS_Array_uint(NextBestTimes3), 'NextBestTimes4=' + TS_Array_uint(NextBestTimes4)}, ', ')
+      + string::Join({'Name=' + Name, 'MapName=' + MapName, 'PBTimes=' + TS_Array_uint(PBTimes), 'PBSplits=' + TS_Array_uint(PBSplits), 'BestSplits=' + TS_Array_uint(BestSplits), 'SumOfBest=' + tostring(SumOfBest), 'NextBestTimes1=' + TS_Array_uint(NextBestTimes1), 'NextBestTimes2=' + TS_Array_uint(NextBestTimes2), 'NextBestTimes3=' + TS_Array_uint(NextBestTimes3), 'NextBestTimes4=' + TS_Array_uint(NextBestTimes4)}, ', ')
       + ')';
   }
   
@@ -171,7 +167,7 @@ shared class PlayerSplitsInfo {
     string ret = '{';
     for (uint i = 0; i < arr.Length; i++) {
       if (i > 0) ret += ', ';
-      ret += '' + arr[i];
+      ret += tostring(arr[i]);
     }
     return ret + '}';
   }

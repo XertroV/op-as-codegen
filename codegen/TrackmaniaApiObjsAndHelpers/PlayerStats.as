@@ -19,22 +19,18 @@ shared class PlayerStats {
   
   /* Methods // Mixin: ToFrom JSON Object */
   PlayerStats(const Json::Value@ j) {
-    try {
-      this._Name = string(j["Name"]);
-      this._SpawnStatus = string(j["SpawnStatus"]);
-      this._CurrentLapTimes = array<uint>(j["CurrentLapTimes"].Length);
-      for (uint i = 0; i < j["CurrentLapTimes"].Length; i++) {
-        this._CurrentLapTimes[i] = uint(j["CurrentLapTimes"][i]);
-      }
-      this._CurrentRaceTimes = array<uint>(j["CurrentRaceTimes"].Length);
-      for (uint i = 0; i < j["CurrentRaceTimes"].Length; i++) {
-        this._CurrentRaceTimes[i] = uint(j["CurrentRaceTimes"][i]);
-      }
-      this._CurrentLapTime = uint(j["CurrentLapTime"]);
-      this._CurrentRaceTime = uint(j["CurrentRaceTime"]);
-    } catch {
-      OnFromJsonError(j);
+    this._Name = string(j["Name"]);
+    this._SpawnStatus = string(j["SpawnStatus"]);
+    this._CurrentLapTimes = array<uint>(j["CurrentLapTimes"].Length);
+    for (uint i = 0; i < j["CurrentLapTimes"].Length; i++) {
+      this._CurrentLapTimes[i] = uint(j["CurrentLapTimes"][i]);
     }
+    this._CurrentRaceTimes = array<uint>(j["CurrentRaceTimes"].Length);
+    for (uint i = 0; i < j["CurrentRaceTimes"].Length; i++) {
+      this._CurrentRaceTimes[i] = uint(j["CurrentRaceTimes"][i]);
+    }
+    this._CurrentLapTime = uint(j["CurrentLapTime"]);
+    this._CurrentRaceTime = uint(j["CurrentRaceTime"]);
   }
   
   Json::Value@ ToJson() {
@@ -116,7 +112,7 @@ shared class PlayerStats {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'PlayerStats('
-      + string::Join({'Name=' + Name, 'SpawnStatus=' + SpawnStatus, 'CurrentLapTimes=' + TS_Array_uint(CurrentLapTimes), 'CurrentRaceTimes=' + TS_Array_uint(CurrentRaceTimes), 'CurrentLapTime=' + '' + CurrentLapTime, 'CurrentRaceTime=' + '' + CurrentRaceTime}, ', ')
+      + string::Join({'Name=' + Name, 'SpawnStatus=' + SpawnStatus, 'CurrentLapTimes=' + TS_Array_uint(CurrentLapTimes), 'CurrentRaceTimes=' + TS_Array_uint(CurrentRaceTimes), 'CurrentLapTime=' + tostring(CurrentLapTime), 'CurrentRaceTime=' + tostring(CurrentRaceTime)}, ', ')
       + ')';
   }
   
@@ -124,7 +120,7 @@ shared class PlayerStats {
     string ret = '{';
     for (uint i = 0; i < arr.Length; i++) {
       if (i > 0) ret += ', ';
-      ret += '' + arr[i];
+      ret += tostring(arr[i]);
     }
     return ret + '}';
   }

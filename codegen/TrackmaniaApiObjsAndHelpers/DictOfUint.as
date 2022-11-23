@@ -104,7 +104,7 @@ namespace _DictOfUint {
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + key, 'val=' + '' + val}, ', ')
+        + string::Join({'key=' + key, 'val=' + tostring(val)}, ', ')
         + ')';
     }
     

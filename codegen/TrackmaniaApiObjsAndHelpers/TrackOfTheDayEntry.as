@@ -21,17 +21,13 @@ shared class TrackOfTheDayEntry {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TrackOfTheDayEntry(const Json::Value@ j) {
-    try {
-      this._campaignId = uint(j["campaignId"]);
-      this._mapUid = string(j["mapUid"]);
-      this._day = uint(j["day"]);
-      this._monthDay = uint(j["monthDay"]);
-      this._seasonUid = string(j["seasonUid"]);
-      this._startTimestamp = uint(j["startTimestamp"]);
-      this._endTimestamp = uint(j["endTimestamp"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._campaignId = uint(j["campaignId"]);
+    this._mapUid = string(j["mapUid"]);
+    this._day = uint(j["day"]);
+    this._monthDay = uint(j["monthDay"]);
+    this._seasonUid = string(j["seasonUid"]);
+    this._startTimestamp = uint(j["startTimestamp"]);
+    this._endTimestamp = uint(j["endTimestamp"]);
   }
   
   Json::Value@ ToJson() {
@@ -83,7 +79,7 @@ shared class TrackOfTheDayEntry {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TrackOfTheDayEntry('
-      + string::Join({'campaignId=' + '' + campaignId, 'mapUid=' + mapUid, 'day=' + '' + day, 'monthDay=' + '' + monthDay, 'seasonUid=' + seasonUid, 'startTimestamp=' + '' + startTimestamp, 'endTimestamp=' + '' + endTimestamp}, ', ')
+      + string::Join({'campaignId=' + tostring(campaignId), 'mapUid=' + mapUid, 'day=' + tostring(day), 'monthDay=' + tostring(monthDay), 'seasonUid=' + seasonUid, 'startTimestamp=' + tostring(startTimestamp), 'endTimestamp=' + tostring(endTimestamp)}, ', ')
       + ')';
   }
   

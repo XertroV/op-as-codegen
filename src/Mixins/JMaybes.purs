@@ -40,9 +40,10 @@ genMethods (JsonObj name fields) = methods
     false -> unsafeCrashWith $ "mxJMaybes run on a class that wasn't a maybe: " <> name
     true -> do
       intercalate ln $ map getDecl
-        $ catMaybes
+        $
+          catMaybes
             [ consJust, consNothing, consJson, opEq, toStr, toRowStr, wrapStr, toJson, writeToBuffer, Just wtbLpStringFn, countBufBytes ]
-        <> (unsafePartial fromJust) getters
+            <> (unsafePartial fromJust) getters
 
   getValTy = A.head fields <#> getFTy
 
@@ -62,7 +63,7 @@ genMethods (JsonObj name fields) = methods
   consJson = do
     fTy <- getValTy
     pure $ wrapFunction' "" name [ "const Json::Value@ j" ]
-      $ wrapIfElse "j.GetType() % Json::Type::Null == 0"
+      $ wrapIfElse "j is null || j.GetType() % Json::Type::Null == 0"
           [ "_hasVal = false;" ]
           [ "_hasVal = true;", "_val = " <> castOrWrap fTy "j" <> ";" ]
 
@@ -70,7 +71,8 @@ genMethods (JsonObj name fields) = methods
   getters = do
     fTy <- getValTy
     pure
-      $ [ wrapConstFunction (jTyToFuncRes fTy) "get_val" []
+      $
+        [ wrapConstFunction (jTyToFuncRes fTy) "get_val" []
             ( wrapIf "!_hasVal" [ "throw('Attempted to access .val of a Nothing');" ]
                 <> [ "return _val;" ]
             )
@@ -85,20 +87,20 @@ genMethods (JsonObj name fields) = methods
   opEq = do
     pure $ wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
       $ wrapIf "IsJust()" [ "return other.IsJust() && (_val == other.val);" ]
-      <> [ "return other.IsNothing();" ]
+          <> [ "return other.IsNothing();" ]
 
   toStr = do
     fTy <- getValTy
     pure $ wrapFunction "const string" "ToString" []
       $ [ "string ret = '" <> name <> "(';" ]
-      <> wrapIf "IsJust()" [ "ret += " <> jValSimpleStr fTy "_val" <> ";" ]
-      <> [ "return ret + ')';" ]
+          <> wrapIf "IsJust()" [ "ret += " <> jValSimpleStr fTy "_val" <> ";" ]
+          <> [ "return ret + ')';" ]
 
   toRowStr = do
     fTy <- getValTy
     pure $ wrapFunction "const string" "ToRowString" []
       $ wrapIf "!_hasVal" [ "return 'null,';" ]
-      <> [ "return " <> jValToStr fTy "_val" <> " + ',';" ]
+          <> [ "return " <> jValToStr fTy "_val" <> " + ',';" ]
 
   wrapStr = Just trs_wrapStringFn
 
@@ -106,17 +108,19 @@ genMethods (JsonObj name fields) = methods
     fTy <- getValTy
     pure $ wrapFunction "Json::Value@" "ToJson" []
       $ wrapIf "IsNothing()" [ "return Json::Value(); // json null" ]
-      <> [ if jTyIsPrim fTy then
-            "return Json::Value(_val);"
-          else
-            "return _val.ToJson();"
-        ]
+          <>
+            [ if jTyIsPrim fTy then
+                "return Json::Value(_val);"
+              else
+                "return _val.ToJson();"
+            ]
 
   writeToBuffer = do
     fTy <- getValTy
     pure $ wrapFunction' "void" "WriteToBuffer" [ "Buffer@ buf" ]
       $ wrapIfElse "IsNothing()" [ "buf.Write(uint8(0));" ]
-      $ [ "buf.Write(uint8(1));"
+      $
+        [ "buf.Write(uint8(1));"
         , stmt $ jFieldToBuf "buf" (JField "_val" fTy)
         ]
 
@@ -124,12 +128,13 @@ genMethods (JsonObj name fields) = methods
     fTy <- getValTy
     pure $ wrapFunction' "uint" "CountBufBytes" []
       $ wrapIf "IsNothing()" [ "return 1;" ]
-      <> [ "return 1 + " <> jFieldCountBufBytes (JField "_val" fTy) <> ";" ]
+          <> [ "return 1 + " <> jFieldCountBufBytes (JField "_val" fTy) <> ";" ]
 
 genNamespace :: JsonObj -> Lines
 genNamespace (JsonObj objName fields) =
   intercalate ln
-    $ [ frs.decl
+    $
+      [ frs.decl
       , frs_AssertDefn.decl
       , rfb.decl
       , rfbLpStringFn.decl
@@ -141,19 +146,20 @@ genNamespace (JsonObj objName fields) =
 
   frs =
     wrapFunction' ("shared " <> objName <> "@") "FromRowString" [ "const string &in str" ]
-      $ [ "string chunk = '', remainder = str;"
+      $
+        [ "string chunk = '', remainder = str;"
         , "array<string> tmp = array<string>(2);"
         , "uint chunkLen = 0;"
         ]
-      <> wrapIf "remainder.SubStr(0, 4) == 'null'" [ "return " <> objName <> "();" ]
-      <> frs_getNext f
-      <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]
+          <> wrapIf "remainder.SubStr(0, 4) == 'null'" [ "return " <> objName <> "();" ]
+          <> frs_getNext f
+          <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]
 
   rfb =
     wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "Buffer@ buf" ]
       $ [ "bool isNothing = 0 == buf.ReadUInt8();" ]
-      <> wrapIfElse "isNothing"
-          [ "return " <> objName <> "();" ]
-          ( rfb_getNext f
-              <> [ "return " <> objName <> "(" <> getFName f <> ");" ]
-          )
+          <> wrapIfElse "isNothing"
+            [ "return " <> objName <> "();" ]
+            ( rfb_getNext f
+                <> [ "return " <> objName <> "(" <> getFName f <> ");" ]
+            )

@@ -31,22 +31,18 @@ shared class SceneItem {
   
   /* Methods // Mixin: ToFrom JSON Object */
   SceneItem(const Json::Value@ j) {
-    try {
-      this._uid = string(j["uid"]);
-      this._name = string(j["name"]);
-      this._type = SItemType(uint(j["type"]));
-      this._visible = bool(j["visible"]);
-      this._pos = vec3(float(j["pos"]['x']), float(j["pos"]['y']), float(j["pos"]['z']));
-      this._angle = float(j["angle"]);
-      this._tt = bool(j["tt"]);
-      this._carSync = bool(j["carSync"]);
-      @this._attachedTo = MaybeOfString(j["attachedTo"]);
-      this._skinZip = string(j["skinZip"]);
-      this._skinUrl = string(j["skinUrl"]);
-      this._ver = uint(j["ver"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._uid = string(j["uid"]);
+    this._name = string(j["name"]);
+    this._type = SItemType(uint(j["type"]));
+    this._visible = bool(j["visible"]);
+    this._pos = vec3(float(j["pos"]['x']), float(j["pos"]['y']), float(j["pos"]['z']));
+    this._angle = float(j["angle"]);
+    this._tt = bool(j["tt"]);
+    this._carSync = bool(j["carSync"]);
+    @this._attachedTo = MaybeOfString(j["attachedTo"]);
+    this._skinZip = string(j["skinZip"]);
+    this._skinUrl = string(j["skinUrl"]);
+    this._ver = uint(j["ver"]);
   }
   
   Json::Value@ ToJson() {
@@ -172,7 +168,7 @@ shared class SceneItem {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'SceneItem('
-      + string::Join({'uid=' + uid, 'name=' + name, 'type=' + tostring(type), 'visible=' + '' + visible, 'pos=' + pos.ToString(), 'angle=' + '' + angle, 'tt=' + '' + tt, 'carSync=' + '' + carSync, 'attachedTo=' + attachedTo.ToString(), 'skinZip=' + skinZip, 'skinUrl=' + skinUrl, 'ver=' + '' + ver}, ', ')
+      + string::Join({'uid=' + uid, 'name=' + name, 'type=' + tostring(type), 'visible=' + tostring(visible), 'pos=' + pos.ToString(), 'angle=' + tostring(angle), 'tt=' + tostring(tt), 'carSync=' + tostring(carSync), 'attachedTo=' + attachedTo.ToString(), 'skinZip=' + skinZip, 'skinUrl=' + skinUrl, 'ver=' + tostring(ver)}, ', ')
       + ')';
   }
   

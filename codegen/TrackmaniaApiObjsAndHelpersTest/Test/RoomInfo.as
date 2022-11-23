@@ -37,55 +37,55 @@ namespace Test_RoomInfo {
     RegisterUnitTest('UnitTest_ToJsonFromJson_RoomInfo', UnitTest_ToJsonFromJson_RoomInfo);
   }
   
-  bool Test_ToJsonFromJson_Check(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public) {
-    RoomInfo@ tmp = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public);
+  bool Test_ToJsonFromJson_Check(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public, uint ready_count) {
+    RoomInfo@ tmp = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public, ready_count);
     assert(tmp == RoomInfo(tmp.ToJson()), 'ToJsonFromJson fail: ' + Json::Write(tmp.ToJson()));
     return true;
   }
   
   void UnitTest_ToJsonFromJson_RoomInfo() {
-    Test_ToJsonFromJson_Check("", 129450, 573551, 355425, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("ᱶ谛䆳ꔼ躜ಙ㟊罐㳋뽄", 883496, 673390, 116343, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("䳟框雱燐꬝,汯粌鉅᜘", 403118, 996210, 292599, MaybeOfString("䌭덉羌ฬ擪孻"), true);
-    Test_ToJsonFromJson_Check("堉⍴", 606311, 853398, 34736, MaybeOfString("冺햵ᤫ簔"), false);
-    Test_ToJsonFromJson_Check("客㒞᫯볠箢暂遐", 509010, 762937, 553541, MaybeOfString(), true);
-    Test_ToJsonFromJson_Check("", 857256, 67966, 842264, MaybeOfString("பꋣ䡓"), true);
-    Test_ToJsonFromJson_Check("", 228874, 545237, 796389, MaybeOfString("ꬨ"), true);
-    Test_ToJsonFromJson_Check("쨄봌", 467498, 450229, 8357, MaybeOfString("ﵴ"), false);
-    Test_ToJsonFromJson_Check("皼䦋쁗缧ⱊﱻ", 291599, 158796, 236301, MaybeOfString("♱솎"), false);
-    Test_ToJsonFromJson_Check("놪☼앇炄㐕畍鞙栥", 814563, 839750, 493396, MaybeOfString("封撛首譤"), true);
-    Test_ToJsonFromJson_Check("ꗥ쟭銗䔜῏⻖蚇ங", 275663, 198407, 474515, MaybeOfString(), true);
-    Test_ToJsonFromJson_Check("窐踎윉懜翊신꨻በ", 929417, 362775, 866688, MaybeOfString(""), false);
-    Test_ToJsonFromJson_Check("㳇୭鹥灦㣋충", 721389, 899539, 304545, MaybeOfString("ㅥ趑"), true);
-    Test_ToJsonFromJson_Check("", 147453, 442122, 757477, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("죤箖质ᣙ", 61424, 123025, 945480, MaybeOfString("됢菙ၰ㡽걅"), true);
-    Test_ToJsonFromJson_Check("៯ꭍڑ쀈ⵗ㏬", 330434, 960296, 368435, MaybeOfString("簈㖻Ꙛំ䏯ཞꑓ뷾"), true);
-    Test_ToJsonFromJson_Check("홭", 959377, 703562, 133268, MaybeOfString("삾�೻壎ⴍ"), false);
-    Test_ToJsonFromJson_Check("ᖦﭭ见禁䡼淣럸", 758410, 670355, 378524, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("쑋쎧ᨘ", 554346, 17181, 227340, MaybeOfString("ଌ蓼﫤"), false);
-    Test_ToJsonFromJson_Check("㢝蔹", 776724, 886650, 781291, MaybeOfString("뷰ᷙ㧖齢鬰㖦ӵ暮"), true);
-    Test_ToJsonFromJson_Check("㗭再섚ᘭ☖甩ῶ욉쒜", 74150, 318565, 35974, MaybeOfString("ﱩ媡"), false);
-    Test_ToJsonFromJson_Check("豣閑㏲ᔲ逥좣㉒㇜ꗸ", 811960, 415355, 760015, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("딙授↳웡", 91151, 743344, 44570, MaybeOfString("冋"), false);
-    Test_ToJsonFromJson_Check("겶຾", 532804, 34223, 734280, MaybeOfString("郅栗�"), true);
-    Test_ToJsonFromJson_Check("漻拹ⓨ", 643309, 111365, 526475, MaybeOfString("㢭ꇔ格湴"), false);
-    Test_ToJsonFromJson_Check("", 844727, 231882, 167715, MaybeOfString("鱐ꄝ标妒䗶瘬黊"), false);
-    Test_ToJsonFromJson_Check("쀯㖩ꅽ딚圤쯼벮蜵", 662348, 160914, 43093, MaybeOfString("湀녂릊☳憱딅휘"), false);
-    Test_ToJsonFromJson_Check("穏뫤࡙", 801176, 883112, 765603, MaybeOfString("횊穧"), false);
-    Test_ToJsonFromJson_Check("䗺", 245672, 817303, 44522, MaybeOfString("⫦㿕롔蜡い"), false);
-    Test_ToJsonFromJson_Check("靳ԝ춤", 929340, 235459, 512066, MaybeOfString("꼅ꐊἸ᜸"), false);
-    Test_ToJsonFromJson_Check("蜰晵", 840907, 60272, 245929, MaybeOfString("ᡋᡰ墍믙"), false);
-    Test_ToJsonFromJson_Check("멨靮垆规☉᡽햅", 580415, 108577, 33888, MaybeOfString("綐⨱㇟ꪒ"), true);
-    Test_ToJsonFromJson_Check("㷽혭㞥ۚ轔렫炙띤", 448613, 64905, 260294, MaybeOfString("⢻疳쨟ጦٛꦺ"), true);
-    Test_ToJsonFromJson_Check("쉑ᢰ靡ﮃ嚄譵", 170734, 306458, 632656, MaybeOfString("遲੿ᥫ虝Ѐ�胛"), true);
-    Test_ToJsonFromJson_Check("鑭嵿釄⅟᥌⇝䱓", 524348, 300962, 104905, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("秇⋽吢", 662721, 992645, 925671, MaybeOfString("藃 ⏎늻텿錈솢�䰃䁓"), true);
-    Test_ToJsonFromJson_Check("ማ", 14342, 450978, 449872, MaybeOfString("ﴪỗᯁ"), true);
-    Test_ToJsonFromJson_Check("䦳�榺骽䭄궉쎟鷬", 788089, 621229, 452225, MaybeOfString("뵆扈僿䞚䲈㌒皬毸圌"), true);
-    Test_ToJsonFromJson_Check("〱", 355681, 462683, 26762, MaybeOfString("裰轛멭錰㸦"), true);
-    Test_ToJsonFromJson_Check("䎽붏矓暴颙잒淮", 156482, 901422, 688702, MaybeOfString(), false);
-    Test_ToJsonFromJson_Check("Ϩ죂갗爑", 192767, 674254, 176502, MaybeOfString("樤㞹㿼昡˶鵺ﯶᲑ篥ɿ"), false);
-    Test_ToJsonFromJson_Check("䎇", 20231, 116955, 720361, MaybeOfString("Ⳉペ蛛᠓"), true);
+    Test_ToJsonFromJson_Check("", 129450, 573551, 355425, MaybeOfString(), false, 263911);
+    Test_ToJsonFromJson_Check("罐㳋", 191439, 86104, 883496, MaybeOfString("뿣확庢⽊럮ᬃ觱ʀሯ搑"), true, 259935);
+    Test_ToJsonFromJson_Check("", 294609, 403118, 996210, MaybeOfString("톶뜣힐"), true, 331925);
+    Test_ToJsonFromJson_Check("ᲊ̇॑", 138748, 606311, 853398, MaybeOfString("ᮃ놜冺햵ᤫ簔�"), false, 833828);
+    Test_ToJsonFromJson_Check("懇�客㒞᫯볠", 553541, 857256, 67966, MaybeOfString("䡓"), false, 962581);
+    Test_ToJsonFromJson_Check("旰蓡", 545237, 796389, 811618, MaybeOfString(), false, 915574);
+    Test_ToJsonFromJson_Check("▏᯿쨄", 450229, 8357, 740990, MaybeOfString(""), false, 201887);
+    Test_ToJsonFromJson_Check("렷뵫皼", 291599, 158796, 236301, MaybeOfString("♱솎"), false, 689542);
+    Test_ToJsonFromJson_Check("", 293608, 562436, 192429, MaybeOfString("撛首譤攊ԭ藙聍㚃"), true, 19141);
+    Test_ToJsonFromJson_Check("ꗥ쟭銗䔜῏⻖蚇ங", 275663, 198407, 474515, MaybeOfString(), true, 203400);
+    Test_ToJsonFromJson_Check("褢鶳ᄶ窐踎윉懜", 38087, 419346, 503262, MaybeOfString("檺"), true, 899539);
+    Test_ToJsonFromJson_Check("Ηꨘ", 64291, 417442, 351797, MaybeOfString("䙐禭"), false, 147453);
+    Test_ToJsonFromJson_Check("鍡轔", 757477, 61319, 220027, MaybeOfString("फᝌᣇ꒨"), true, 123025);
+    Test_ToJsonFromJson_Check("", 945480, 812588, 609511, MaybeOfString("鳐�"), false, 820139);
+    Test_ToJsonFromJson_Check("瀀⼸៯ꭍ", 368435, 48539, 698297, MaybeOfString("뚑簈㖻Ꙛំ"), false, 959377);
+    Test_ToJsonFromJson_Check("ꒋ符䭭澀", 489123, 522901, 419173, MaybeOfString("임㾂鴈臼瀙娎뉺ꢗ軤"), false, 378524);
+    Test_ToJsonFromJson_Check("쎧ᨘ퉁", 554346, 17181, 227340, MaybeOfString("ଌ蓼﫤"), false, 817776);
+    Test_ToJsonFromJson_Check("㵁㢝", 886650, 781291, 235494, MaybeOfString(), true, 23152);
+    Test_ToJsonFromJson_Check("再섚ᘭ☖", 928935, 74150, 318565, MaybeOfString("媡요쉒"), true, 123726);
+    Test_ToJsonFromJson_Check("豣閑㏲ᔲ逥좣㉒㇜ꗸ", 811960, 415355, 760015, MaybeOfString(), false, 610207);
+    Test_ToJsonFromJson_Check("⧼馣谱蘄딙授", 91151, 743344, 44570, MaybeOfString("冋"), false, 440156);
+    Test_ToJsonFromJson_Check("", 532804, 34223, 734280, MaybeOfString("郅栗�"), true, 999293);
+    Test_ToJsonFromJson_Check("恮뺪髷漻拹", 526475, 999438, 811107, MaybeOfString("ꯥ끁롣௑㢭ꇔ"), true, 771523);
+    Test_ToJsonFromJson_Check("몖괩", 876283, 49476, 256248, MaybeOfString("כֿ昢Ｈ罧㣜樐㽼"), true, 43093);
+    Test_ToJsonFromJson_Check("ħ蔋", 674608, 308745, 376275, MaybeOfString("ᶥ톪�湀"), true, 548088);
+    Test_ToJsonFromJson_Check("뾋뿰秮", 765603, 958172, 390405, MaybeOfString("땓꟭뗏"), true, 911772);
+    Test_ToJsonFromJson_Check("৹", 992957, 442711, 615355, MaybeOfString("矮冠"), true, 235459);
+    Test_ToJsonFromJson_Check("", 850587, 863576, 553871, MaybeOfString("ṧᬔ"), true, 840907);
+    Test_ToJsonFromJson_Check("꺗⯒ꊑ䐁ߠɯ밥", 457076, 470409, 645878, MaybeOfString("첕"), true, 424004);
+    Test_ToJsonFromJson_Check("왪噧㉊㚨줫⧑㙵覆", 195672, 489062, 158912, MaybeOfString("�ꐒ魋䭅"), true, 235111);
+    Test_ToJsonFromJson_Check("꼵䁹呦", 64905, 260294, 13752, MaybeOfString("⢻疳쨟ጦ"), true, 233926);
+    Test_ToJsonFromJson_Check("ᢰ靡ﮃ嚄", 681867, 170734, 306458, MaybeOfString("胛๫"), false, 935263);
+    Test_ToJsonFromJson_Check("䊼", 804780, 477471, 147878, MaybeOfString(), false, 12590);
+    Test_ToJsonFromJson_Check("釄", 679849, 608847, 283554, MaybeOfString("濍γ"), false, 104905);
+    Test_ToJsonFromJson_Check("", 900364, 662721, 992645, MaybeOfString("邽쪿"), true, 114641);
+    Test_ToJsonFromJson_Check("", 379745, 812903, 162028, MaybeOfString("鍼륭朰ᆿᕃ"), false, 449872);
+    Test_ToJsonFromJson_Check("꼭㗶", 181844, 822200, 152001, MaybeOfString(""), true, 354693);
+    Test_ToJsonFromJson_Check("䴤䦳", 621229, 452225, 366477, MaybeOfString("䲈㌒"), false, 406196);
+    Test_ToJsonFromJson_Check("㨵䓸뷐�댍〱둫鱆", 462683, 26762, 578239, MaybeOfString("덁闧⽺裰轛멭"), false, 892962);
+    Test_ToJsonFromJson_Check("䬼덃耕굗ご䎽붏", 438512, 740039, 565965, MaybeOfString("࠘ᮍ怅䓗柳ᓒ혖඾"), true, 230185);
+    Test_ToJsonFromJson_Check("䩬媴白矷孃뷌", 432442, 20231, 116955, MaybeOfString(), true, 803992);
+    Test_ToJsonFromJson_Check("䲲", 626295, 804084, 767134, MaybeOfString("⋸ꃜ誉穞煮㋬傁畧"), false, 990125);
   }
   
   bool unitTestResults_RoomInfo_ToFromJSONObject = runAsync(Tests_RegisterAll_RoomInfo_ToFromJSONObject);
@@ -95,60 +95,61 @@ namespace Test_RoomInfo {
     RegisterUnitTest('UnitTest_RoomInfo_Getters', UnitTest_RoomInfo_Getters);
   }
   
-  bool Test_CheckProps_RoomInfo(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public) {
-    RoomInfo@ tmp = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public);
+  bool Test_CheckProps_RoomInfo(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public, uint ready_count) {
+    RoomInfo@ tmp = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public, ready_count);
     assert(name == tmp.name, 'field name with value `' + name + '`');
     assert(n_teams == tmp.n_teams, 'field n_teams with value `' + n_teams + '`');
     assert(n_players == tmp.n_players, 'field n_players with value `' + n_players + '`');
     assert(player_limit == tmp.player_limit, 'field player_limit with value `' + player_limit + '`');
     assert(join_code == tmp.join_code, 'field join_code');
     assert(is_public == tmp.is_public, 'field is_public with value `' + is_public + '`');
+    assert(ready_count == tmp.ready_count, 'field ready_count with value `' + ready_count + '`');
     return true;
   }
   
   void UnitTest_RoomInfo_Getters() {
-    Test_CheckProps_RoomInfo("�￿躮䮠馩�", 980813, 825164, 378662, MaybeOfString("꡺鼀ൃ橗븺寔옛�"), true);
-    Test_CheckProps_RoomInfo("酞韫㘇힞�싺콠旱", 672947, 490383, 813542, MaybeOfString("岊⒆肭꘤쥹变㒠礃"), false);
-    Test_CheckProps_RoomInfo("�⿵枵ⴾ㬪●ꜛ", 372964, 622511, 937581, MaybeOfString("݋"), false);
-    Test_CheckProps_RoomInfo("�拺윰蘆", 321608, 715346, 402362, MaybeOfString("ⴐ"), false);
-    Test_CheckProps_RoomInfo("듡鷰那춴庂ᄼﵰ", 438676, 425498, 985047, MaybeOfString("충멵"), false);
-    Test_CheckProps_RoomInfo("㵹徲㼏", 719653, 49582, 433840, MaybeOfString("㻡뼇ṽ杢⅄"), true);
-    Test_CheckProps_RoomInfo("儞祹㚏풓鏓윃ᆟ퇚箺᧸", 985034, 302501, 401385, MaybeOfString("�"), false);
-    Test_CheckProps_RoomInfo("뭷", 544625, 205984, 182859, MaybeOfString("޷Მ"), false);
-    Test_CheckProps_RoomInfo("㎀꿈�ᴶ๏㕭∸缲䁏", 972616, 680656, 509010, MaybeOfString("鞆㤨ॽ"), false);
-    Test_CheckProps_RoomInfo("׭駭겯", 591738, 926979, 620839, MaybeOfString("두"), false);
-    Test_CheckProps_RoomInfo("", 585012, 264138, 345680, MaybeOfString("높䋪㋘늒竛뗧"), true);
-    Test_CheckProps_RoomInfo("ꔘₜ齬聎雄攩澴䶩", 135571, 428782, 785817, MaybeOfString("鉴㉙"), false);
-    Test_CheckProps_RoomInfo("過", 153273, 853065, 927946, MaybeOfString(), true);
-    Test_CheckProps_RoomInfo("ꒉ㳀䈾뙱", 611458, 678280, 212605, MaybeOfString("틑吲炔ᒚ레휺堷"), false);
-    Test_CheckProps_RoomInfo("䌽ୣ筃痒胊의䉶", 565032, 395859, 848880, MaybeOfString("◃뽽�额㳦䥍ⅸ⯃쩆搊"), false);
-    Test_CheckProps_RoomInfo("㆒刱❕騐헵�䉨⏋릈䨕", 978653, 334968, 390076, MaybeOfString("㜬⋣亶␞ꎴ흨"), false);
-    Test_CheckProps_RoomInfo("㇌⋛", 27558, 40242, 181358, MaybeOfString("줯党Ὥ"), false);
-    Test_CheckProps_RoomInfo("森ⶍභࢆ", 742625, 707776, 850420, MaybeOfString("ᅘ鳰Ԕࠆ祊藍藄ஙᆴ"), false);
-    Test_CheckProps_RoomInfo("崤颦蚕蔟Ι龲ꇗ⡔", 529329, 83328, 124133, MaybeOfString("奚좗謧痀㬙菣꿫"), false);
-    Test_CheckProps_RoomInfo("ᔻἚ쫉䶶꣰䃹눭쯺튯", 833723, 27085, 506361, MaybeOfString("嚱ᇊᙷ펁佗횄俁鏟"), false);
-    Test_CheckProps_RoomInfo("ힼ㼓", 808460, 108758, 772472, MaybeOfString("攇뽿퉾돂"), true);
-    Test_CheckProps_RoomInfo("뼊谥缃ಟ킐", 679739, 182317, 694416, MaybeOfString("Ⲃ叼熃ᐳፎ䮐잝"), false);
-    Test_CheckProps_RoomInfo("", 983400, 309649, 850147, MaybeOfString(""), true);
-    Test_CheckProps_RoomInfo("剟䝛튟뿎ວ扚듍꩐瘁쪟", 623932, 761232, 396785, MaybeOfString("흰姺㼙光"), true);
-    Test_CheckProps_RoomInfo("‱䘢", 731067, 366682, 72793, MaybeOfString("췽"), true);
-    Test_CheckProps_RoomInfo("នﯸ滣轁竁怒ৈ⍪", 623470, 438389, 805260, MaybeOfString("ᥕ剃爆爣膡꛶"), false);
-    Test_CheckProps_RoomInfo("틖ꎀ�淲ﺆ跏㜤", 357901, 952652, 684445, MaybeOfString("ꩵ屨蜍"), false);
-    Test_CheckProps_RoomInfo("䬹칭烈罽췜", 582898, 482768, 925363, MaybeOfString(), false);
-    Test_CheckProps_RoomInfo("ጢ", 323729, 180108, 629317, MaybeOfString("쾁᳓⢋"), false);
-    Test_CheckProps_RoomInfo("Ჵ﨑ꁄ枙꥞琷᯵", 720999, 402357, 902045, MaybeOfString("䢝"), false);
-    Test_CheckProps_RoomInfo("扟킋泎ⲅ", 965014, 40648, 927132, MaybeOfString(""), true);
-    Test_CheckProps_RoomInfo("", 490015, 666968, 969195, MaybeOfString("竎绒ㅠﻬ견ﮜ镕㠇篘"), false);
-    Test_CheckProps_RoomInfo("犌郉鷪䈥⏀淓둬ਈ", 753475, 684210, 835964, MaybeOfString("늽趽ማ鐆ᒓ俲⼿"), true);
-    Test_CheckProps_RoomInfo("늋", 487252, 847881, 974829, MaybeOfString("챆맰"), false);
-    Test_CheckProps_RoomInfo("", 551557, 358271, 614957, MaybeOfString("詻"), true);
-    Test_CheckProps_RoomInfo("ᡶ⛥杭貴", 656430, 717791, 449432, MaybeOfString("촨ﶗ峹ﵭ"), true);
-    Test_CheckProps_RoomInfo("啞婓菨뻟௎餵긽榈俍埯", 848668, 123956, 594259, MaybeOfString(), false);
-    Test_CheckProps_RoomInfo("᪥", 571451, 914746, 375598, MaybeOfString("틠䤙礎㋳숙෥즇졧"), false);
-    Test_CheckProps_RoomInfo("曶됚简贙殺뱆ᩖ彐쑥", 490417, 744440, 498609, MaybeOfString(), false);
-    Test_CheckProps_RoomInfo("낭荸〈", 84409, 926444, 679346, MaybeOfString("⯤槯梾⛬㬻৷䪨꒥"), false);
-    Test_CheckProps_RoomInfo("슽铟Ꙓ", 92853, 841821, 795081, MaybeOfString(), false);
-    Test_CheckProps_RoomInfo("", 988634, 633121, 813324, MaybeOfString(), true);
+    Test_CheckProps_RoomInfo("�￿躮䮠馩�", 980813, 825164, 378662, MaybeOfString("꡺鼀ൃ橗븺寔옛�"), true, 14178);
+    Test_CheckProps_RoomInfo("�싺", 464786, 672947, 490383, MaybeOfString("礃ឝਛ"), false, 704714);
+    Test_CheckProps_RoomInfo("覧", 654758, 678612, 605730, MaybeOfString("ඵ壿綊蕣Ѳ䊣�"), true, 622511);
+    Test_CheckProps_RoomInfo("윰蘆콬⨸۫芁≲", 49504, 986078, 321608, MaybeOfString("ⴐ﯐"), false, 149817);
+    Test_CheckProps_RoomInfo("那", 853156, 438676, 425498, MaybeOfString("툴䜮ᚗҳ충멵ᶼ覵鲃"), true, 719653);
+    Test_CheckProps_RoomInfo("�拣䵱䌏", 433840, 983172, 771070, MaybeOfString("�㶈�㻡뼇"), true, 183274);
+    Test_CheckProps_RoomInfo("鏓", 6143, 168768, 469338, MaybeOfString("ﺷ蹳姈⑻㤏�撵ߨ䯂"), true, 403182);
+    Test_CheckProps_RoomInfo("䁏뤥蹪", 791515, 191510, 458500, MaybeOfString("僓揱"), false, 680656);
+    Test_CheckProps_RoomInfo("皌撏랭즫ᇁ﹀", 945399, 696757, 381002, MaybeOfString("∁丟두㣦瘃빻"), true, 585012);
+    Test_CheckProps_RoomInfo("阚⦈郶炼", 847011, 203213, 258145, MaybeOfString("턆뙚높䋪"), true, 816997);
+    Test_CheckProps_RoomInfo("㩾껫墰菌㶑ꔘₜ齬", 469838, 153273, 853065, MaybeOfString(""), true, 927946);
+    Test_CheckProps_RoomInfo("ꄻ滇�ꒉ㳀䈾뙱䕂", 212605, 773342, 705388, MaybeOfString("ᒚ레"), false, 215862);
+    Test_CheckProps_RoomInfo("ୣ筃痒胊의䉶杻�죝", 392980, 565032, 395859, MaybeOfString("⯃쩆搊늜"), true, 546302);
+    Test_CheckProps_RoomInfo("릈䨕＠߇₹紇秉ⵑ", 982620, 978653, 334968, MaybeOfString("ꎴ흨榼"), true, 30588);
+    Test_CheckProps_RoomInfo("鶧ㆌ痒㇌⋛䨗ও�", 181358, 266408, 312816, MaybeOfString("夞䫿줯"), false, 597764);
+    Test_CheckProps_RoomInfo("К߄뽇㪢㸿ᓮₙ묇", 22089, 401867, 691035, MaybeOfString("嫈룭밒᥃탃�刑ᅘ鳰"), true, 454352);
+    Test_CheckProps_RoomInfo("㒴퟽ᗦ㴟봨ￊￔ쥲兆", 346182, 518141, 153623, MaybeOfString("疶뫰"), false, 772861);
+    Test_CheckProps_RoomInfo("", 633088, 133172, 833723, MaybeOfString("횄俁鏟灭ᶳ"), true, 418900);
+    Test_CheckProps_RoomInfo("큝", 67462, 782210, 808460, MaybeOfString("퉾돂띨體"), false, 973039);
+    Test_CheckProps_RoomInfo("뼊谥缃ಟ킐", 679739, 182317, 694416, MaybeOfString("Ⲃ叼熃ᐳፎ䮐잝"), false, 439297);
+    Test_CheckProps_RoomInfo("郫홟㕤㫛Ҹ", 850147, 565714, 497196, MaybeOfString("娗鿍섡⁏㸸㓌"), true, 40744);
+    Test_CheckProps_RoomInfo("狥Ü매", 396785, 680498, 521868, MaybeOfString("흰姺"), true, 948170);
+    Test_CheckProps_RoomInfo("㧯䦴귏毥᥃嗯䵌‱", 72793, 613923, 480081, MaybeOfString("⑼驏᩽嬨默䚥�糣㊊"), false, 438389);
+    Test_CheckProps_RoomInfo("镧畉弐狝פ뤫硥홅惗", 143921, 645157, 901310, MaybeOfString("탎ॡ弨犳"), true, 684445);
+    Test_CheckProps_RoomInfo("檣袿", 180139, 623725, 647698, MaybeOfString("쿆蕻﬏坊₰糣䱎쪓崉"), false, 140197);
+    Test_CheckProps_RoomInfo("㗟豺댜￰귥", 990522, 133511, 930210, MaybeOfString("圙枩紂鯴떩ℭ"), true, 902045);
+    Test_CheckProps_RoomInfo("骗뱼扟킋泎ⲅ朓复䚃", 40648, 927132, 650605, MaybeOfString(), true, 156441);
+    Test_CheckProps_RoomInfo("嬑훃덙⋵", 969195, 468413, 455407, MaybeOfString("࣓렎䰩⮵⧿堫竎绒ㅠﻬ"), false, 900907);
+    Test_CheckProps_RoomInfo("啕ኞ衍蛜", 289630, 747574, 598425, MaybeOfString("Ⰼᜤ朠㹒稃⤳늽"), true, 487252);
+    Test_CheckProps_RoomInfo("揉筢㲸肅瞇", 614957, 798073, 766638, MaybeOfString("了椇榩맃漾"), true, 656430);
+    Test_CheckProps_RoomInfo("⦥๤즿", 449432, 307209, 349405, MaybeOfString("셝"), true, 710061);
+    Test_CheckProps_RoomInfo("⵪诨⥇Ш啞婓菨", 848668, 123956, 594259, MaybeOfString(), false, 684845);
+    Test_CheckProps_RoomInfo("馸", 914746, 375598, 463792, MaybeOfString(), false, 442104);
+    Test_CheckProps_RoomInfo("ᩖ彐쑥밃괦", 642519, 490417, 744440, MaybeOfString("ὥ股폰拉﫜"), true, 237947);
+    Test_CheckProps_RoomInfo("", 541083, 185861, 605257, MaybeOfString("잔⿴㦺暄➍屴ଳ薭ᙐ댄"), false, 988634);
+    Test_CheckProps_RoomInfo("抭␹鈖躇탩뿛ၲႪ㣕ದ", 383195, 209250, 50730, MaybeOfString("Ϡᱮዖ�"), true, 80069);
+    Test_CheckProps_RoomInfo("㷀뵌慔駐윳陑镉⣀跺", 801061, 237337, 427811, MaybeOfString(), false, 56836);
+    Test_CheckProps_RoomInfo("⛳唏⃙㾥", 905806, 387647, 160891, MaybeOfString("㘦恿땊₏텿霈"), true, 282186);
+    Test_CheckProps_RoomInfo("挂ꁪ쥫�쭑뒱", 549837, 982839, 576372, MaybeOfString("ㅝ⧲"), false, 82673);
+    Test_CheckProps_RoomInfo("￨℈⩝ꝶ擆⷗륶", 974617, 284426, 833786, MaybeOfString(), false, 120825);
+    Test_CheckProps_RoomInfo("ậ", 343715, 576524, 931886, MaybeOfString("蓸�"), false, 999291);
+    Test_CheckProps_RoomInfo("艍큋詁棐숢嗖", 153246, 608162, 262313, MaybeOfString(), true, 566801);
   }
   
   bool unitTestResults_RoomInfo_Getters = runAsync(Tests_RegisterAll_RoomInfo_Getters);
@@ -160,9 +161,9 @@ namespace Test_RoomInfo {
   
   RoomInfo@ lastChecked = null;
   
-  bool OpEqSimple_Check(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public) {
-    RoomInfo@ o1 = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public);
-    RoomInfo@ o2 = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public);
+  bool OpEqSimple_Check(const string &in name, uint n_teams, uint n_players, uint player_limit, MaybeOfString@ join_code, bool is_public, uint ready_count) {
+    RoomInfo@ o1 = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public, ready_count);
+    RoomInfo@ o2 = RoomInfo(name, n_teams, n_players, player_limit, join_code, is_public, ready_count);
     assert(o1 == o2, 'OpEqSimple_Check fail for obj: ' + o1.ToString());
     assert(o1 != lastChecked, 'OpEqSimple_Check failed comparing to last obj');
     @lastChecked = o1;
@@ -170,48 +171,48 @@ namespace Test_RoomInfo {
   }
   
   void UnitTest_OpEqSimple_RoomInfo() {
-    OpEqSimple_Check("欽᩻⫤䨣叒䝇", 393455, 392207, 212987, MaybeOfString("ᠺ먲梏뼂"), false);
-    OpEqSimple_Check("퍉첯㚥", 606964, 746965, 295268, MaybeOfString("䉍ዯ"), true);
-    OpEqSimple_Check("麑遬徨", 787504, 551494, 414864, MaybeOfString("呝쵄ᛱ떡"), true);
-    OpEqSimple_Check("⇩㵣䎵甄壝玃", 591080, 333816, 159512, MaybeOfString("뇊챾﩯ᘞ쉓"), true);
-    OpEqSimple_Check("כֿ鐄ℛݙᚬ", 804528, 226958, 44436, MaybeOfString("鵀�豝䌹쁡퐕썷ᯱꛞ"), true);
-    OpEqSimple_Check("烆ঙﶇ䚱윲", 26440, 785460, 133463, MaybeOfString("⡆鍙莕㧩ꂅ䔲뼟Ŧ"), false);
-    OpEqSimple_Check("䍎␷윸ຯ㪚鎤쎣䝕", 531474, 7923, 471876, MaybeOfString("撿"), false);
-    OpEqSimple_Check("", 504118, 316940, 401551, MaybeOfString("뼡㾢笏㶆ʱ"), false);
-    OpEqSimple_Check("뮱", 521707, 606939, 812991, MaybeOfString(""), true);
-    OpEqSimple_Check("汀ᆣ젙娣ʱᯜ鱦", 468715, 840953, 20188, MaybeOfString("천⥠渠ᐢ㲛㧣⿾"), true);
-    OpEqSimple_Check("䀿虿", 624373, 718449, 909595, MaybeOfString("놵묺쥷藹㴮"), false);
-    OpEqSimple_Check("뻹", 629572, 333348, 4203, MaybeOfString("㫕崒⁗∾웇Ⓩᱭश"), true);
-    OpEqSimple_Check("괙⬲", 897339, 559404, 726400, MaybeOfString("⤓"), false);
-    OpEqSimple_Check("耽裮ዖ锲釹", 12795, 298494, 457344, MaybeOfString("奟㜫䞞祡"), false);
-    OpEqSimple_Check("汢ꏠ⮶䋧館胄ા즣傪", 997818, 438577, 704848, MaybeOfString(), false);
-    OpEqSimple_Check("喐橀뛰�둕껅汆講", 814326, 317042, 332229, MaybeOfString("睟娬䇒侮ꀵٽ촷䒠"), false);
-    OpEqSimple_Check("", 24944, 263165, 470016, MaybeOfString(""), true);
-    OpEqSimple_Check("ⱬ褑", 843670, 909926, 457029, MaybeOfString("㝛侢㳹�蛖ꬹ耐"), false);
-    OpEqSimple_Check("㩒홌ꃢ", 29411, 78939, 636291, MaybeOfString("䑫ⵙස銰ၧᮑώᘢ㵅"), true);
-    OpEqSimple_Check("蛕䥓佴ꛬ苵䎥�쭲", 279639, 759681, 255643, MaybeOfString("꼥ᗁቲ堽ᬵ꽧"), true);
-    OpEqSimple_Check("共䳶넊ᙓࡀ컒", 475985, 789265, 36996, MaybeOfString("଒嬋笩讏"), true);
-    OpEqSimple_Check("䚨篱鬻피䌱踀", 829588, 992454, 47786, MaybeOfString("덖揙"), false);
-    OpEqSimple_Check("驵盲ⓟ娣", 554833, 356165, 177350, MaybeOfString("讖宦뻸"), true);
-    OpEqSimple_Check("螥㗓", 578377, 759825, 48706, MaybeOfString("퇎赊ﴋ鎘"), false);
-    OpEqSimple_Check("㌌⻄", 112824, 776355, 602310, MaybeOfString(""), false);
-    OpEqSimple_Check("䨾㶜", 284057, 296593, 97859, MaybeOfString(), true);
-    OpEqSimple_Check("녮", 327759, 609845, 263480, MaybeOfString("퍪쉹"), false);
-    OpEqSimple_Check("瞐奺ဂ", 917838, 203988, 773250, MaybeOfString("ꡂ၌鳿윀꡴⻜銵뒮"), false);
-    OpEqSimple_Check("罚", 978412, 15728, 543714, MaybeOfString("�؁૰犮"), false);
-    OpEqSimple_Check("鼗䘚秱ᗱ", 463120, 610831, 834401, MaybeOfString("剈箆玬㖳驡囈椐༁틋�"), true);
-    OpEqSimple_Check("図罛⢲Ȃ㹪쉰龊", 493150, 371477, 170942, MaybeOfString(), false);
-    OpEqSimple_Check("䋰ꭔ䧂脑囲ﻯ機稻", 196654, 968043, 958667, MaybeOfString("ﰃ҅飛曀푧鯄꟒䠂桁"), false);
-    OpEqSimple_Check("", 69302, 707858, 1447, MaybeOfString(), true);
-    OpEqSimple_Check("宦奋豮ⴈ֑⡋늟", 80547, 56148, 836181, MaybeOfString(), false);
-    OpEqSimple_Check("�鸋₫", 796197, 147837, 128962, MaybeOfString("媿餧윭ࢫꂘび�瘣댮杣"), true);
-    OpEqSimple_Check("", 629633, 612128, 959191, MaybeOfString("譇橾⻊䮰"), false);
-    OpEqSimple_Check("蝅迨︧兀ࢺ鱈䛳", 926220, 696064, 331215, MaybeOfString("嫲�쓋쾙樂⏭"), true);
-    OpEqSimple_Check("", 806802, 867988, 950426, MaybeOfString("膃"), false);
-    OpEqSimple_Check("迒䌡", 946673, 299172, 932418, MaybeOfString("憚邷塙ꢖ嶰읦逕礸蟽"), true);
-    OpEqSimple_Check("", 111470, 573616, 37300, MaybeOfString("຿゠礊"), false);
-    OpEqSimple_Check("挧ﳗ졝", 107419, 915066, 603924, MaybeOfString("龜릇v"), true);
-    OpEqSimple_Check("⦝脘곅", 651960, 562413, 79137, MaybeOfString("淨�薮쮮磫呃温뗝쥨"), false);
+    OpEqSimple_Check("欽᩻⫤䨣叒䝇", 393455, 392207, 212987, MaybeOfString("ᠺ먲梏뼂"), false, 217809);
+    OpEqSimple_Check("蝔ᔁ䀓⃩쭶퍉첯", 535487, 148099, 713558, MaybeOfString("꒲풜豈窏ｅ"), true, 693970);
+    OpEqSimple_Check("㵣䎵甄壝玃勑", 509350, 591080, 333816, MaybeOfString("뇊챾﩯ᘞ쉓㻇娍"), true, 112534);
+    OpEqSimple_Check("垛峵כֿ鐄ℛݙᚬ", 226958, 44436, 222008, MaybeOfString(), false, 749954);
+    OpEqSimple_Check("ᬤ쿊", 131073, 236713, 75537, MaybeOfString("忙凌띫趻䎕䝌"), true, 133463);
+    OpEqSimple_Check("㞫䫆ើ鹆ʊ", 392143, 117677, 288195, MaybeOfString(), true, 531474);
+    OpEqSimple_Check("횱宙홧㉜는ꒋ㑶", 504118, 316940, 401551, MaybeOfString("뼡㾢笏㶆ʱ"), false, 145172);
+    OpEqSimple_Check("", 521707, 606939, 812991, MaybeOfString(""), true, 854015);
+    OpEqSimple_Check("燵㪆汀ᆣ젙娣ʱᯜ", 840953, 20188, 208909, MaybeOfString("매㘆천⥠渠ᐢ㲛"), false, 68708);
+    OpEqSimple_Check("픽鳐ꈉ", 718449, 909595, 422278, MaybeOfString("묺쥷"), false, 82116);
+    OpEqSimple_Check("뻹", 629572, 333348, 4203, MaybeOfString("㫕崒⁗∾웇Ⓩᱭश"), true, 632609);
+    OpEqSimple_Check("ሌ괙", 559404, 726400, 207068, MaybeOfString("룠డ㫠瀚䊠齦㑭"), false, 106515);
+    OpEqSimple_Check("ા즣傪꼻ᨣ㤬", 6580, 997818, 438577, MaybeOfString("縠靿ᩬ"), true, 780762);
+    OpEqSimple_Check("�둕껅汆", 671624, 984599, 716978, MaybeOfString("銄ធݤ謇"), false, 317042);
+    OpEqSimple_Check("⩮�ώ꒏퓂䉰", 680607, 279276, 747775, MaybeOfString("�Њ"), false, 338788);
+    OpEqSimple_Check("", 774359, 831018, 184179, MaybeOfString("׊�猋┕緰튅"), true, 522160);
+    OpEqSimple_Check("⛲㕤�⧙", 105782, 132045, 929297, MaybeOfString("뱉᧡⬆ꁓ縬"), true, 636291);
+    OpEqSimple_Check("墨큽咪઼側똶뙈", 601038, 673623, 105608, MaybeOfString("⥶批"), true, 937519);
+    OpEqSimple_Check("", 759681, 255643, 98074, MaybeOfString(), true, 985987);
+    OpEqSimple_Check("ࡀ컒�粄⅝", 157952, 475985, 789265, MaybeOfString("ޓ"), false, 381895);
+    OpEqSimple_Check("", 433068, 667191, 144576, MaybeOfString("砟ᙵ굩ᱟ骲盼ﰢ"), false, 992454);
+    OpEqSimple_Check("ⓟ娣ዯ﷤賚�", 370081, 554833, 356165, MaybeOfString("秲櫩䗥讖宦뻸᧊㑗"), true, 578377);
+    OpEqSimple_Check("﨑", 48706, 794688, 783622, MaybeOfString(""), true, 417084);
+    OpEqSimple_Check("띟璦Ⴗ婑遚㌌⻄㕹", 940369, 3945, 849219, MaybeOfString(), true, 284057);
+    OpEqSimple_Check("", 296593, 97859, 343909, MaybeOfString(""), true, 609845);
+    OpEqSimple_Check("텩㚽댯맑", 68111, 943082, 475754, MaybeOfString("銵뒮ꬴ새櫯쩈䰏禯"), true, 941752);
+    OpEqSimple_Check("罚宿㝳䵉貟↟ڹ錠", 978412, 15728, 543714, MaybeOfString("�؁૰犮"), false, 284973);
+    OpEqSimple_Check("", 548055, 421894, 463120, MaybeOfString("囈椐༁틋�鯺䅷⮙"), true, 46866);
+    OpEqSimple_Check("㹪쉰龊〢ᔖ̉", 323966, 493150, 371477, MaybeOfString(""), false, 607334);
+    OpEqSimple_Check("ﻯ機", 971400, 756593, 196654, MaybeOfString("ည葀՗鄱쭾炞푵묺"), false, 223128);
+    OpEqSimple_Check("㙫姦䟧ఊꪫ㪛숬勯ﵜ", 69302, 707858, 1447, MaybeOfString(), true, 703199);
+    OpEqSimple_Check("奋豮ⴈ֑", 80547, 56148, 836181, MaybeOfString(), false, 796197);
+    OpEqSimple_Check("膞坫窀훱Ⅺ", 641360, 925617, 809472, MaybeOfString("些窩遜媿餧윭ࢫꂘび"), true, 612128);
+    OpEqSimple_Check("֩੿퉛꿪⹳ꈰ", 533724, 926220, 696064, MaybeOfString("陉"), true, 331215);
+    OpEqSimple_Check("䣇ᚇ梅翂㳕࢏", 806802, 867988, 950426, MaybeOfString("膃"), false, 250555);
+    OpEqSimple_Check("韠፧迒䌡", 299172, 932418, 445761, MaybeOfString("憚邷塙ꢖ"), false, 111470);
+    OpEqSimple_Check("馺൹貈垸뀰过�", 575927, 155319, 107419, MaybeOfString("龜릇v⍱隊Ⳃ"), true, 856521);
+    OpEqSimple_Check("—뜔愄츿첣⦝", 734945, 255600, 512834, MaybeOfString("淨�"), true, 401557);
+    OpEqSimple_Check("汶틤榸", 303267, 239582, 15682, MaybeOfString("∆ⴝ䨥踯龂Ƞ�뱄⯈"), true, 95772);
+    OpEqSimple_Check("ﳌ祊⠤❮", 598605, 571849, 480850, MaybeOfString("⏕"), true, 233142);
+    OpEqSimple_Check("암䢢갎穯쎙竗硨", 333940, 20634, 443493, MaybeOfString(""), false, 24041);
+    OpEqSimple_Check("", 957356, 796492, 233572, MaybeOfString("㎐꟡썇"), true, 55892);
   }
   
   bool unitTestResults_RoomInfo_OpEq = runAsync(Tests_RegisterAll_RoomInfo_OpEq);

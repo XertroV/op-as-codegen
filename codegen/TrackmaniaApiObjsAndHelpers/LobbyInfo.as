@@ -17,17 +17,13 @@ shared class LobbyInfo {
   
   /* Methods // Mixin: ToFrom JSON Object */
   LobbyInfo(const Json::Value@ j) {
-    try {
-      this._name = string(j["name"]);
-      this._n_clients = uint(j["n_clients"]);
-      this._n_rooms = uint(j["n_rooms"]);
-      this._n_public_rooms = uint(j["n_public_rooms"]);
-      this._rooms = array<RoomInfo@>(j["rooms"].Length);
-      for (uint i = 0; i < j["rooms"].Length; i++) {
-        @this._rooms[i] = RoomInfo(j["rooms"][i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._name = string(j["name"]);
+    this._n_clients = uint(j["n_clients"]);
+    this._n_rooms = uint(j["n_rooms"]);
+    this._n_public_rooms = uint(j["n_public_rooms"]);
+    this._rooms = array<RoomInfo@>(j["rooms"].Length);
+    for (uint i = 0; i < j["rooms"].Length; i++) {
+      @this._rooms[i] = RoomInfo(j["rooms"][i]);
     }
   }
   
@@ -75,7 +71,7 @@ shared class LobbyInfo {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'LobbyInfo('
-      + string::Join({'name=' + name, 'n_clients=' + '' + n_clients, 'n_rooms=' + '' + n_rooms, 'n_public_rooms=' + '' + n_public_rooms, 'rooms=' + TS_Array_RoomInfo(rooms)}, ', ')
+      + string::Join({'name=' + name, 'n_clients=' + tostring(n_clients), 'n_rooms=' + tostring(n_rooms), 'n_public_rooms=' + tostring(n_public_rooms), 'rooms=' + TS_Array_RoomInfo(rooms)}, ', ')
       + ')';
   }
   

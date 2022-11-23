@@ -14,7 +14,7 @@ shared class MaybeOfString {
   }
   
   MaybeOfString(const Json::Value@ j) {
-    if (j.GetType() % Json::Type::Null == 0) {
+    if (j is null || j.GetType() % Json::Type::Null == 0) {
       _hasVal = false;
     } else {
       _hasVal = true;

@@ -29,21 +29,17 @@ shared class CompRound {
   
   /* Methods // Mixin: ToFrom JSON Object */
   CompRound(const Json::Value@ j) {
-    try {
-      this._id = uint(j["id"]);
-      this._qualifierChallengeId = uint(j["qualifierChallengeId"]);
-      this._position = uint(j["position"]);
-      this._nbMatches = uint(j["nbMatches"]);
-      this._startDate = uint(j["startDate"]);
-      this._endDate = uint(j["endDate"]);
-      this._name = string(j["name"]);
-      this._status = string(j["status"]);
-      this._leaderboardComputeType = string(j["leaderboardComputeType"]);
-      @this._teamLeaderboardComputeType = MaybeOfString(j["teamLeaderboardComputeType"]);
-      this._matchScoreDirection = string(j["matchScoreDirection"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._id = uint(j["id"]);
+    this._qualifierChallengeId = uint(j["qualifierChallengeId"]);
+    this._position = uint(j["position"]);
+    this._nbMatches = uint(j["nbMatches"]);
+    this._startDate = uint(j["startDate"]);
+    this._endDate = uint(j["endDate"]);
+    this._name = string(j["name"]);
+    this._status = string(j["status"]);
+    this._leaderboardComputeType = string(j["leaderboardComputeType"]);
+    @this._teamLeaderboardComputeType = MaybeOfString(j["teamLeaderboardComputeType"]);
+    this._matchScoreDirection = string(j["matchScoreDirection"]);
   }
   
   Json::Value@ ToJson() {
@@ -115,7 +111,7 @@ shared class CompRound {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRound('
-      + string::Join({'id=' + '' + id, 'qualifierChallengeId=' + '' + qualifierChallengeId, 'position=' + '' + position, 'nbMatches=' + '' + nbMatches, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'name=' + name, 'status=' + status, 'leaderboardComputeType=' + leaderboardComputeType, 'teamLeaderboardComputeType=' + teamLeaderboardComputeType.ToString(), 'matchScoreDirection=' + matchScoreDirection}, ', ')
+      + string::Join({'id=' + tostring(id), 'qualifierChallengeId=' + tostring(qualifierChallengeId), 'position=' + tostring(position), 'nbMatches=' + tostring(nbMatches), 'startDate=' + tostring(startDate), 'endDate=' + tostring(endDate), 'name=' + name, 'status=' + status, 'leaderboardComputeType=' + leaderboardComputeType, 'teamLeaderboardComputeType=' + teamLeaderboardComputeType.ToString(), 'matchScoreDirection=' + matchScoreDirection}, ', ')
       + ')';
   }
   

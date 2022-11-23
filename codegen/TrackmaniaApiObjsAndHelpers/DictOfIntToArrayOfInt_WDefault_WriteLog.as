@@ -179,7 +179,7 @@ namespace _DictOfIntToArrayOfInt_WDefault_WriteLog {
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + '' + key, 'val=' + TS_Array_int(val)}, ', ')
+        + string::Join({'key=' + tostring(key), 'val=' + TS_Array_int(val)}, ', ')
         + ')';
     }
     
@@ -187,7 +187,7 @@ namespace _DictOfIntToArrayOfInt_WDefault_WriteLog {
       string ret = '{';
       for (uint i = 0; i < arr.Length; i++) {
         if (i > 0) ret += ', ';
-        ret += '' + arr[i];
+        ret += tostring(arr[i]);
       }
       return ret + '}';
     }

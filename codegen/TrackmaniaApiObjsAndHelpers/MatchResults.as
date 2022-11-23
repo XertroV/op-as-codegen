@@ -15,16 +15,12 @@ shared class MatchResults {
   
   /* Methods // Mixin: ToFrom JSON Object */
   MatchResults(const Json::Value@ j) {
-    try {
-      this._roundPosition = uint(j["roundPosition"]);
-      this._matchLiveId = string(j["matchLiveId"]);
-      this._scoreUnit = string(j["scoreUnit"]);
-      this._results = array<MatchResult@>(j["results"].Length);
-      for (uint i = 0; i < j["results"].Length; i++) {
-        @this._results[i] = MatchResult(j["results"][i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._roundPosition = uint(j["roundPosition"]);
+    this._matchLiveId = string(j["matchLiveId"]);
+    this._scoreUnit = string(j["scoreUnit"]);
+    this._results = array<MatchResult@>(j["results"].Length);
+    for (uint i = 0; i < j["results"].Length; i++) {
+      @this._results[i] = MatchResult(j["results"][i]);
     }
   }
   
@@ -67,7 +63,7 @@ shared class MatchResults {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'MatchResults('
-      + string::Join({'roundPosition=' + '' + roundPosition, 'matchLiveId=' + matchLiveId, 'scoreUnit=' + scoreUnit, 'results=' + TS_Array_MatchResult(results)}, ', ')
+      + string::Join({'roundPosition=' + tostring(roundPosition), 'matchLiveId=' + matchLiveId, 'scoreUnit=' + scoreUnit, 'results=' + TS_Array_MatchResult(results)}, ', ')
       + ')';
   }
   

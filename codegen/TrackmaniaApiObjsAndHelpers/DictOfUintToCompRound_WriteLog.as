@@ -173,7 +173,7 @@ namespace _DictOfUintToCompRound_WriteLog {
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + '' + key, 'val=' + val.ToString()}, ', ')
+        + string::Join({'key=' + tostring(key), 'val=' + val.ToString()}, ', ')
         + ')';
     }
     

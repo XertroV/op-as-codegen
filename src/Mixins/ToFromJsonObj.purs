@@ -135,7 +135,8 @@ jTyToJson ty var =
 --
 -- [ "trace('fromJson constructor parsing: ' + Json::Write(j));" ]
 fromJsonBody ∷ Array JField → Array String
-fromJsonBody fields = wrapTryCatch (altJsonAllFields mbSingletonCase) ([ "OnFromJsonError(j);" ])
+-- fromJsonBody fields = wrapTryCatch (altJsonAllFields mbSingletonCase) ([ "OnFromJsonError(j);" ])
+fromJsonBody fields = altJsonAllFields mbSingletonCase
   where
   altJsonAllFields = fromMaybe $ (foldl (<>) [] $ fromJsonFieldLines <$> zip (toPropFields fields) fields)
 
@@ -154,7 +155,7 @@ fromJsonBody fields = wrapTryCatch (altJsonAllFields mbSingletonCase) ([ "OnFrom
 fromJsonFieldLines ∷ Tuple JField JField → Array String
 fromJsonFieldLines jf@(Tuple _ (JField _ (JArray _))) = fromJsonArray jf
 
-fromJsonFieldLines (Tuple (JField p _) (JField n (JObject _))) = [ "@this." <> p <> " = " <> n <> "(j" <> getKey n <> ");" ]
+fromJsonFieldLines (Tuple (JField p _) (JField n (JObject (JsonObj obj_n _)))) = [ "@this." <> p <> " = " <> obj_n <> "(j" <> getKey n <> ");" ]
 
 fromJsonFieldLines (Tuple (JField p _) (JField n t@(JMaybe _))) = [ "@this." <> p <> " = " <> jTyPascalCase t <> "(j" <> getKey n <> ");" ]
 

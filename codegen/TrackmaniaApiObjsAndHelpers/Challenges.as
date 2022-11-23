@@ -9,13 +9,9 @@ shared class Challenges {
   
   /* Methods // Mixin: ToFrom JSON Object */
   Challenges(const Json::Value@ j) {
-    try {
-      this._challenges = array<Challenge@>(j.Length);
-      for (uint i = 0; i < j.Length; i++) {
-        @this._challenges[i] = Challenge(j[i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._challenges = array<Challenge@>(j.Length);
+    for (uint i = 0; i < j.Length; i++) {
+      @this._challenges[i] = Challenge(j[i]);
     }
   }
   

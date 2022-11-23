@@ -56,15 +56,14 @@ genTests allTestGenerators ms obj@(JsonObj name _) = allTestsFunctions <> ln <> 
 genTestArgs :: Int -> JFields -> Array (Array String)
 genTestArgs initSeed fields = tailRec (genTestArgLoop nTestsToRun fields) { gs: { newSeed: mkSeed initSeed, size: 10 }, out: [] }
 
-type GenTestArgLoopState
-  = { gs :: GenState, out :: Array (Array String) }
+type GenTestArgLoopState = { gs :: GenState, out :: Array (Array String) }
 
 genTestArgLoop :: Int -> JFields -> GenTestArgLoopState -> Step GenTestArgLoopState (Array Lines)
 genTestArgLoop nTimes fields { gs, out }
   | A.length out >= nTimes = Done out
   | otherwise = Loop { gs: gs { newSeed = s.newSeed }, out: out <> [ val ] }
-    where
-    (Tuple val s) = (flip runGen gs) $ arbitraryFromFields fields
+      where
+      (Tuple val s) = (flip runGen gs) $ arbitraryFromFields fields
 
 arbitraryFromFields :: JFields -> Gen (Array String)
 arbitraryFromFields fields = sequence $ arbitraryFromJType <$> (\(JField _n t) -> t) <$> fields
@@ -99,19 +98,22 @@ arbitraryFromJType (JObject (JsonObj name fields)) = gens <#> (\fs -> name <> "(
   where
   gens = arbitraryFromFields fields
 
+arbitraryFromJType JJson = pure "Json::Value()"
+
 arbitraryFromJType (JDict t) = do -- pure "dictionary()" -- unsafeCrashWith "un impl" -- (arbitraryFromJType t) -- todo
   dLen <- genIntRarelyZero
   (kvs :: Array (Tuple String String)) <-
     sequence -- $ if dLen <= 0 then
-    --     pure unit
-    --   else
-    do
-      _ <- range 0 (dLen - 1)
-      pure
-        $ do
-            k <- arbitraryFromJType JString
-            v <- arbitraryFromJType t
-            pure $ Tuple k v
+
+      --     pure unit
+      --   else
+      do
+        _ <- range 0 (dLen - 1)
+        pure
+          $ do
+              k <- arbitraryFromJType JString
+              v <- arbitraryFromJType t
+              pure $ Tuple k v
   pure $ "{" <> printDictKvPairs kvs <> "}"
   where
   printDictKvPairs :: Array (Tuple String String) -> String
@@ -120,10 +122,10 @@ arbitraryFromJType (JDict t) = do -- pure "dictionary()" -- unsafeCrashWith "un 
 arbitraryFromJType m@(JMaybe t) =
   frequency
     $ NEA.singleton (Tuple 0.15 $ (arbitrary :: Gen Unit) <#> (\_ -> jTyPascalCase m <> "()"))
-    <> NEA.singleton (Tuple 0.85 $ (arbitraryFromJType t <#> (\v -> jTyPascalCase m <> "(" <> v <> ")")))
+        <> NEA.singleton (Tuple 0.85 $ (arbitraryFromJType t <#> (\v -> jTyPascalCase m <> "(" <> v <> ")")))
 
 genIntRarelyZero ∷ Gen Int
 genIntRarelyZero =
   frequency
     $ NEA.singleton (Tuple 0.01 $ (arbitrary :: Gen Unit) <#> (\_ -> 0))
-    <> NEA.singleton (Tuple 0.99 $ (chooseInt 1 4))
+        <> NEA.singleton (Tuple 0.99 $ (chooseInt 1 4))

@@ -19,16 +19,12 @@ shared class Challenge {
   
   /* Methods // Mixin: ToFrom JSON Object */
   Challenge(const Json::Value@ j) {
-    try {
-      this._id = uint(j["id"]);
-      this._uid = string(j["uid"]);
-      this._name = string(j["name"]);
-      this._startDate = uint(j["startDate"]);
-      this._endDate = uint(j["endDate"]);
-      this._leaderboardId = uint(j["leaderboardId"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._id = uint(j["id"]);
+    this._uid = string(j["uid"]);
+    this._name = string(j["name"]);
+    this._startDate = uint(j["startDate"]);
+    this._endDate = uint(j["endDate"]);
+    this._leaderboardId = uint(j["leaderboardId"]);
   }
   
   Json::Value@ ToJson() {
@@ -75,7 +71,7 @@ shared class Challenge {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Challenge('
-      + string::Join({'id=' + '' + id, 'uid=' + uid, 'name=' + name, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'leaderboardId=' + '' + leaderboardId}, ', ')
+      + string::Join({'id=' + tostring(id), 'uid=' + uid, 'name=' + name, 'startDate=' + tostring(startDate), 'endDate=' + tostring(endDate), 'leaderboardId=' + tostring(leaderboardId)}, ', ')
       + ')';
   }
   

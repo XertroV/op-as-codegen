@@ -43,6 +43,7 @@ data JType
   | JObject JsonObj
   | JDict JType -- | Like a JObject but has unknown keys. All values must have the same type. Keys are always strings.
   | JMaybe JType -- | Nullable json values; either null or JType.
+  | JJson -- | Json::Value@
 
 derive instance eqJType :: Eq JType
 

@@ -11,12 +11,8 @@ shared class TextureUrlPair {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TextureUrlPair(const Json::Value@ j) {
-    try {
-      this._filename = string(j["filename"]);
-      this._url = string(j["url"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._filename = string(j["filename"]);
+    this._url = string(j["url"]);
   }
   
   Json::Value@ ToJson() {

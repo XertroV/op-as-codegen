@@ -387,6 +387,7 @@ cgfRoomInfo = { cls, obj }
       # field "player_limit" JUint
       # field "join_code" (JMaybe JString)
       # field "is_public" JBool
+      # field "ready_count" JUint
 
 cgfLobbyInfo :: ClsWithObj
 cgfLobbyInfo = { cls, obj }
@@ -399,6 +400,29 @@ cgfLobbyInfo = { cls, obj }
       # field "n_rooms" JUint
       # field "n_public_rooms" JUint
       # field "rooms" (JArray (JObject cgfRoomInfo.obj))
+
+cgfUser :: ClsWithObj
+cgfUser = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (readOnlyJsonMixins)
+  obj =
+    object "User"
+      # field "uid" JString
+      # field "name" JString
+      # field "last_seen" JNumber
+      # field "secret" (JMaybe JString)
+
+cgfMessage :: ClsWithObj
+cgfMessage = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (readOnlyJsonMixins)
+  obj =
+    object "Message"
+      # field "type" JString
+      # field "payload" JJson
+      # field "visibility" JString
+      # field "from" (JObject cgfUser.obj)
+      # field "ts" JNumber
 
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
@@ -436,5 +460,7 @@ everything =
   , playerSplitsInfo.cls
   , cgfRoomInfo.cls
   , cgfLobbyInfo.cls
+  , cgfUser.cls
+  , cgfMessage.cls
   ]
     <> (stdDicts <#> (_.cls))

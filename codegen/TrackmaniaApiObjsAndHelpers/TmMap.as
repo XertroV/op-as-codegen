@@ -43,28 +43,24 @@ shared class TmMap {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TmMap(const Json::Value@ j) {
-    try {
-      this._Id = string(j["Id"]);
-      this._Uid = string(j["Uid"]);
-      this._Name = string(j["Name"]);
-      this._FileName = string(j["FileName"]);
-      this._AuthorScore = uint(j["AuthorScore"]);
-      this._GoldScore = uint(j["GoldScore"]);
-      this._SilverScore = uint(j["SilverScore"]);
-      this._BronzeScore = uint(j["BronzeScore"]);
-      this._AuthorDisplayName = string(j["AuthorDisplayName"]);
-      this._AuthorAccountId = string(j["AuthorAccountId"]);
-      this._AuthorWebServicesUserId = string(j["AuthorWebServicesUserId"]);
-      this._SubmitterAccountId = string(j["SubmitterAccountId"]);
-      this._SubmitterWebServicesUserId = string(j["SubmitterWebServicesUserId"]);
-      this._Style = string(j["Style"]);
-      this._TimeStamp = uint(j["TimeStamp"]);
-      this._Type = string(j["Type"]);
-      this._FileUrl = string(j["FileUrl"]);
-      this._ThumbnailUrl = string(j["ThumbnailUrl"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._Id = string(j["Id"]);
+    this._Uid = string(j["Uid"]);
+    this._Name = string(j["Name"]);
+    this._FileName = string(j["FileName"]);
+    this._AuthorScore = uint(j["AuthorScore"]);
+    this._GoldScore = uint(j["GoldScore"]);
+    this._SilverScore = uint(j["SilverScore"]);
+    this._BronzeScore = uint(j["BronzeScore"]);
+    this._AuthorDisplayName = string(j["AuthorDisplayName"]);
+    this._AuthorAccountId = string(j["AuthorAccountId"]);
+    this._AuthorWebServicesUserId = string(j["AuthorWebServicesUserId"]);
+    this._SubmitterAccountId = string(j["SubmitterAccountId"]);
+    this._SubmitterWebServicesUserId = string(j["SubmitterWebServicesUserId"]);
+    this._Style = string(j["Style"]);
+    this._TimeStamp = uint(j["TimeStamp"]);
+    this._Type = string(j["Type"]);
+    this._FileUrl = string(j["FileUrl"]);
+    this._ThumbnailUrl = string(j["ThumbnailUrl"]);
   }
   
   Json::Value@ ToJson() {
@@ -171,7 +167,7 @@ shared class TmMap {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TmMap('
-      + string::Join({'Id=' + Id, 'Uid=' + Uid, 'Name=' + Name, 'FileName=' + FileName, 'AuthorScore=' + '' + AuthorScore, 'GoldScore=' + '' + GoldScore, 'SilverScore=' + '' + SilverScore, 'BronzeScore=' + '' + BronzeScore, 'AuthorDisplayName=' + AuthorDisplayName, 'AuthorAccountId=' + AuthorAccountId, 'AuthorWebServicesUserId=' + AuthorWebServicesUserId, 'SubmitterAccountId=' + SubmitterAccountId, 'SubmitterWebServicesUserId=' + SubmitterWebServicesUserId, 'Style=' + Style, 'TimeStamp=' + '' + TimeStamp, 'Type=' + Type, 'FileUrl=' + FileUrl, 'ThumbnailUrl=' + ThumbnailUrl}, ', ')
+      + string::Join({'Id=' + Id, 'Uid=' + Uid, 'Name=' + Name, 'FileName=' + FileName, 'AuthorScore=' + tostring(AuthorScore), 'GoldScore=' + tostring(GoldScore), 'SilverScore=' + tostring(SilverScore), 'BronzeScore=' + tostring(BronzeScore), 'AuthorDisplayName=' + AuthorDisplayName, 'AuthorAccountId=' + AuthorAccountId, 'AuthorWebServicesUserId=' + AuthorWebServicesUserId, 'SubmitterAccountId=' + SubmitterAccountId, 'SubmitterWebServicesUserId=' + SubmitterWebServicesUserId, 'Style=' + Style, 'TimeStamp=' + tostring(TimeStamp), 'Type=' + Type, 'FileUrl=' + FileUrl, 'ThumbnailUrl=' + ThumbnailUrl}, ', ')
       + ')';
   }
   

@@ -9,13 +9,9 @@ shared class Competitions {
   
   /* Methods // Mixin: ToFrom JSON Object */
   Competitions(const Json::Value@ j) {
-    try {
-      this._comps = array<Competition@>(j.Length);
-      for (uint i = 0; i < j.Length; i++) {
-        @this._comps[i] = Competition(j[i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._comps = array<Competition@>(j.Length);
+    for (uint i = 0; i < j.Length; i++) {
+      @this._comps[i] = Competition(j[i]);
     }
   }
   

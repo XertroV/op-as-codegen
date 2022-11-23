@@ -16,12 +16,8 @@ shared class SyncData {
   
   /* Methods // Mixin: ToFrom JSON Object */
   SyncData(const Json::Value@ j) {
-    try {
-      this._lastUpdated = uint(j["lastUpdated"]);
-      this._status = string(j["status"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._lastUpdated = uint(j["lastUpdated"]);
+    this._status = string(j["status"]);
   }
   
   Json::Value@ ToJson() {
@@ -48,7 +44,7 @@ shared class SyncData {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'SyncData('
-      + string::Join({'lastUpdated=' + '' + lastUpdated, 'status=' + status}, ', ')
+      + string::Join({'lastUpdated=' + tostring(lastUpdated), 'status=' + status}, ', ')
       + ')';
   }
   

@@ -14,7 +14,7 @@ shared class MaybeOfUint {
   }
   
   MaybeOfUint(const Json::Value@ j) {
-    if (j.GetType() % Json::Type::Null == 0) {
+    if (j is null || j.GetType() % Json::Type::Null == 0) {
       _hasVal = false;
     } else {
       _hasVal = true;
@@ -32,7 +32,7 @@ shared class MaybeOfUint {
   const string ToString() {
     string ret = 'MaybeOfUint(';
     if (IsJust()) {
-      ret += '' + _val;
+      ret += tostring(_val);
     }
     return ret + ')';
   }

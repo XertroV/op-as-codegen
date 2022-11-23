@@ -9,13 +9,9 @@ shared class CompRounds {
   
   /* Methods // Mixin: ToFrom JSON Object */
   CompRounds(const Json::Value@ j) {
-    try {
-      this._rounds = array<CompRound@>(j.Length);
-      for (uint i = 0; i < j.Length; i++) {
-        @this._rounds[i] = CompRound(j[i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._rounds = array<CompRound@>(j.Length);
+    for (uint i = 0; i < j.Length; i++) {
+      @this._rounds[i] = CompRound(j[i]);
     }
   }
   

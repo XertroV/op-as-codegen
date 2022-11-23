@@ -9,13 +9,9 @@ shared class SkinIndex {
   
   /* Methods // Mixin: ToFrom JSON Object */
   SkinIndex(const Json::Value@ j) {
-    try {
-      this._skins = array<SkinSpec@>(j.Length);
-      for (uint i = 0; i < j.Length; i++) {
-        @this._skins[i] = SkinSpec(j[i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._skins = array<SkinSpec@>(j.Length);
+    for (uint i = 0; i < j.Length; i++) {
+      @this._skins[i] = SkinSpec(j[i]);
     }
   }
   

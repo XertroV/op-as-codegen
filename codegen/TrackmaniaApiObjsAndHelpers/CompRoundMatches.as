@@ -9,13 +9,9 @@ shared class CompRoundMatches {
   
   /* Methods // Mixin: ToFrom JSON Object */
   CompRoundMatches(const Json::Value@ j) {
-    try {
-      this._matches = array<CompRoundMatch@>(j.Length);
-      for (uint i = 0; i < j.Length; i++) {
-        @this._matches[i] = CompRoundMatch(j[i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._matches = array<CompRoundMatch@>(j.Length);
+    for (uint i = 0; i < j.Length; i++) {
+      @this._matches[i] = CompRoundMatch(j[i]);
     }
   }
   

@@ -13,15 +13,11 @@ shared class SkinSpec {
   
   /* Methods // Mixin: ToFrom JSON Object */
   SkinSpec(const Json::Value@ j) {
-    try {
-      this._baseModel = string(j["baseModel"]);
-      this._hasPlayerMesh = bool(j["hasPlayerMesh"]);
-      this._texturePairs = array<TextureUrlPair@>(j["texturePairs"].Length);
-      for (uint i = 0; i < j["texturePairs"].Length; i++) {
-        @this._texturePairs[i] = TextureUrlPair(j["texturePairs"][i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._baseModel = string(j["baseModel"]);
+    this._hasPlayerMesh = bool(j["hasPlayerMesh"]);
+    this._texturePairs = array<TextureUrlPair@>(j["texturePairs"].Length);
+    for (uint i = 0; i < j["texturePairs"].Length; i++) {
+      @this._texturePairs[i] = TextureUrlPair(j["texturePairs"][i]);
     }
   }
   
@@ -72,7 +68,7 @@ shared class SkinSpec {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'SkinSpec('
-      + string::Join({'baseModel=' + baseModel, 'hasPlayerMesh=' + '' + hasPlayerMesh, 'texturePairs=' + TS_Array_TextureUrlPair(texturePairs)}, ', ')
+      + string::Join({'baseModel=' + baseModel, 'hasPlayerMesh=' + tostring(hasPlayerMesh), 'texturePairs=' + TS_Array_TextureUrlPair(texturePairs)}, ', ')
       + ')';
   }
   

@@ -1,6 +1,7 @@
 module AsTypes where
 
 import Prelude
+
 import Data.Array as A
 import Data.Maybe (fromMaybe)
 import Data.String (joinWith, toUpper)
@@ -34,6 +35,8 @@ jTyToAsTy (JObject (JsonObj n _fs)) = n <> "@"
 jTyToAsTy (JDict t) = "dictionary@"
 
 jTyToAsTy t@(JMaybe _) = jTyPascalCase t # refOnce
+
+jTyToAsTy JJson = "Json::Value@"
 
 refOnce :: String -> String
 refOnce s = if endsWith "@" s then s else s <> "@"
@@ -145,6 +148,8 @@ jTyDefaultVal JString = "''"
 jTyDefaultVal (JEnum n) = n <> "()"
 
 jTyDefaultVal JVec3 = "vec3()"
+
+jTyDefaultVal JJson = "Json::Value()"
 
 jTyDefaultVal (JArray t) = "{}" -- "array<" <> <> ">()"
 

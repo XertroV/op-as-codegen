@@ -3,7 +3,7 @@ module Mixins.ToString (mxToString, jValSimpleStr) where
 import Prelude
 
 import AsTypes (jTyToAsTy, jTyToFuncArg)
-import CodeLines (forLoopArray, indent, ln, wrapForLoop, wrapFunction, wrapFunction', wrapTestFn)
+import CodeLines (fnCall, forLoopArray, indent, ln, wrapForLoop, wrapFunction, wrapFunction', wrapTestFn)
 import Data.Array (catMaybes, intercalate)
 import Data.Array as A
 import Data.Maybe (Maybe(..), isJust)
@@ -46,17 +46,18 @@ toStringMethods (JsonObj name fields) = intercalate ln $ [ toStringFn.decl ] <> 
 jValSimpleStr :: JType -> String -> String
 jValSimpleStr jf var = case jf of
   JNull -> "'null'"
-  JInt -> "'' + " <> var
-  JUint -> "'' + " <> var
-  JNumber -> "'' + " <> var
-  JBool -> "'' + " <> var
+  JInt -> fnCall "tostring" [ var ]
+  JUint -> fnCall "tostring" [ var ]
+  JNumber -> fnCall "tostring" [ var ]
+  JBool -> fnCall "tostring" [ var ]
   JVec3 -> var <> ".ToString()"
-  (JEnum n) -> "tostring(" <> var <> ")"
+  (JEnum _n) -> "tostring(" <> var <> ")"
   JString -> var
   JArray t -> (ts_arrayFn t).callRaw [ var ]
   JObject _ -> var <> ".ToString()"
   JDict _ -> unsafeCrashWith "jValSimpleStr unimplemented: JDict"
   JMaybe _ -> var <> ".ToString()"
+  JJson -> "Json::Write(" <> var <> ")"
 
 -- ts_wrapStringFn :: AsFunction
 -- ts_wrapStringFn =

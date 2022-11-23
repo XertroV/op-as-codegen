@@ -17,15 +17,11 @@ shared class CompRoundMatch {
   
   /* Methods // Mixin: ToFrom JSON Object */
   CompRoundMatch(const Json::Value@ j) {
-    try {
-      this._id = uint(j["id"]);
-      this._position = uint(j["position"]);
-      this._isCompleted = bool(j["isCompleted"]);
-      this._name = string(j["name"]);
-      this._clubMatchLiveId = string(j["clubMatchLiveId"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._id = uint(j["id"]);
+    this._position = uint(j["position"]);
+    this._isCompleted = bool(j["isCompleted"]);
+    this._name = string(j["name"]);
+    this._clubMatchLiveId = string(j["clubMatchLiveId"]);
   }
   
   Json::Value@ ToJson() {
@@ -67,7 +63,7 @@ shared class CompRoundMatch {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'CompRoundMatch('
-      + string::Join({'id=' + '' + id, 'position=' + '' + position, 'isCompleted=' + '' + isCompleted, 'name=' + name, 'clubMatchLiveId=' + clubMatchLiveId}, ', ')
+      + string::Join({'id=' + tostring(id), 'position=' + tostring(position), 'isCompleted=' + tostring(isCompleted), 'name=' + name, 'clubMatchLiveId=' + clubMatchLiveId}, ', ')
       + ')';
   }
   

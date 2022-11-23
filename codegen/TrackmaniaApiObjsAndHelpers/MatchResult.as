@@ -15,14 +15,10 @@ shared class MatchResult {
   
   /* Methods // Mixin: ToFrom JSON Object */
   MatchResult(const Json::Value@ j) {
-    try {
-      @this._rank = MaybeOfUint(j["rank"]);
-      @this._score = MaybeOfUint(j["score"]);
-      this._participant = string(j["participant"]);
-      this._zone = string(j["zone"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    @this._rank = MaybeOfUint(j["rank"]);
+    @this._score = MaybeOfUint(j["score"]);
+    this._participant = string(j["participant"]);
+    this._zone = string(j["zone"]);
   }
   
   Json::Value@ ToJson() {

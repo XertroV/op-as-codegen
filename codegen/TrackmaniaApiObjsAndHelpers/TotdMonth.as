@@ -15,16 +15,12 @@ shared class TotdMonth {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TotdMonth(const Json::Value@ j) {
-    try {
-      this._year = uint(j["year"]);
-      this._month = uint(j["month"]);
-      this._lastDay = uint(j["lastDay"]);
-      this._days = array<TrackOfTheDayEntry@>(j["days"].Length);
-      for (uint i = 0; i < j["days"].Length; i++) {
-        @this._days[i] = TrackOfTheDayEntry(j["days"][i]);
-      }
-    } catch {
-      OnFromJsonError(j);
+    this._year = uint(j["year"]);
+    this._month = uint(j["month"]);
+    this._lastDay = uint(j["lastDay"]);
+    this._days = array<TrackOfTheDayEntry@>(j["days"].Length);
+    for (uint i = 0; i < j["days"].Length; i++) {
+      @this._days[i] = TrackOfTheDayEntry(j["days"][i]);
     }
   }
   
@@ -67,7 +63,7 @@ shared class TotdMonth {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TotdMonth('
-      + string::Join({'year=' + '' + year, 'month=' + '' + month, 'lastDay=' + '' + lastDay, 'days=' + TS_Array_TrackOfTheDayEntry(days)}, ', ')
+      + string::Join({'year=' + tostring(year), 'month=' + tostring(month), 'lastDay=' + tostring(lastDay), 'days=' + TS_Array_TrackOfTheDayEntry(days)}, ', ')
       + ')';
   }
   

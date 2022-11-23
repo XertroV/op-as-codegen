@@ -13,16 +13,12 @@ shared class TotdResp {
   
   /* Methods // Mixin: ToFrom JSON Object */
   TotdResp(const Json::Value@ j) {
-    try {
-      this._monthList = array<TotdMonth@>(j["monthList"].Length);
-      for (uint i = 0; i < j["monthList"].Length; i++) {
-        @this._monthList[i] = TotdMonth(j["monthList"][i]);
-      }
-      this._itemCount = uint(j["itemCount"]);
-      this._nextRequestTimestamp = uint(j["nextRequestTimestamp"]);
-    } catch {
-      OnFromJsonError(j);
+    this._monthList = array<TotdMonth@>(j["monthList"].Length);
+    for (uint i = 0; i < j["monthList"].Length; i++) {
+      @this._monthList[i] = TotdMonth(j["monthList"][i]);
     }
+    this._itemCount = uint(j["itemCount"]);
+    this._nextRequestTimestamp = uint(j["nextRequestTimestamp"]);
   }
   
   Json::Value@ ToJson() {
@@ -59,7 +55,7 @@ shared class TotdResp {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'TotdResp('
-      + string::Join({'monthList=' + TS_Array_TotdMonth(monthList), 'itemCount=' + '' + itemCount, 'nextRequestTimestamp=' + '' + nextRequestTimestamp}, ', ')
+      + string::Join({'monthList=' + TS_Array_TotdMonth(monthList), 'itemCount=' + tostring(itemCount), 'nextRequestTimestamp=' + tostring(nextRequestTimestamp)}, ', ')
       + ')';
   }
   

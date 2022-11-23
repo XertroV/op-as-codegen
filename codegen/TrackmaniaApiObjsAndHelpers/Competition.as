@@ -31,22 +31,18 @@ shared class Competition {
   
   /* Methods // Mixin: ToFrom JSON Object */
   Competition(const Json::Value@ j) {
-    try {
-      this._id = uint(j["id"]);
-      this._startDate = uint(j["startDate"]);
-      this._endDate = uint(j["endDate"]);
-      @this._matchesGenerationDate = MaybeOfUint(j["matchesGenerationDate"]);
-      this._nbPlayers = uint(j["nbPlayers"]);
-      this._leaderboardId = uint(j["leaderboardId"]);
-      this._name = string(j["name"]);
-      this._liveId = string(j["liveId"]);
-      this._creator = string(j["creator"]);
-      @this._region = MaybeOfString(j["region"]);
-      @this._description = MaybeOfString(j["description"]);
-      @this._registrationStart = MaybeOfUint(j["registrationStart"]);
-    } catch {
-      OnFromJsonError(j);
-    }
+    this._id = uint(j["id"]);
+    this._startDate = uint(j["startDate"]);
+    this._endDate = uint(j["endDate"]);
+    @this._matchesGenerationDate = MaybeOfUint(j["matchesGenerationDate"]);
+    this._nbPlayers = uint(j["nbPlayers"]);
+    this._leaderboardId = uint(j["leaderboardId"]);
+    this._name = string(j["name"]);
+    this._liveId = string(j["liveId"]);
+    this._creator = string(j["creator"]);
+    @this._region = MaybeOfString(j["region"]);
+    @this._description = MaybeOfString(j["description"]);
+    @this._registrationStart = MaybeOfUint(j["registrationStart"]);
   }
   
   Json::Value@ ToJson() {
@@ -123,7 +119,7 @@ shared class Competition {
   /* Methods // Mixin: ToString */
   const string ToString() {
     return 'Competition('
-      + string::Join({'id=' + '' + id, 'startDate=' + '' + startDate, 'endDate=' + '' + endDate, 'matchesGenerationDate=' + matchesGenerationDate.ToString(), 'nbPlayers=' + '' + nbPlayers, 'leaderboardId=' + '' + leaderboardId, 'name=' + name, 'liveId=' + liveId, 'creator=' + creator, 'region=' + region.ToString(), 'description=' + description.ToString(), 'registrationStart=' + registrationStart.ToString()}, ', ')
+      + string::Join({'id=' + tostring(id), 'startDate=' + tostring(startDate), 'endDate=' + tostring(endDate), 'matchesGenerationDate=' + matchesGenerationDate.ToString(), 'nbPlayers=' + tostring(nbPlayers), 'leaderboardId=' + tostring(leaderboardId), 'name=' + name, 'liveId=' + liveId, 'creator=' + creator, 'region=' + region.ToString(), 'description=' + description.ToString(), 'registrationStart=' + registrationStart.ToString()}, ', ')
       + ')';
   }
   
