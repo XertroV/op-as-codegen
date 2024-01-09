@@ -222,7 +222,7 @@ namespace Test_CompRoundMatch {
   
   bool Test_ToFromBuffer_Check(uint id, uint position, bool isCompleted, const string &in name, const string &in clubMatchLiveId) {
     CompRoundMatch@ tmp = CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _CompRoundMatch::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

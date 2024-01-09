@@ -241,7 +241,7 @@ shared class PlayerSplitsInfo {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_LP_String(buf, _Name);
     WTB_LP_String(buf, _MapName);
     WTB_Array_Uint(buf, _PBTimes);
@@ -269,12 +269,12 @@ shared class PlayerSplitsInfo {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_Uint(Buffer@ buf, const array<uint> &in arr) {
+  void WTB_Array_Uint(MemoryBuffer@ buf, const array<uint> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -294,7 +294,7 @@ shared class PlayerSplitsInfo {
 
 namespace _PlayerSplitsInfo {
   /* Namespace // Mixin: ToFromBuffer */
-  shared PlayerSplitsInfo@ ReadFromBuffer(Buffer@ buf) {
+  shared PlayerSplitsInfo@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: Name of type: string */
     string Name = RFB_LP_String(buf);
     /* Parse field: MapName of type: string */
@@ -318,12 +318,12 @@ namespace _PlayerSplitsInfo {
     return PlayerSplitsInfo(Name, MapName, PBTimes, PBSplits, BestSplits, SumOfBest, NextBestTimes1, NextBestTimes2, NextBestTimes3, NextBestTimes4);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<uint>@ RFB_Array_Uint(Buffer@ buf) {
+  shared const array<uint>@ RFB_Array_Uint(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<uint> arr = array<uint>(len);
     for (uint i = 0; i < arr.Length; i++) {

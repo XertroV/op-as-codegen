@@ -136,7 +136,7 @@ shared class CompRound {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_id);
     buf.Write(_qualifierChallengeId);
     buf.Write(_position);
@@ -166,7 +166,7 @@ shared class CompRound {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -174,7 +174,7 @@ shared class CompRound {
 
 namespace _CompRound {
   /* Namespace // Mixin: ToFromBuffer */
-  shared CompRound@ ReadFromBuffer(Buffer@ buf) {
+  shared CompRound@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: id of type: uint */
     uint id = buf.ReadUInt32();
     /* Parse field: qualifierChallengeId of type: uint */
@@ -200,7 +200,7 @@ namespace _CompRound {
     return CompRound(id, qualifierChallengeId, position, nbMatches, startDate, endDate, name, status, leaderboardComputeType, teamLeaderboardComputeType, matchScoreDirection);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

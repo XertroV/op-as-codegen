@@ -82,7 +82,7 @@ shared class CompRoundMatch {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_id);
     buf.Write(_position);
     buf.Write(uint8(_isCompleted ? 1 : 0));
@@ -100,7 +100,7 @@ shared class CompRoundMatch {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -108,7 +108,7 @@ shared class CompRoundMatch {
 
 namespace _CompRoundMatch {
   /* Namespace // Mixin: ToFromBuffer */
-  shared CompRoundMatch@ ReadFromBuffer(Buffer@ buf) {
+  shared CompRoundMatch@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: id of type: uint */
     uint id = buf.ReadUInt32();
     /* Parse field: position of type: uint */
@@ -122,7 +122,7 @@ namespace _CompRoundMatch {
     return CompRoundMatch(id, position, isCompleted, name, clubMatchLiveId);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

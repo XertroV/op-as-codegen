@@ -227,7 +227,7 @@ namespace Test_PlayerSplitsInfo {
   
   bool Test_ToFromBuffer_Check(const string &in Name, const string &in MapName, const uint[] &in PBTimes, const uint[] &in PBSplits, const uint[] &in BestSplits, uint SumOfBest, const uint[] &in NextBestTimes1, const uint[] &in NextBestTimes2, const uint[] &in NextBestTimes3, const uint[] &in NextBestTimes4) {
     PlayerSplitsInfo@ tmp = PlayerSplitsInfo(Name, MapName, PBTimes, PBSplits, BestSplits, SumOfBest, NextBestTimes1, NextBestTimes2, NextBestTimes3, NextBestTimes4);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _PlayerSplitsInfo::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

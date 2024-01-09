@@ -85,7 +85,7 @@ genMethods (JsonObj name fields) = methods
         ]
 
   opEq = do
-    pure $ wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
+    pure $ wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ other" ]
       $ wrapIf "IsJust()" [ "return other.IsJust() && (_val == other.val);" ]
           <> [ "return other.IsNothing();" ]
 
@@ -117,7 +117,7 @@ genMethods (JsonObj name fields) = methods
 
   writeToBuffer = do
     fTy <- getValTy
-    pure $ wrapFunction' "void" "WriteToBuffer" [ "Buffer@ buf" ]
+    pure $ wrapFunction' "void" "WriteToBuffer" [ "MemoryBuffer@ buf" ]
       $ wrapIfElse "IsNothing()" [ "buf.Write(uint8(0));" ]
       $
         [ "buf.Write(uint8(1));"
@@ -156,7 +156,7 @@ genNamespace (JsonObj objName fields) =
           <> [ "return " <> objName <> "(" <> jValFromStr fTy "chunk" <> ");" ]
 
   rfb =
-    wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "Buffer@ buf" ]
+    wrapFunction' ("shared " <> objName <> "@") "ReadFromBuffer" [ "MemoryBuffer@ buf" ]
       $ [ "bool isNothing = 0 == buf.ReadUInt8();" ]
           <> wrapIfElse "isNothing"
             [ "return " <> objName <> "();" ]

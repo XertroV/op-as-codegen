@@ -16,8 +16,7 @@ import Partial.Unsafe (unsafeCrashWith)
 import SzAsTypes (jValFromStr, jValToStr)
 import Types (JField(..), JType(..), JsonObj(..), field, getFTy, isJDict, object)
 
-type DirOfOpts
-  = { keyType :: JType }
+type DirOfOpts = { keyType :: JType }
 
 mxDirOf :: DirOfOpts -> Mixin
 mxDirOf opts =
@@ -99,12 +98,13 @@ dirOfObjs opts@{ keyType } jo@(JsonObj objName fields) = { cls, obj }
 
     constructorFn =
       wrapConstructor "DirOf" [ JField "dir" JString ]
-        $ [ "@_objs = dictionary();"
+        $
+          [ "@_objs = dictionary();"
           , "_dir = dir;"
           ]
-        <> wrapIf ("!" <> ioFolderExists "_dir")
-            [ ioCreateFolder "_dir" <> ";" ]
-        <> [ "RunInit();" ]
+            <> wrapIf ("!" <> ioFolderExists "_dir")
+              [ ioCreateFolder "_dir" <> ";" ]
+            <> [ "RunInit();" ]
 
     get_initialized = wrapFunction "bool" "get_Initialized" [] [ "return _initialized;" ]
 
@@ -113,11 +113,11 @@ dirOfObjs opts@{ keyType } jo@(JsonObj objName fields) = { cls, obj }
     runInit =
       wrapFunction "private void" "RunInit" []
         $ [ "auto keys = " <> ioIndexFolder "_dir" <> ";" ]
-        <> mapArray_For { arr: "keys", el: "key", ix: "i" }
-            ( wrapIf "key.EndsWith('.bin')"
-                [ "Get(UnK(key.SubStr(0, key.Length - 4)));" ]
-            )
-        <> [ "_initialized = true;" ]
+            <> mapArray_For { arr: "keys", el: "key", ix: "i" }
+              ( wrapIf "key.EndsWith('.bin')"
+                  [ "Get(UnK(key.SubStr(0, key.Length - 4)));" ]
+              )
+            <> [ "_initialized = true;" ]
 
     getObjs = wrapFunction "private dictionary@" "get_objs" [] [ "return _objs;" ]
 
@@ -143,7 +143,7 @@ dirOfObjs opts@{ keyType } jo@(JsonObj objName fields) = { cls, obj }
             true -> [ "throw('do not call ReadFileToObj for dict');", "return null;" ]
             _ ->
               [ ioOpenFileReadStmt "f" "path"
-              , "Buffer@ buf = Buffer(f.Read(f.Size()));"
+              , "MemoryBuffer@ buf = MemoryBuffer(f.Read(f.Size()));"
               , "f.Close();"
               , "return " <> fnCall ("ReadFromBuffer") [ "buf" ] <> ";"
               ]
@@ -162,30 +162,30 @@ dirOfObjs opts@{ keyType } jo@(JsonObj objName fields) = { cls, obj }
     getBody =
       [ objName <> "@ obj;" ]
         <> case objIsDict of
-            true ->
-              [ "@obj = " <> fnCall objName [ "_dir", "GetFileName(key)" ] <> ";"
+          true ->
+            [ "@obj = " <> fnCall objName [ "_dir", "GetFileName(key)" ] <> ";"
+            , "@objs[K(key)] = obj;"
+            ]
+          _ ->
+            wrapIf (ioFileExists "GetFilePath(key)")
+              [ "@obj = " <> readFileToObj.callRaw [ "GetFilePath(key)" ] <> ";"
               , "@objs[K(key)] = obj;"
               ]
-            _ ->
-              wrapIf (ioFileExists "GetFilePath(key)")
-                [ "@obj = " <> readFileToObj.callRaw [ "GetFilePath(key)" ] <> ";"
-                , "@objs[K(key)] = obj;"
-                ]
 
     getFn =
       wrapFunction objHandleTy "Get" [ keyF ]
         $ wrapIf "objs.Exists(K(key))" [ "return cast<" <> objName <> "@>(objs[K(key)]);" ]
-        <> getBody
-        <> [ "return obj;" ]
+            <> getBody
+            <> [ "return obj;" ]
 
     onSet = case objIsDict of
       true -> [ "throw('Do not call .Set on DirOfDict');" ]
       _ ->
         [ ioOpenFileWriteStmt "f" "GetFilePath(key)"
-        , "Buffer@ buf = Buffer();"
+        , "MemoryBuffer@ buf = MemoryBuffer();"
         , "val.WriteToBuffer(buf);"
         , "buf.Seek(0);"
-        , "f.Write(buf._buf);"
+        , "f.Write(buf);"
         , "f.Close();"
         ]
 

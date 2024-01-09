@@ -28,14 +28,14 @@ import SzAsTypes (jValFromStr)
 import Types (JField(..), JType(..), JsonObj(..), Lines, field, object)
 import Utils (intToStr, noSpaces)
 
-type DictOpts
-  = { dictProp :: String
-    , valType :: JType
-    , writeLog :: Boolean
-    , extraMixins :: Array Mixin
-    , defaultDictVal :: Maybe String
-    , keyType :: JType
-    }
+type DictOpts =
+  { dictProp :: String
+  , valType :: JType
+  , writeLog :: Boolean
+  , extraMixins :: Array Mixin
+  , defaultDictVal :: Maybe String
+  , keyType :: JType
+  }
 
 mkDO :: JType -> DictOpts
 mkDO valType = { dictProp: "d", valType, writeLog: false, extraMixins: [], defaultDictVal: Nothing, keyType: JString }
@@ -61,7 +61,8 @@ genProps opts@{ writeLog } (JsonObj _n _fs) =
 genMethods :: DictOpts -> JsonObj -> Lines
 genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   intercalate ln
-    $ [ constructorFn.decl
+    $
+      [ constructorFn.decl
       , keyToStrFn.decl
       , getFn.decl
       , getManyFn.decl
@@ -77,24 +78,25 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
       , delFn.decl
       , delAllFn.decl
       ]
-    <> ( if opts.writeLog then
-          [ comment "Dict Optional: Write Log = True" <> initLogFn.decl
-          , loadWriteLogFromDisk.decl
-          , getInit.decl
-          , awaitInit.decl
-          , writeOnSetFn.decl
-          , wlOnResetAll.decl
-          ]
-        else
-          []
-      )
+        <>
+          ( if opts.writeLog then
+              [ comment "Dict Optional: Write Log = True" <> initLogFn.decl
+              , loadWriteLogFromDisk.decl
+              , getInit.decl
+              , awaitInit.decl
+              , writeOnSetFn.decl
+              , wlOnResetAll.decl
+              ]
+            else
+              []
+          )
   where
   d = "_" <> dictProp -- b/c mxDefaultProps
 
   constructorFn =
     wrapConstructor n constructorArgs
       $ [ "@_" <> dictProp <> " = dictionary();" ]
-      <> (if opts.writeLog then [ stmt $ initLogFn.call [ logDir, logFile ] ] else [])
+          <> (if opts.writeLog then [ stmt $ initLogFn.call [ logDir, logFile ] ] else [])
 
   constructorArgs = [] <> (if opts.writeLog then [ logDir, logFile ] else [])
 
@@ -110,25 +112,25 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   getManyFn =
     wrapConstFunction (jTyToFuncRes $ JArray valType) "GetMany" [ JField "keys" (JArray keyType) ]
       $ [ jTyToAsTy (JArray valType) <> " ret = {};" ]
-      <> mapArray_For { arr: "keys", ix: "i", el: "key" }
-          [ "ret.InsertLast(Get(key));" ]
-      <> [ "return ret;" ]
+          <> mapArray_For { arr: "keys", ix: "i", el: "key" }
+            [ "ret.InsertLast(Get(key));" ]
+          <> [ "return ret;" ]
 
   getWDefaultFn = do
     dv <- defaultDictVal
     pure
       $ wrapFunction valAsRetType "GetOrDefault" [ keyF ]
       $ wrapIf "!Exists(key)" [ "Set(key, " <> dv <> ");" ]
-      <> [ "return Get(key);" ]
+          <> [ "return Get(key);" ]
 
   existsFn = proxyFnKeyRet "bool" "Exists"
 
   countExistsFn =
     wrapFunction "uint" "CountExists" [ JField "keys" (JArray keyType) ]
       $ [ "uint ret = 0;" ]
-      <> mapArray_For { arr: "keys", ix: "i", el: "key" }
-          [ "if (Exists(key)) ret++;" ]
-      <> [ "return ret;" ]
+          <> mapArray_For { arr: "keys", ix: "i", el: "key" }
+            [ "if (Exists(key)) ret++;" ]
+          <> [ "return ret;" ]
 
   {-
   -- doens't seem to work when valAsRetType is to complex class types like Challenge.
@@ -140,7 +142,7 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   setFn =
     wrapFunction "void" "Set" [ keyF, valF ]
       $ [ setV (JField (d <> "[K(key)]") valType) "value" ]
-      <> writeOnSetLines
+          <> writeOnSetLines
 
   writeOnSetLines = if opts.writeLog then [ writeOnSetFn.call [ keyF, valF ] <> ";" ] else []
 
@@ -152,24 +154,25 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
   -- todo: mutex for checking only 1 instance
   initLogFn =
     wrapFunction "private void" "InitLog" [ logDir, logFile ]
-      $ [ "_logPath = logDir + '/' + logFile;"
+      $
+        [ "_logPath = logDir + '/' + logFile;"
         , "trace('" <> n <> " dir: ' + logDir + ' | logFile: ' + logFile);"
         ]
-      <> wrapIf "logDir.Length == 0"
-          [ "throw('Invalid path: ' + _logPath);" ]
-      <> wrapIf "!IO::FolderExists(logDir)"
-          [ "IO::CreateFolder(logDir, true);" ]
-      <> [ stmt $ loadWriteLogFromDisk.call [] ]
+          <> wrapIf "logDir.Length == 0"
+            [ "throw('Invalid path: ' + _logPath);" ]
+          <> wrapIf "!IO::FolderExists(logDir)"
+            [ "IO::CreateFolder(logDir, true);" ]
+          <> [ stmt $ loadWriteLogFromDisk.call [] ]
 
   writeOnSetFn =
     wrapFunction "private void" "WriteOnSet" [ keyF, valF ]
       [ kvPair <> "@ p = " <> mkKvPair "key" "value" <> ";"
       -- , "string s = p.ToRowString();"
-      , "Buffer@ buf = Buffer();"
+      , "MemoryBuffer@ buf = MemoryBuffer();"
       , "p.WriteToBuffer(buf);"
       , "buf.Seek(0, 0);"
       , "IO::File f(_logPath, IO::FileMode::Append);"
-      , "f.Write(buf._buf);"
+      , "f.Write(buf);"
       , "f.Close();"
       ]
 
@@ -182,32 +185,36 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
 
   loadWriteLogFromDisk =
     wrapFunction "private void" "LoadWriteLogFromDisk" []
-      $ wrapIfElse "IO::FileExists(_logPath)"
+      $
+        wrapIfElse "IO::FileExists(_logPath)"
           ( [ "uint start = Time::Now;"
             , "IO::File f(_logPath, IO::FileMode::Read);"
-            -- , "Buffer@ fb = Buffer(f.Read(f.Size()).ReadToBase64(f.Size()));"
-            , "Buffer@ fb = Buffer(f.Read(f.Size()));"
+            -- , "MemoryBuffer@ fb = MemoryBuffer(f.Read(f.Size()).ReadToBase64(f.Size()));"
+            , "MemoryBuffer@ fb = MemoryBuffer(f.Read(f.Size()));"
             , "f.Close();"
             ]
-              <> ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
+              <>
+                ( wrapWhileLoop -- mapArray_For { arr: "lines", el: "line", ix: "lineNum" } wrapIf "line.Length > 0"
                     "!fb.AtEnd()"
-                    $ [ "auto kv = " <> kvPairNs <> "::ReadFromBuffer(fb);"
+                    $
+                      [ "auto kv = " <> kvPairNs <> "::ReadFromBuffer(fb);"
                       , setV (JField (d <> "[K(kv.key)]") valType) "kv.val"
                       ]
                 )
-              <> [ logBenchmark n "loaded" "GetSize()" "_logPath" "(Time::Now - start)"
+              <>
+                [ logBenchmark n "loaded" "GetSize()" "_logPath" "(Time::Now - start)"
                 , "f.Close();"
                 ]
           )
           [ "IO::File f(_logPath, IO::FileMode::Write);", "f.Close();" ]
-      <> [ "_initialized = true;" ]
+          <> [ "_initialized = true;" ]
 
   -- loadWriteLogFromDisk =
   --   wrapFunction "private void" "LoadWriteLogFromDisk" []
   --     $ wrapIfElse "IO::FileExists(_logPath)"
   --         ( [ "uint start = Time::Now;"
   --           , "IO::File f(_logPath, IO::FileMode::Read);"
-  --           , "Buffer@ fb = Buffer(f.ReadToEnd());"
+  --           , "MemoryBuffer@ fb = MemoryBuffer(f.ReadToEnd());"
   --           -- , "print('buffer getsize: ' + fb.GetSize());"
   --           , "f.Close();"
   --           , "uint lineNum = 0;"
@@ -251,12 +258,13 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
     JString -> proxyFnConst "array<string>@" "GetKeys"
     t ->
       wrapConstFunction (jTyToFuncRes $ retTy) "GetKeys" []
-        $ [ jTyToAsTy retTy <> " ret = {};"
+        $
+          [ jTyToAsTy retTy <> " ret = {};"
           , "auto _keys = " <> d <> ".GetKeys();"
           ]
-        <> mapArray_For { arr: "_keys", ix: "i", el: "_k" }
-            [ "ret.InsertLast(" <> jValFromStr keyType "_k" <> ");" ]
-        <> [ "return ret;" ]
+            <> mapArray_For { arr: "_keys", ix: "i", el: "_k" }
+              [ "ret.InsertLast(" <> jValFromStr keyType "_k" <> ");" ]
+            <> [ "return ret;" ]
     where
     retTy = JArray keyType
 
@@ -266,12 +274,13 @@ genMethods opts@{ dictProp, valType, defaultDictVal, keyType } (JsonObj n fs) =
 
   getItemsFn =
     wrapConstFunction ("array<" <> kvPair <> "@>@") "GetItems" []
-      $ [ "array<" <> kvPair <> "@> ret = array<" <> kvPair <> "@>(GetSize());"
+      $
+        [ "array<" <> kvPair <> "@> ret = array<" <> kvPair <> "@>(GetSize());"
         , "array<" <> jTyToAsTy keyType <> "> keys = GetKeys();"
         ]
-      <> mapArray_For { arr: "keys", el: "key", ix: "i" }
-          [ "@ret[i] = GetItem(key);" ]
-      <> [ "return ret;" ]
+          <> mapArray_For { arr: "keys", el: "key", ix: "i" }
+            [ "@ret[i] = GetItem(key);" ]
+          <> [ "return ret;" ]
 
   kvPair = "_" <> n <> "::KvPair"
 
@@ -351,19 +360,21 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
   mainFn =
     wrapMainTest fnName
       $ []
-      <> wrapIf ("IO:" <> ":FileExists(" <> logPath <> ")")
-          [ "IO::Delete(" <> logPath <> ");" ]
-      <> [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
-      <> wrapIf "testDict.GetSize() > 0" [ "testDict.DeleteAll();" ]
-      <> ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
-            allTestArgs
-        )
-      -- <> preDeleteAllTestExtra
-      
-      <> assertIfLoadFromDisk
-      <> [ "testDict.DeleteAll();"
-        , "assert(0 == testDict.GetSize(), '.DeleteAll');"
-        ]
+          <> wrapIf ("IO:" <> ":FileExists(" <> logPath <> ")")
+            [ "IO::Delete(" <> logPath <> ");" ]
+          <> [ jfieldToAsArg thisF <> " = " <> objName <> "(" <> mainTestObjArgs <> ");" ]
+          <> wrapIf "testDict.GetSize() > 0" [ "testDict.DeleteAll();" ]
+          <>
+            ( mapWithIndex (\n testArgs -> checkerFn.callRaw ([ "testDict", intToStr (n + 1) ] <> testArgs) <> ";")
+                allTestArgs
+            )
+          -- <> preDeleteAllTestExtra
+
+          <> assertIfLoadFromDisk
+          <>
+            [ "testDict.DeleteAll();"
+            , "assert(0 == testDict.GetSize(), '.DeleteAll');"
+            ]
 
   assertIfLoadFromDisk =
     if opts.writeLog then
@@ -375,7 +386,7 @@ testSomeProxyFns opts ms this@(JsonObj objName fs) = { fnName, ls }
       , "assert(" <> nTestsStr <> " == testDict.GetSize(), 'Init size after reloading from disk, was: ' + testDict.GetSize() + ' from file ' + " <> logPath <> ");"
       ]
         <> mapArray_For { arr: "kvs", ix: "i", el: "kv" }
-            [ stmt $ assertFn.callRaw [ "kv.val == testDict.Get(kv.key)", "'Key ' + kv.key + ' did not match expected.'" ] ]
+          [ stmt $ assertFn.callRaw [ "kv.val == testDict.Get(kv.key)", "'Key ' + kv.key + ' did not match expected.'" ] ]
     else
       []
 

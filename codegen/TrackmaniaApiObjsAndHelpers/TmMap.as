@@ -199,7 +199,7 @@ shared class TmMap {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_LP_String(buf, _Id);
     WTB_LP_String(buf, _Uid);
     WTB_LP_String(buf, _Name);
@@ -243,7 +243,7 @@ shared class TmMap {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -273,7 +273,7 @@ shared class TmMap {
 
 namespace _TmMap {
   /* Namespace // Mixin: ToFromBuffer */
-  shared TmMap@ ReadFromBuffer(Buffer@ buf) {
+  shared TmMap@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: Id of type: string */
     string Id = RFB_LP_String(buf);
     /* Parse field: Uid of type: string */
@@ -313,7 +313,7 @@ namespace _TmMap {
     return TmMap(Id, Uid, Name, FileName, AuthorScore, GoldScore, SilverScore, BronzeScore, AuthorDisplayName, AuthorAccountId, AuthorWebServicesUserId, SubmitterAccountId, SubmitterWebServicesUserId, Style, TimeStamp, Type, FileUrl, ThumbnailUrl);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

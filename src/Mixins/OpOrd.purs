@@ -25,7 +25,7 @@ opOrdMethods :: JField -> JsonObj -> Lines
 opOrdMethods (JField pxN _pxT) (JsonObj name fields) = intercalate ln [ opOrdFn.decl ]
   where
   opOrdFn =
-    wrapFunction' "int" "opOrd" [ "const " <> name <> "@ &in other" ]
+    wrapFunction' "int" "opOrd" [ "const " <> name <> "@ other" ]
       [ "return " <> pxN <> " < " <> pxOther <> " ? -1 : " <> pxN <> " == " <> pxOther <> " ? 0 : 1;" ]
 
   pxOther = "other." <> pxN
@@ -44,10 +44,11 @@ opOrdMethods (JField pxN _pxT) (JsonObj name fields) = intercalate ln [ opOrdFn.
   tmpArrEqFor (JField n j) = case j of
     (JArray t) ->
       Just
-        $ [ "bool " <> tmpArrEqVar n <> " = true;"
+        $
+          [ "bool " <> tmpArrEqVar n <> " = true;"
           ]
-        <> forLoopArray "i" ("_" <> n)
-            [ tmpArrEqVar n <> " = " <> tmpArrEqVar n <> " && (_" <> n <> "[i] == other." <> n <> "[i]);" ]
+            <> forLoopArray "i" ("_" <> n)
+              [ tmpArrEqVar n <> " = " <> tmpArrEqVar n <> " && (_" <> n <> "[i] == other." <> n <> "[i]);" ]
     _ -> Nothing
 
 -- intercalate ln $ fieldToGetter <$> fields

@@ -220,7 +220,7 @@ namespace Test_TotdResp {
   
   bool Test_ToFromBuffer_Check(const TotdMonth@[] &in monthList, uint itemCount, uint nextRequestTimestamp) {
     TotdResp@ tmp = TotdResp(monthList, itemCount, nextRequestTimestamp);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _TotdResp::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

@@ -1,24 +1,27 @@
-shared class DictOfBool {
+shared class DictOfTmxMapInfo_WriteLog {
   /* Properties // Mixin: Default Properties */
   private dictionary@ _d;
   
   /* Properties // Mixin: Dict Backing */
+  private string _logPath;
+  private bool _initialized = false;
   
   /* Methods // Mixin: Dict Backing */
-  DictOfBool() {
+  DictOfTmxMapInfo_WriteLog(const string &in logDir, const string &in logFile) {
     @_d = dictionary();
+    InitLog(logDir, logFile);
   }
   
   private const string K(const string &in key) const {
     return key;
   }
   
-  bool Get(const string &in key) const {
-    return bool(_d[K(key)]);
+  TmxMapInfo@ Get(const string &in key) const {
+    return cast<TmxMapInfo@>(_d[K(key)]);
   }
   
-  const bool[]@ GetMany(const string[] &in keys) const {
-    array<bool> ret = {};
+  const TmxMapInfo@[]@ GetMany(const string[] &in keys) const {
+    array<TmxMapInfo@> ret = {};
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
       ret.InsertLast(Get(key));
@@ -27,8 +30,9 @@ shared class DictOfBool {
   }
   
   
-  void Set(const string &in key, bool value) {
-    _d[K(key)] = value;
+  void Set(const string &in key, TmxMapInfo@ value) {
+    @_d[K(key)] = value;
+    WriteOnSet(key, value);
   }
   
   bool Exists(const string &in key) {
@@ -48,12 +52,12 @@ shared class DictOfBool {
     return _d.GetKeys();
   }
   
-  _DictOfBool::KvPair@ GetItem(const string &in key) const {
-    return _DictOfBool::KvPair(key, Get(key));
+  _DictOfTmxMapInfo_WriteLog::KvPair@ GetItem(const string &in key) const {
+    return _DictOfTmxMapInfo_WriteLog::KvPair(key, Get(key));
   }
   
-  array<_DictOfBool::KvPair@>@ GetItems() const {
-    array<_DictOfBool::KvPair@> ret = array<_DictOfBool::KvPair@>(GetSize());
+  array<_DictOfTmxMapInfo_WriteLog::KvPair@>@ GetItems() const {
+    array<_DictOfTmxMapInfo_WriteLog::KvPair@> ret = array<_DictOfTmxMapInfo_WriteLog::KvPair@>(GetSize());
     array<string> keys = GetKeys();
     for (uint i = 0; i < keys.Length; i++) {
       auto key = keys[i];
@@ -62,7 +66,7 @@ shared class DictOfBool {
     return ret;
   }
   
-  bool opIndex(const string &in key) {
+  TmxMapInfo@ opIndex(const string &in key) {
     return Get(key);
   }
   
@@ -75,21 +79,80 @@ shared class DictOfBool {
   }
   
   void DeleteAll() {
+    WriteLogOnResetAll();
     _d.DeleteAll();
+  }
+  
+  /* Dict Optional: Write Log = True */
+  private void InitLog(const string &in logDir, const string &in logFile) {
+    _logPath = logDir + '/' + logFile;
+    trace('DictOfTmxMapInfo_WriteLog dir: ' + logDir + ' | logFile: ' + logFile);
+    if (logDir.Length == 0) {
+      throw('Invalid path: ' + _logPath);
+    }
+    if (!IO::FolderExists(logDir)) {
+      IO::CreateFolder(logDir, true);
+    }
+    LoadWriteLogFromDisk();
+  }
+  
+  private void LoadWriteLogFromDisk() {
+    if (IO::FileExists(_logPath)) {
+      uint start = Time::Now;
+      IO::File f(_logPath, IO::FileMode::Read);
+      MemoryBuffer@ fb = MemoryBuffer(f.Read(f.Size()));
+      f.Close();
+      while (!fb.AtEnd()) {
+        auto kv = _DictOfTmxMapInfo_WriteLog::_KvPair::ReadFromBuffer(fb);
+        @_d[K(kv.key)] = kv.val;
+      }
+      trace('\\$a4fDictOfTmxMapInfo_WriteLog\\$777 loaded \\$a4f' + GetSize() + '\\$777 entries from: \\$a4f' + _logPath + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
+      f.Close();
+    } else {
+      IO::File f(_logPath, IO::FileMode::Write);
+      f.Close();
+    }
+    _initialized = true;
+  }
+  
+  bool get_Initialized() {
+    return _initialized;
+  }
+  
+  void AwaitInitialized() {
+    while (!_initialized) {
+      yield();
+    }
+  }
+  
+  private void WriteOnSet(const string &in key, TmxMapInfo@ value) {
+    _DictOfTmxMapInfo_WriteLog::KvPair@ p = _DictOfTmxMapInfo_WriteLog::KvPair(key, value);
+    MemoryBuffer@ buf = MemoryBuffer();
+    p.WriteToBuffer(buf);
+    buf.Seek(0, 0);
+    IO::File f(_logPath, IO::FileMode::Append);
+    f.Write(buf);
+    f.Close();
+  }
+  
+  private void WriteLogOnResetAll() {
+    IO::File f(_logPath, IO::FileMode::Write);
+    f.Write('');
+    f.Close();
   }
 }
 
-namespace _DictOfBool {
+namespace _DictOfTmxMapInfo_WriteLog {
   /* Namespace // Mixin: Dict Backing */
   shared class KvPair {
     /* Properties // Mixin: Default Properties */
     private string _key;
-    private bool _val;
+    private TmxMapInfo@ _val;
     
     /* Methods // Mixin: Default Constructor */
-    KvPair(const string &in key, bool val) {
+    KvPair(const string &in key, TmxMapInfo@ val) {
       this._key = key;
-      this._val = val;
+      @this._val = val;
     }
     
     /* Methods // Mixin: Getters */
@@ -97,14 +160,14 @@ namespace _DictOfBool {
       return this._key;
     }
     
-    bool get_val() const {
+    TmxMapInfo@ get_val() const {
       return this._val;
     }
     
     /* Methods // Mixin: ToString */
     const string ToString() {
       return 'KvPair('
-        + string::Join({'key=' + key, 'val=' + tostring(val)}, ', ')
+        + string::Join({'key=' + key, 'val=' + val.ToString()}, ', ')
         + ')';
     }
     
@@ -123,7 +186,7 @@ namespace _DictOfBool {
     const string ToRowString() {
       string ret = "";
       ret += TRS_WrapString(_key) + ",";
-      ret += '' + _val + ",";
+      ret += TRS_WrapString(_val.ToRowString()) + ",";
       return ret;
     }
     
@@ -139,13 +202,13 @@ namespace _DictOfBool {
     /* Methods // Mixin: ToFromBuffer */
     void WriteToBuffer(MemoryBuffer@ buf) {
       WTB_LP_String(buf, _key);
-      buf.Write(uint8(_val ? 1 : 0));
+      _val.WriteToBuffer(buf);
     }
     
     uint CountBufBytes() {
       uint bytes = 0;
       bytes += 4 + _key.Length;
-      bytes += 1;
+      bytes += _val.CountBufBytes();
       return bytes;
     }
     
@@ -174,15 +237,19 @@ namespace _DictOfBool {
         throw(getExceptionInfo());
       }
       string key = chunk;
-      /* Parse field: val of type: bool */
+      /* Parse field: val of type: TmxMapInfo@ */
       try {
-        tmp = remainder.Split(',', 2);
-        chunk = tmp[0]; remainder = tmp[1];
+        FRS_Assert_String_Eq(remainder.SubStr(0, 1), '(');
+        tmp = remainder.SubStr(1).Split(':', 2);
+        chunkLen = Text::ParseInt(tmp[0]);
+        chunk = tmp[1].SubStr(0, chunkLen);
+        remainder = tmp[1].SubStr(chunkLen + 2);
+        FRS_Assert_String_Eq(tmp[1].SubStr(chunkLen, 2), '),');
       } catch {
         warn('Error getting chunk/remainder: chunkLen / chunk.Length / remainder =' + string::Join({'' + chunkLen, '' + chunk.Length, remainder}, ' / ') +  '\nException info: ' + getExceptionInfo());
         throw(getExceptionInfo());
       }
-      bool val = ('true' == chunk.ToLower());
+      TmxMapInfo@ val = _TmxMapInfo::FromRowString(chunk);
       return KvPair(key, val);
     }
     
@@ -196,8 +263,8 @@ namespace _DictOfBool {
     shared KvPair@ ReadFromBuffer(MemoryBuffer@ buf) {
       /* Parse field: key of type: string */
       string key = RFB_LP_String(buf);
-      /* Parse field: val of type: bool */
-      bool val = buf.ReadUInt8() > 0;
+      /* Parse field: val of type: TmxMapInfo@ */
+      TmxMapInfo@ val = _TmxMapInfo::ReadFromBuffer(buf);
       return KvPair(key, val);
     }
     

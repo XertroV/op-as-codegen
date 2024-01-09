@@ -53,7 +53,7 @@ mkmethods :: JsonObj -> Lines
 mkmethods (JsonObj n fs) =
   intercalate ln
     $ [ constructorFn.decl, initPersistFn.decl, persistFn.decl, reloadFn.decl, rfbLpStringFnNoShare.decl ]
-    <> (fieldToSetter <$> fs)
+        <> (fieldToSetter <$> fs)
   where
   propFs = toPropFields fs
 
@@ -61,7 +61,8 @@ mkmethods (JsonObj n fs) =
 
   constructorFn =
     wrapConstructor n [ storageLocF ]
-      $ [ "uint start = Time::Now;"
+      $
+        [ "uint start = Time::Now;"
         , initPersistFn.call [ storageLocF ] <> ";"
         , reloadFn.call [] <> ";"
         ]
@@ -78,24 +79,26 @@ mkmethods (JsonObj n fs) =
 
   reloadFn =
     wrapFunction "void" "ReloadFromDisk" []
-      $ [ "IO::File f(_path, IO::FileMode::Read);"
-        , "Buffer@ buf = Buffer(f.Read(f.Size()));"
+      $
+        [ "IO::File f(_path, IO::FileMode::Read);"
+        , "MemoryBuffer@ buf = MemoryBuffer(f.Read(f.Size()));"
         , "f.Close();"
         ]
-      <> (intercalate [] $ (rfb_getNext' setV) <$> propFs)
+          <> (intercalate [] $ (rfb_getNext' setV) <$> propFs)
 
   persistFn =
     wrapFunction' "void" "Persist" [ "bool _quiet = false" ]
-      $ [ "auto start = Time::Now;"
-        , "Buffer@ buf = Buffer();"
+      $
+        [ "auto start = Time::Now;"
+        , "MemoryBuffer@ buf = MemoryBuffer();"
         , "WriteToBuffer(buf);"
         , "buf.Seek(0);"
         -- , "trace('saving to: ' + _path);"
         , "IO::File f(_path, IO::FileMode::Write);"
-        , "f.Write(buf._buf);"
+        , "f.Write(buf);"
         , "f.Close();"
         ]
-      <> wrapIf "!(quiet || _quiet)" [ logBenchmark n "saved" "1" "_path" "(Time::Now - start)" ]
+          <> wrapIf "!(quiet || _quiet)" [ logBenchmark n "saved" "1" "_path" "(Time::Now - start)" ]
 
 mknamespace :: JsonObj -> Lines
 mknamespace (JsonObj n fs) = []
@@ -113,23 +116,25 @@ persistTest ms o@(JsonObj objName fs) = { fnName, ls }
   mainFn =
     wrapMainTest fnName
       $ (if firstFsIsInt then [ "trace('" <> fnName <> " running extra for firstFsIsInt');" ] else [])
-      <> ((stmt <<< checkerFn.callRaw) <$> allTestArgs)
+          <> ((stmt <<< checkerFn.callRaw) <$> allTestArgs)
 
   checkerFn =
     wrapTestFn ("Check_Persistent_" <> objName) fs
-      $ [ objTy <> " tmp = " <> fnCall objName args <> ";"
+      $
+        [ objTy <> " tmp = " <> fnCall objName args <> ";"
         , "auto loc = StorageLocation('" <> wlFile <> "');"
         ]
-      <> wrapIf (ioFileExists "loc.Path") [ ioDeleteFile "loc.Path" <> ";" ]
-      <> [ "tmp.InitPersist(loc);"
-        , "tmp.quiet = true;"
-        , "tmp.Persist();"
-        , "assert(" <> ioFileExists "loc.Path" <> ", 'file should exist after persisting');"
-        , "auto tmp2 = " <> fnCall objName [ "loc" ] <> ";"
-        , "assert(tmp == tmp2, 'persisted data should match expected');"
-        ]
-      <> testMutLs
-      <> [ "return true;" ]
+          <> wrapIf (ioFileExists "loc.Path") [ ioDeleteFile "loc.Path" <> ";" ]
+          <>
+            [ "tmp.InitPersist(loc);"
+            , "tmp.quiet = true;"
+            , "tmp.Persist();"
+            , "assert(" <> ioFileExists "loc.Path" <> ", 'file should exist after persisting');"
+            , "auto tmp2 = " <> fnCall objName [ "loc" ] <> ";"
+            , "assert(tmp == tmp2, 'persisted data should match expected');"
+            ]
+          <> testMutLs
+          <> [ "return true;" ]
 
   firstFsIsInt = A.head fs <#> getFTy <#> isJUint # fromMaybe false
 

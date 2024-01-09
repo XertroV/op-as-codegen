@@ -106,7 +106,7 @@ shared class DictOfUintToCompRound_WriteLog {
     if (IO::FileExists(_logPath)) {
       uint start = Time::Now;
       IO::File f(_logPath, IO::FileMode::Read);
-      Buffer@ fb = Buffer(f.Read(f.Size()));
+      MemoryBuffer@ fb = MemoryBuffer(f.Read(f.Size()));
       f.Close();
       while (!fb.AtEnd()) {
         auto kv = _DictOfUintToCompRound_WriteLog::_KvPair::ReadFromBuffer(fb);
@@ -133,11 +133,11 @@ shared class DictOfUintToCompRound_WriteLog {
   
   private void WriteOnSet(uint key, CompRound@ value) {
     _DictOfUintToCompRound_WriteLog::KvPair@ p = _DictOfUintToCompRound_WriteLog::KvPair(key, value);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     p.WriteToBuffer(buf);
     buf.Seek(0, 0);
     IO::File f(_logPath, IO::FileMode::Append);
-    f.Write(buf._buf);
+    f.Write(buf);
     f.Close();
   }
   
@@ -206,7 +206,7 @@ namespace _DictOfUintToCompRound_WriteLog {
     }
     
     /* Methods // Mixin: ToFromBuffer */
-    void WriteToBuffer(Buffer@ buf) {
+    void WriteToBuffer(MemoryBuffer@ buf) {
       buf.Write(_key);
       _val.WriteToBuffer(buf);
     }
@@ -218,7 +218,7 @@ namespace _DictOfUintToCompRound_WriteLog {
       return bytes;
     }
     
-    void WTB_LP_String(Buffer@ buf, const string &in s) {
+    void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
       buf.Write(uint(s.Length));
       buf.Write(s);
     }
@@ -262,7 +262,7 @@ namespace _DictOfUintToCompRound_WriteLog {
     }
     
     /* Namespace // Mixin: ToFromBuffer */
-    shared KvPair@ ReadFromBuffer(Buffer@ buf) {
+    shared KvPair@ ReadFromBuffer(MemoryBuffer@ buf) {
       /* Parse field: key of type: uint */
       uint key = buf.ReadUInt32();
       /* Parse field: val of type: CompRound@ */
@@ -270,7 +270,7 @@ namespace _DictOfUintToCompRound_WriteLog {
       return KvPair(key, val);
     }
     
-    shared const string RFB_LP_String(Buffer@ buf) {
+    shared const string RFB_LP_String(MemoryBuffer@ buf) {
       uint len = buf.ReadUInt32();
       return buf.ReadString(len);
     }

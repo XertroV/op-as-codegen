@@ -69,6 +69,8 @@ toJsonFieldLines tff@(Tuple (JField n (JArray _)) (JField p _)) = toJsonArray tf
 
 toJsonFieldLines (Tuple (JField n (JMaybe _)) (JField p _)) = [ "j" <> getKey n <> " = " <> p <> ".ToJson();" ]
 
+toJsonFieldLines (Tuple (JField n _) (JField p (JObject _))) = [ "j" <> getKey n <> " = " <> p <> ".ToJson();" ]
+
 toJsonFieldLines (Tuple (JField n JVec3) (JField p _)) = [ "j" <> getKey n <> " = " <> vec3ToJsonFn.callRaw [ p ] <> ";" ]
 
 -- todo: safe integers

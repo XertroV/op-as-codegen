@@ -97,7 +97,7 @@ shared class MatchResults {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_roundPosition);
     WTB_LP_String(buf, _matchLiveId);
     WTB_LP_String(buf, _scoreUnit);
@@ -113,12 +113,12 @@ shared class MatchResults {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_MatchResult(Buffer@ buf, const array<MatchResult@> &in arr) {
+  void WTB_Array_MatchResult(MemoryBuffer@ buf, const array<MatchResult@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -138,7 +138,7 @@ shared class MatchResults {
 
 namespace _MatchResults {
   /* Namespace // Mixin: ToFromBuffer */
-  shared MatchResults@ ReadFromBuffer(Buffer@ buf) {
+  shared MatchResults@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: roundPosition of type: uint */
     uint roundPosition = buf.ReadUInt32();
     /* Parse field: matchLiveId of type: string */
@@ -150,12 +150,12 @@ namespace _MatchResults {
     return MatchResults(roundPosition, matchLiveId, scoreUnit, results);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<MatchResult@>@ RFB_Array_MatchResult(Buffer@ buf) {
+  shared const array<MatchResult@>@ RFB_Array_MatchResult(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<MatchResult@> arr = array<MatchResult@>(len);
     for (uint i = 0; i < arr.Length; i++) {
@@ -226,7 +226,7 @@ namespace _MatchResults {
     
     MatchResults@ ReadFileToObj(const string &in path) {
       IO::File f(path, IO::FileMode::Read);
-      Buffer@ buf = Buffer(f.Read(f.Size()));
+      MemoryBuffer@ buf = MemoryBuffer(f.Read(f.Size()));
       f.Close();
       return ReadFromBuffer(buf);
     }
@@ -249,10 +249,10 @@ namespace _MatchResults {
     
     void Set(uint key, MatchResults@ val) {
       IO::File f(GetFilePath(key), IO::FileMode::Write);
-      Buffer@ buf = Buffer();
+      MemoryBuffer@ buf = MemoryBuffer();
       val.WriteToBuffer(buf);
       buf.Seek(0);
-      f.Write(buf._buf);
+      f.Write(buf);
       f.Close();
     }
   }

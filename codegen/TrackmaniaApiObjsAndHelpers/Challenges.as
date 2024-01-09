@@ -68,7 +68,7 @@ shared class Challenges {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_Array_Challenge(buf, _challenges);
   }
   
@@ -78,12 +78,12 @@ shared class Challenges {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_Challenge(Buffer@ buf, const array<Challenge@> &in arr) {
+  void WTB_Array_Challenge(MemoryBuffer@ buf, const array<Challenge@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -120,18 +120,18 @@ shared class Challenges {
 
 namespace _Challenges {
   /* Namespace // Mixin: ToFromBuffer */
-  shared Challenges@ ReadFromBuffer(Buffer@ buf) {
+  shared Challenges@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: challenges of type: array<Challenge@> */
     array<Challenge@> challenges = RFB_Array_Challenge(buf);
     return Challenges(challenges);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<Challenge@>@ RFB_Array_Challenge(Buffer@ buf) {
+  shared const array<Challenge@>@ RFB_Array_Challenge(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<Challenge@> arr = array<Challenge@>(len);
     for (uint i = 0; i < arr.Length; i++) {

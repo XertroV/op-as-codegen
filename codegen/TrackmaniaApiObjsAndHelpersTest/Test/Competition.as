@@ -229,7 +229,7 @@ namespace Test_Competition {
   
   bool Test_ToFromBuffer_Check(uint id, uint startDate, uint endDate, MaybeOfUint@ matchesGenerationDate, uint nbPlayers, uint leaderboardId, const string &in name, const string &in liveId, const string &in creator, MaybeOfString@ region, MaybeOfString@ description, MaybeOfUint@ registrationStart) {
     Competition@ tmp = Competition(id, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId, name, liveId, creator, region, description, registrationStart);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _Competition::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

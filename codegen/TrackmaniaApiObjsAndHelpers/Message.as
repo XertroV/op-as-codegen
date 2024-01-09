@@ -29,7 +29,7 @@ shared class Message {
     j["type"] = _type;
     j["payload"] = _payload;
     j["visibility"] = _visibility;
-    j["from"] = _from;
+    j["from"] = _from.ToJson();
     j["ts"] = _ts;
     return j;
   }

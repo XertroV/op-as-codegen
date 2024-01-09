@@ -38,7 +38,8 @@ unitTestSingletonFileLines ∷ Lines
 unitTestSingletonFileLines =
   enumTestStatus
     <> ln
-    <> [ "array<TestStatus> " <> utGs <> " = {};"
+    <>
+      [ "array<TestStatus> " <> utGs <> " = {};"
       , "array<CoroutineFunc@> " <> utFuncs <> " = {};"
       , "array<string> " <> utNames <> " = {};"
       , "dictionary@ " <> utFms <> " = dictionary();"
@@ -73,19 +74,21 @@ enumTestStatus =
 
 registerUnitTest :: AsFunction
 registerUnitTest =
-  wrapFunction' "bool" "RegisterUnitTest" [ "const string &in name", "CoroutineFunc@ &in func" ]
-    $ wrapIf ("_unitTests_startedAt == 0")
+  wrapFunction' "bool" "RegisterUnitTest" [ "const string &in name", "CoroutineFunc@ func" ]
+    $
+      wrapIf ("_unitTests_startedAt == 0")
         ( wrapWhileLoop (utGs <> " is null") [ "yield();" ]
             <> wrapWhileLoop (utFms <> " is null") [ "yield();" ]
             <> [ "_unitTests_startedAt = Time::Now;" ]
         )
-    <> [ "uint id = " <> nbUts <> "++;"
-      , utGs <> ".InsertLast(TestStatus::Waiting);"
-      , utFuncs <> ".InsertLast(func);"
-      , utNames <> ".InsertLast(name);"
-      -- , "print('Test registered. ' + id + ': ' + name);"
-      , "return true;"
-      ]
+        <>
+          [ "uint id = " <> nbUts <> "++;"
+          , utGs <> ".InsertLast(TestStatus::Waiting);"
+          , utFuncs <> ".InsertLast(func);"
+          , utNames <> ".InsertLast(name);"
+          -- , "print('Test registered. ' + id + ': ' + name);"
+          , "return true;"
+          ]
 
 startMainLoop :: AsFunction
 startMainLoop =
@@ -97,45 +100,50 @@ startMainLoop =
 mainLoop :: AsFunction
 mainLoop =
   wrapFunction "void" "UnitTest_MainLoop" []
-    $ wrapWhileLoop (utGs <> ".Length == 0")
+    $
+      wrapWhileLoop (utGs <> ".Length == 0")
         [ "yield();" ]
-    <> [ "sleep(25);" ]
-    <> wrapWhileLoop (nbUts <> " > " <> nbUtsDone) -- while there are tests that are not done
-        -- check if we can start new tests
-        -- if so, start the next one, otherwise wait
-        ( [] -- "print('N Tests: ' + " <> nbUts <> " + ' | N Tests Running: ' + " <> nbUtsRunning <> " + ' | N Tests Done: ' + " <> nbUtsDone <> ");" ]
-            <> wrapIf (nbUtsRunning <> " < 10")
+        <> [ "sleep(25);" ]
+        <> wrapWhileLoop (nbUts <> " > " <> nbUtsDone) -- while there are tests that are not done
+          -- check if we can start new tests
+          -- if so, start the next one, otherwise wait
+          ( [] -- "print('N Tests: ' + " <> nbUts <> " + ' | N Tests Running: ' + " <> nbUtsRunning <> " + ' | N Tests Done: ' + " <> nbUtsDone <> ");" ]
+
+              <> wrapIf (nbUtsRunning <> " < 10")
                 [ "startnew(UnitTest_RunNext);" ]
-            <> [ "yield();" ]
-        )
-    <> [ printResults.call [] <> ";"
-      , "print('Completed ' + " <> nbUts <> " + ' unit tests.');"
-      ]
+              <> [ "yield();" ]
+          )
+        <>
+          [ printResults.call [] <> ";"
+          , "print('Completed ' + " <> nbUts <> " + ' unit tests.');"
+          ]
 
 runNextTest :: AsFunction
 runNextTest =
   wrapFunction "void" "UnitTest_RunNext" []
-    $ [ "while (" <> nbUtsStarted <> " >= " <> nbUts <> ") { yield(); }"
+    $
+      [ "while (" <> nbUtsStarted <> " >= " <> nbUts <> ") { yield(); }"
       , "uint id = " <> nbUtsStarted <> "++;"
       , nbUtsRunning <> "++;"
       , utGs <> "[id] = TestStatus::Started;"
       -- , "print('Starting test: ' + " <> utNames <> "[id]);"
       ]
-    <> wrapTryCatch
-        [ utFuncs <> "[id]();  // run directly -- not as coro since we're already a coro"
-        , utGs <> "[id] = TestStatus::Passed;"
-        , nbUtsPassed <> "++;"
-        -- , "print('Test passed: ' + " <> utNames <> "[id]);"
-        ]
-        [ utGs <> "[id] = TestStatus::Failed;"
-        , "string exInfo = getExceptionInfo();"
-        , utFms <> "['' + id] = exInfo;"
-        , "print('\\\\$f21Test failed: ' + " <> utNames <> "[id] + ' => ' + exInfo);"
-        ]
-    <> [ nbUtsRunning <> "--;"
-      , nbUtsDone <> "++;"
-      , "print('Test completed: ' + " <> utNames <> "[id]);"
-      ]
+        <> wrapTryCatch
+          [ utFuncs <> "[id]();  // run directly -- not as coro since we're already a coro"
+          , utGs <> "[id] = TestStatus::Passed;"
+          , nbUtsPassed <> "++;"
+          -- , "print('Test passed: ' + " <> utNames <> "[id]);"
+          ]
+          [ utGs <> "[id] = TestStatus::Failed;"
+          , "string exInfo = getExceptionInfo();"
+          , utFms <> "['' + id] = exInfo;"
+          , "print('\\\\$f21Test failed: ' + " <> utNames <> "[id] + ' => ' + exInfo);"
+          ]
+        <>
+          [ nbUtsRunning <> "--;"
+          , nbUtsDone <> "++;"
+          , "print('Test completed: ' + " <> utNames <> "[id]);"
+          ]
 
 tsFailed ∷ String
 tsFailed = "TestStatus::Failed"

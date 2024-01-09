@@ -221,7 +221,7 @@ namespace Test_MatchResults {
   
   bool Test_ToFromBuffer_Check(uint roundPosition, const string &in matchLiveId, const string &in scoreUnit, const MatchResult@[] &in results) {
     MatchResults@ tmp = MatchResults(roundPosition, matchLiveId, scoreUnit, results);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _MatchResults::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

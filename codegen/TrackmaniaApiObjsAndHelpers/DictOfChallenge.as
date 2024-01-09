@@ -137,7 +137,7 @@ namespace _DictOfChallenge {
     }
     
     /* Methods // Mixin: ToFromBuffer */
-    void WriteToBuffer(Buffer@ buf) {
+    void WriteToBuffer(MemoryBuffer@ buf) {
       WTB_LP_String(buf, _key);
       _val.WriteToBuffer(buf);
     }
@@ -149,7 +149,7 @@ namespace _DictOfChallenge {
       return bytes;
     }
     
-    void WTB_LP_String(Buffer@ buf, const string &in s) {
+    void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
       buf.Write(uint(s.Length));
       buf.Write(s);
     }
@@ -197,7 +197,7 @@ namespace _DictOfChallenge {
     }
     
     /* Namespace // Mixin: ToFromBuffer */
-    shared KvPair@ ReadFromBuffer(Buffer@ buf) {
+    shared KvPair@ ReadFromBuffer(MemoryBuffer@ buf) {
       /* Parse field: key of type: string */
       string key = RFB_LP_String(buf);
       /* Parse field: val of type: Challenge@ */
@@ -205,7 +205,7 @@ namespace _DictOfChallenge {
       return KvPair(key, val);
     }
     
-    shared const string RFB_LP_String(Buffer@ buf) {
+    shared const string RFB_LP_String(MemoryBuffer@ buf) {
       uint len = buf.ReadUInt32();
       return buf.ReadString(len);
     }

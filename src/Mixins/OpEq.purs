@@ -29,11 +29,11 @@ opEqMethods :: JsonObj -> Lines
 opEqMethods (JsonObj name fields) = intercalate ln [ opEqFn.decl ]
   where
   opEqFn =
-    wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ &in other" ]
+    wrapFunction' "bool" "opEquals" [ "const " <> name <> "@ other" ]
       $ wrapIf "other is null" [ "return false; // this obj can never be null." ]
-      <> declAnyArrayEqs
-      <> [ "return true" ]
-      <> indent 1 ((fieldEqLine <$> fields) <> [ ";" ])
+          <> declAnyArrayEqs
+          <> [ "return true" ]
+          <> indent 1 ((fieldEqLine <$> fields) <> [ ";" ])
 
   fieldEqLine (JField n t) = case t of
     (JArray arrTy) -> "&& " <> tmpArrEqVar n
@@ -47,12 +47,13 @@ opEqMethods (JsonObj name fields) = intercalate ln [ opEqFn.decl ]
   tmpArrEqFor (JField n j) = case j of
     (JArray t) ->
       Just
-        $ [ "bool " <> tmpArrEqVar n <> " = _" <> n <> ".Length == other." <> n <> ".Length;"
+        $
+          [ "bool " <> tmpArrEqVar n <> " = _" <> n <> ".Length == other." <> n <> ".Length;"
           ]
-        <> forLoopArray "i" ("_" <> n)
-            ( wrapIf ("!" <> tmpArrEqVar n) [ "break;" ]
-                <> [ tmpArrEqVar n <> " = " <> tmpArrEqVar n <> " && (_" <> n <> "[i] == other." <> n <> "[i]);" ]
-            )
+            <> forLoopArray "i" ("_" <> n)
+              ( wrapIf ("!" <> tmpArrEqVar n) [ "break;" ]
+                  <> [ tmpArrEqVar n <> " = " <> tmpArrEqVar n <> " && (_" <> n <> "[i] == other." <> n <> "[i]);" ]
+              )
     _ -> Nothing
 
 -- intercalate ln $ fieldToGetter <$> fields
@@ -83,7 +84,7 @@ testOpEqSimple ms o@(JsonObj name fs) = { fnName, ls }
   mainFn =
     wrapMainTest fnName
       $ (\testArgs -> checkerFn.callRaw testArgs <> ";")
-      <$> allTestArgs
+          <$> allTestArgs
 
   props = [ objTy <> " lastChecked = null;" ]
 

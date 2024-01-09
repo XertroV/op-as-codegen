@@ -68,7 +68,7 @@ shared class CompRoundMatches {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_Array_CompRoundMatch(buf, _matches);
   }
   
@@ -78,12 +78,12 @@ shared class CompRoundMatches {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_CompRoundMatch(Buffer@ buf, const array<CompRoundMatch@> &in arr) {
+  void WTB_Array_CompRoundMatch(MemoryBuffer@ buf, const array<CompRoundMatch@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -120,18 +120,18 @@ shared class CompRoundMatches {
 
 namespace _CompRoundMatches {
   /* Namespace // Mixin: ToFromBuffer */
-  shared CompRoundMatches@ ReadFromBuffer(Buffer@ buf) {
+  shared CompRoundMatches@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: matches of type: array<CompRoundMatch@> */
     array<CompRoundMatch@> matches = RFB_Array_CompRoundMatch(buf);
     return CompRoundMatches(matches);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<CompRoundMatch@>@ RFB_Array_CompRoundMatch(Buffer@ buf) {
+  shared const array<CompRoundMatch@>@ RFB_Array_CompRoundMatch(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<CompRoundMatch@> arr = array<CompRoundMatch@>(len);
     for (uint i = 0; i < arr.Length; i++) {

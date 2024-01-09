@@ -221,7 +221,7 @@ namespace Test_MatchResult {
   
   bool Test_ToFromBuffer_Check(MaybeOfUint@ rank, MaybeOfUint@ score, const string &in participant, const string &in zone) {
     MatchResult@ tmp = MatchResult(rank, score, participant, zone);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _MatchResult::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

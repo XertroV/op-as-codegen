@@ -82,12 +82,12 @@ void UnitTest_SuiteComplete_PrintResults() {
   print('Tests took: ' + (Time::Now - _unitTests_startedAt) + ' ms');
 }
 
-void WTB_LP_String(Buffer@ buf, const string &in s) {
+void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
   buf.Write(uint(s.Length));
   buf.Write(s);
 }
 
-shared const string RFB_LP_String(Buffer@ buf) {
+shared const string RFB_LP_String(MemoryBuffer@ buf) {
   uint len = buf.ReadUInt32();
   return buf.ReadString(len);
 }

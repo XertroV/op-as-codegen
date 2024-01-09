@@ -40,7 +40,7 @@ mxToFromBuffer =
   }
 
 bufArg ∷ String
-bufArg = "Buffer@ buf"
+bufArg = "MemoryBuffer@ buf"
 
 writeToBufFn :: Array JField -> AsFunction
 writeToBufFn fields =
@@ -140,7 +140,7 @@ test_ToFromBuffer _ms o@(JsonObj objName fields) = { fnName, ls }
     wrapFunction "bool" checkerFnName fields
       $
         [ objTy <> " tmp = " <> fnCall objName args <> ";"
-        , "Buffer@ buf = Buffer();"
+        , "MemoryBuffer@ buf = MemoryBuffer();"
         , "tmp.WriteToBuffer(buf);"
         , "buf.Seek(0, 0);"
         , "assert(tmp == " <> fnCall ("_" <> objName <> ns <> "ReadFromBuffer") [ "buf" ] <> ", 'ToFromBuffer fail: ' + tmp.ToString());"

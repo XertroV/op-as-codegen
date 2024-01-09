@@ -218,7 +218,7 @@ namespace Test_CompRounds {
   
   bool Test_ToFromBuffer_Check(const CompRound@[] &in rounds) {
     CompRounds@ tmp = CompRounds(rounds);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _CompRounds::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

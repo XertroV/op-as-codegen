@@ -97,7 +97,7 @@ shared class TotdMonth {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_year);
     buf.Write(_month);
     buf.Write(_lastDay);
@@ -113,12 +113,12 @@ shared class TotdMonth {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_TrackOfTheDayEntry(Buffer@ buf, const array<TrackOfTheDayEntry@> &in arr) {
+  void WTB_Array_TrackOfTheDayEntry(MemoryBuffer@ buf, const array<TrackOfTheDayEntry@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -138,7 +138,7 @@ shared class TotdMonth {
 
 namespace _TotdMonth {
   /* Namespace // Mixin: ToFromBuffer */
-  shared TotdMonth@ ReadFromBuffer(Buffer@ buf) {
+  shared TotdMonth@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: year of type: uint */
     uint year = buf.ReadUInt32();
     /* Parse field: month of type: uint */
@@ -150,12 +150,12 @@ namespace _TotdMonth {
     return TotdMonth(year, month, lastDay, days);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<TrackOfTheDayEntry@>@ RFB_Array_TrackOfTheDayEntry(Buffer@ buf) {
+  shared const array<TrackOfTheDayEntry@>@ RFB_Array_TrackOfTheDayEntry(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<TrackOfTheDayEntry@> arr = array<TrackOfTheDayEntry@>(len);
     for (uint i = 0; i < arr.Length; i++) {

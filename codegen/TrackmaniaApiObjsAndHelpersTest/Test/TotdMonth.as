@@ -221,7 +221,7 @@ namespace Test_TotdMonth {
   
   bool Test_ToFromBuffer_Check(uint year, uint month, uint lastDay, const TrackOfTheDayEntry@[] &in days) {
     TotdMonth@ tmp = TotdMonth(year, month, lastDay, days);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _TotdMonth::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

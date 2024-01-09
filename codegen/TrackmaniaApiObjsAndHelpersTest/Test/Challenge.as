@@ -223,7 +223,7 @@ namespace Test_Challenge {
   
   bool Test_ToFromBuffer_Check(uint id, const string &in uid, const string &in name, uint startDate, uint endDate, uint leaderboardId) {
     Challenge@ tmp = Challenge(id, uid, name, startDate, endDate, leaderboardId);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _Challenge::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

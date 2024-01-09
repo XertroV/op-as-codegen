@@ -424,6 +424,33 @@ cgfMessage = { cls, obj }
       # field "from" (JObject cgfUser.obj)
       # field "ts" JNumber
 
+cgfGameInfoFull :: ClsWithObj
+cgfGameInfoFull = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] (readOnlyJsonMixins)
+  obj =
+    object "GameInfoFull"
+      # field "players" (JArray (JObject cgfUser.obj))
+      # field "n_game_msgs" JUint
+      -- # field "teams" (JArray (JArray JString))
+      # field "teams" (JArray JString)
+      # field "map_list" (JArray JInt)
+      # field "room" JString
+      # field "lobby" JString
+
+betterTotdTmxInfo :: ClsWithObj
+betterTotdTmxInfo = { cls, obj }
+  where
+  cls = jsonObjToClass obj [] typicalMixins
+  obj = object "TmxMapInfo"
+    # field "TrackID" JUint
+    # field "Name" JString
+    # field "Tags" (JMaybe JString)
+    # field "TagList" (JArray JInt)
+
+betterTotdTmxInfoDb :: ClsWithObj
+betterTotdTmxInfoDb = dictGen $ (mkDO $ JObject betterTotdTmxInfo.obj) { keyType = JString, writeLog = true }
+
 -- # field "media" (JObject empty) -- fields are empty, no point recording
 everything :: Array AsClass
 everything =
@@ -462,5 +489,8 @@ everything =
   , cgfLobbyInfo.cls
   , cgfUser.cls
   , cgfMessage.cls
+  , cgfGameInfoFull.cls
+  , betterTotdTmxInfo.cls
+  , betterTotdTmxInfoDb.cls
   ]
     <> (stdDicts <#> (_.cls))

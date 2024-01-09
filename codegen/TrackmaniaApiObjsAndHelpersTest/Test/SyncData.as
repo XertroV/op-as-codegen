@@ -219,7 +219,7 @@ namespace Test_SyncData {
   
   bool Test_ToFromBuffer_Check(uint lastUpdated, const string &in status) {
     SyncData@ tmp = SyncData(lastUpdated, status);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _SyncData::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

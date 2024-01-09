@@ -68,7 +68,7 @@ shared class CompRounds {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_Array_CompRound(buf, _rounds);
   }
   
@@ -78,12 +78,12 @@ shared class CompRounds {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_CompRound(Buffer@ buf, const array<CompRound@> &in arr) {
+  void WTB_Array_CompRound(MemoryBuffer@ buf, const array<CompRound@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -120,18 +120,18 @@ shared class CompRounds {
 
 namespace _CompRounds {
   /* Namespace // Mixin: ToFromBuffer */
-  shared CompRounds@ ReadFromBuffer(Buffer@ buf) {
+  shared CompRounds@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: rounds of type: array<CompRound@> */
     array<CompRound@> rounds = RFB_Array_CompRound(buf);
     return CompRounds(rounds);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<CompRound@>@ RFB_Array_CompRound(Buffer@ buf) {
+  shared const array<CompRound@>@ RFB_Array_CompRound(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<CompRound@> arr = array<CompRound@>(len);
     for (uint i = 0; i < arr.Length; i++) {

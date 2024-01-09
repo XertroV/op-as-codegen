@@ -60,7 +60,7 @@ shared class SyncData {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_lastUpdated);
     WTB_LP_String(buf, _status);
   }
@@ -72,7 +72,7 @@ shared class SyncData {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -99,11 +99,11 @@ shared class SyncData {
   
   void Persist(bool _quiet = false) {
     auto start = Time::Now;
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     WriteToBuffer(buf);
     buf.Seek(0);
     IO::File f(_path, IO::FileMode::Write);
-    f.Write(buf._buf);
+    f.Write(buf);
     f.Close();
     if (!(quiet || _quiet)) {
       trace('\\$a4fSyncData\\$777 saved \\$a4f' + 1 + '\\$777 entries from: \\$a4f' + _path + '\\$777 in \\$a4f' + (Time::Now - start) + ' ms\\$777.');
@@ -112,7 +112,7 @@ shared class SyncData {
   
   void ReloadFromDisk() {
     IO::File f(_path, IO::FileMode::Read);
-    Buffer@ buf = Buffer(f.Read(f.Size()));
+    MemoryBuffer@ buf = MemoryBuffer(f.Read(f.Size()));
     f.Close();
     /* Parse field: _lastUpdated of type: uint */
     _lastUpdated = buf.ReadUInt32();
@@ -120,7 +120,7 @@ shared class SyncData {
     _status = RFB_LP_String(buf);
   }
   
-  const string RFB_LP_String(Buffer@ buf) {
+  const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
@@ -138,7 +138,7 @@ shared class SyncData {
 
 namespace _SyncData {
   /* Namespace // Mixin: ToFromBuffer */
-  shared SyncData@ ReadFromBuffer(Buffer@ buf) {
+  shared SyncData@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: lastUpdated of type: uint */
     uint lastUpdated = buf.ReadUInt32();
     /* Parse field: status of type: string */
@@ -146,7 +146,7 @@ namespace _SyncData {
     return SyncData(lastUpdated, status);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

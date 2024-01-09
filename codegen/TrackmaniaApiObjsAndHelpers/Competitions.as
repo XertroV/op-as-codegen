@@ -68,7 +68,7 @@ shared class Competitions {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     WTB_Array_Competition(buf, _comps);
   }
   
@@ -78,12 +78,12 @@ shared class Competitions {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
   
-  void WTB_Array_Competition(Buffer@ buf, const array<Competition@> &in arr) {
+  void WTB_Array_Competition(MemoryBuffer@ buf, const array<Competition@> &in arr) {
     buf.Write(uint(arr.Length));
     for (uint ix = 0; ix < arr.Length; ix++) {
       auto el = arr[ix];
@@ -120,18 +120,18 @@ shared class Competitions {
 
 namespace _Competitions {
   /* Namespace // Mixin: ToFromBuffer */
-  shared Competitions@ ReadFromBuffer(Buffer@ buf) {
+  shared Competitions@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: comps of type: array<Competition@> */
     array<Competition@> comps = RFB_Array_Competition(buf);
     return Competitions(comps);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }
   
-  shared const array<Competition@>@ RFB_Array_Competition(Buffer@ buf) {
+  shared const array<Competition@>@ RFB_Array_Competition(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     array<Competition@> arr = array<Competition@>(len);
     for (uint i = 0; i < arr.Length; i++) {

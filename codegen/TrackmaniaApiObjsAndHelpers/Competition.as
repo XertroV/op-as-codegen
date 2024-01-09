@@ -145,7 +145,7 @@ shared class Competition {
   }
   
   /* Methods // Mixin: ToFromBuffer */
-  void WriteToBuffer(Buffer@ buf) {
+  void WriteToBuffer(MemoryBuffer@ buf) {
     buf.Write(_id);
     buf.Write(_startDate);
     buf.Write(_endDate);
@@ -177,7 +177,7 @@ shared class Competition {
     return bytes;
   }
   
-  void WTB_LP_String(Buffer@ buf, const string &in s) {
+  void WTB_LP_String(MemoryBuffer@ buf, const string &in s) {
     buf.Write(uint(s.Length));
     buf.Write(s);
   }
@@ -185,7 +185,7 @@ shared class Competition {
 
 namespace _Competition {
   /* Namespace // Mixin: ToFromBuffer */
-  shared Competition@ ReadFromBuffer(Buffer@ buf) {
+  shared Competition@ ReadFromBuffer(MemoryBuffer@ buf) {
     /* Parse field: id of type: uint */
     uint id = buf.ReadUInt32();
     /* Parse field: startDate of type: uint */
@@ -213,7 +213,7 @@ namespace _Competition {
     return Competition(id, startDate, endDate, matchesGenerationDate, nbPlayers, leaderboardId, name, liveId, creator, region, description, registrationStart);
   }
   
-  shared const string RFB_LP_String(Buffer@ buf) {
+  shared const string RFB_LP_String(MemoryBuffer@ buf) {
     uint len = buf.ReadUInt32();
     return buf.ReadString(len);
   }

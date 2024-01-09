@@ -218,7 +218,7 @@ namespace Test_Challenges {
   
   bool Test_ToFromBuffer_Check(const Challenge@[] &in challenges) {
     Challenges@ tmp = Challenges(challenges);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _Challenges::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

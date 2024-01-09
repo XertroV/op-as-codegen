@@ -224,7 +224,7 @@ namespace Test_TrackOfTheDayEntry {
   
   bool Test_ToFromBuffer_Check(uint campaignId, const string &in mapUid, uint day, uint monthDay, const string &in seasonUid, uint startTimestamp, uint endTimestamp) {
     TrackOfTheDayEntry@ tmp = TrackOfTheDayEntry(campaignId, mapUid, day, monthDay, seasonUid, startTimestamp, endTimestamp);
-    Buffer@ buf = Buffer();
+    MemoryBuffer@ buf = MemoryBuffer();
     tmp.WriteToBuffer(buf);
     buf.Seek(0, 0);
     assert(tmp == _TrackOfTheDayEntry::ReadFromBuffer(buf), 'ToFromBuffer fail: ' + tmp.ToString());

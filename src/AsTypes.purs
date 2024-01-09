@@ -112,6 +112,7 @@ jTyFromJson ty var =
   else case ty of
     JObject (JsonObj n _) -> fnCall n [ var ]
     JArray _ -> unsafeCrashWith "unimpl: recursive jTyFromJson for JArray"
+    -- JArray t -> "// todo: array<" <> jTyToAsTy t <> ">(" <> var <> ")"
     mt@(JMaybe _) -> fnCall (jTyPascalCase mt) [ var ]
     JEnum enumName -> fnCall enumName [ fnCall "uint" [ var ] ]
     JVec3 -> fnCall "vec3" $ [ "x", "y", "z" ] <#> \p -> fnCall "float" [ var <> "['" <> p <> "']" ]
